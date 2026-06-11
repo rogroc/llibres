@@ -446,8 +446,12 @@ class ISBNApp {
     this.btnToggleTorch = document.getElementById('btn-toggle-torch');
     this.btnModeToggle = document.getElementById('btn-mode-toggle');
     this.btnManualInput = document.getElementById('btn-manual-input');
+    this.btnPermissionHelp = document.getElementById('btn-permission-help');
     
     this.manualModal = document.getElementById('manual-modal');
+    this.permissionModal = document.getElementById('permission-modal');
+    this.btnClosePermissionModal = document.getElementById('btn-close-permission-modal');
+    this.btnRetryPermission = document.getElementById('btn-retry-permission');
     this.btnCloseModal = document.getElementById('btn-close-modal');
     this.manualSearchForm = document.getElementById('manual-search-form');
     this.inputIsbn = document.getElementById('input-isbn');
@@ -481,9 +485,26 @@ class ISBNApp {
     this.btnToggleTorch.addEventListener('click', () => this.toggleTorch());
     this.btnModeToggle.addEventListener('click', () => this.cycleScanMode());
     this.btnManualInput.addEventListener('click', () => this.showManualModal());
+    if (this.btnPermissionHelp) {
+      this.btnPermissionHelp.addEventListener('click', () => this.showPermissionModal());
+    }
     
     // Modal
     this.btnCloseModal.addEventListener('click', () => this.hideManualModal());
+    if (this.btnClosePermissionModal) {
+      this.btnClosePermissionModal.addEventListener('click', () => this.hidePermissionModal());
+    }
+    if (this.permissionModal) {
+      this.permissionModal.addEventListener('click', (e) => {
+        if (e.target === this.permissionModal) this.hidePermissionModal();
+      });
+    }
+    if (this.btnRetryPermission) {
+      this.btnRetryPermission.addEventListener('click', () => {
+        this.hidePermissionModal();
+        this.restartScanning();
+      });
+    }
     this.manualModal.addEventListener('click', (e) => {
       if (e.target === this.manualModal) this.hideManualModal();
     });
@@ -552,6 +573,9 @@ class ISBNApp {
       // Disable camera controls
       this.btnToggleCamera.classList.add('disabled');
       this.btnToggleTorch.classList.add('disabled');
+      
+      // Auto-open permission instructions on error
+      this.showPermissionModal();
     }
     
     // Lazy-load Tesseract in the background
@@ -1092,6 +1116,18 @@ class ISBNApp {
       return;
     }
     this.startScanLoop();
+  }
+
+  showPermissionModal() {
+    if (this.permissionModal) {
+      this.permissionModal.classList.remove('hide');
+    }
+  }
+
+  hidePermissionModal() {
+    if (this.permissionModal) {
+      this.permissionModal.classList.add('hide');
+    }
   }
   
   handleManualSubmit(e) {

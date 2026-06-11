@@ -35,6 +35,7 @@ def get_local_ip():
     return local_ip
 
 def run_server():
+    generate_ssl_certs()
     server_address = ('0.0.0.0', PORT)
     
     # Enable CORS headers
@@ -110,19 +111,28 @@ def run_server():
             
     httpd = http.server.HTTPServer(server_address, CORSRequestHandler)
     
+    is_https = False
+    if os.path.exists('key.pem') and os.path.exists('cert.pem'):
+        try:
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')
+            httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+            is_https = True
+        except Exception as e:
+            print(f"No s'ha pogut iniciar en mode HTTPS, arrencant en HTTP normal: {e}")
+            is_https = False
+            
     local_ip = get_local_ip()
+    protocol = "https" if is_https else "http"
     print("\n" + "="*50)
-    print("BiblioScan - Servidor Web Actiu (HTTP Normal)")
+    print(f"BiblioScan - Servidor Web Actiu ({protocol.upper()} Mode)")
     print("="*50)
     print("Zero avisos de seguretat a l'ordinador!")
-    print(f"  - Ordinador: http://localhost:{PORT}")
+    print(f"  - Ordinador: {protocol}://localhost:{PORT}")
     if local_ip != '127.0.0.1':
-        print(f"  - Mòbil:     http://{local_ip}:{PORT}")
+        print(f"  - Mòbil:     {protocol}://{local_ip}:{PORT}")
     print("="*50)
     print("Prem Ctrl+C per aturar el servidor.\n")
-    print("Nota: Si fas servir el mòbil, com que no és localhost, Chrome podria bloquejar la")
-    print("càmera. Si et passa, avisa'm i farem un túnel públic temporal per solucionar-ho.")
-    print("="*50 + "\n")
     
     try:
         httpd.serve_forever()

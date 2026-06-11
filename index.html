@@ -92,6 +92,11 @@
             <span id="scan-mode-label">Mode: Auto</span>
           </button>
           
+          <button id="btn-permission-help" class="btn-control" title="Ajuda de permisos de càmera" aria-label="Ajuda de permisos de càmera">
+            <span class="mode-icon">🔒</span>
+            <span>Permisos</span>
+          </button>
+          
           <button id="btn-manual-input" class="btn-control" title="Escriure manualment" aria-label="Escriure manualment">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 20h9"/>
@@ -227,6 +232,46 @@
 
     <!-- Canvas for OCR Processing (Hidden) -->
     <canvas id="ocr-canvas" style="display: none;"></canvas>
+
+    <!-- CAMERA PERMISSION HELP MODAL -->
+    <div id="permission-modal" class="modal-overlay hide">
+      <div class="modal-content glassmorphism" style="max-width: 450px;">
+        <div class="modal-header">
+          <h3 style="color: var(--warning); display: flex; align-items: center; gap: 8px;">
+            <span>⚠️</span> Permisos de la Càmera
+          </h3>
+          <button id="btn-close-permission-modal" class="btn-close" aria-label="Tancar">&times;</button>
+        </div>
+        <div class="modal-body" style="font-size: 0.88rem; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; padding: 15px 0;">
+          <p>Chrome i Safari en dispositius mòbils bloquegen l'accés a la càmera en llocs web que no siguin totalment segurs (HTTPS).</p>
+          
+          <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent-cyan); text-align: left;">
+            <strong style="color: var(--accent-cyan); display:block; margin-bottom:4px;">1. Requisit HTTPS:</strong>
+            Assegura't d'entrar amb <strong style="color:var(--success);">https://</strong> a la barra d'adreces (i no http://). Les connexions HTTP normals bloquegen completament la càmera al mòbil.
+          </div>
+
+          <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px; border-left: 3px solid var(--warning); text-align: left;">
+            <strong style="color: var(--warning); display:block; margin-bottom:4px;">2. Com donar permís a Chrome mòbil:</strong>
+            <ol style="margin-left: 18px; display: flex; flex-direction: column; gap: 4px;">
+              <li>Clica la icona del <strong>candau 🔒</strong> o dels <strong>controls de configuració</strong> al costat esquerre de la barra d'adreces de Chrome.</li>
+              <li>Prem a <strong>"Permisos"</strong> o <strong>"Configuració del lloc"</strong>.</li>
+              <li>Estableix la càmera en <strong>"Permetre"</strong> (Allow).</li>
+              <li>Recarrega la pàgina.</li>
+            </ol>
+          </div>
+
+          <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary); text-align: left;">
+            <strong style="color: var(--primary); display:block; margin-bottom:4px;">Alternativa (Chrome Flags):</strong>
+            Pots forçar Chrome a tractar la URL com a segura escrivint: <code style="display:block; background:#000; padding:4px 6px; border-radius:4px; margin-top:4px; font-family:monospace; font-size:0.75rem; word-break:break-all;">chrome://flags/#unsafely-treat-insecure-origin-as-secure</code>
+            Després, afegeix la IP del teu Mac a la llista d'excepcions i selecciona <strong>Enabled</strong>.
+          </div>
+          
+          <button id="btn-retry-permission" class="btn-primary" style="margin-top: 10px; width: 100%;">
+            🔄 Tornar a carregar la càmera
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="app-footer">

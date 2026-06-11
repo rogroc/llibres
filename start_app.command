@@ -15,7 +15,7 @@ lsof -ti:8000 | xargs kill -9 2>/dev/null
 echo "S'està iniciant el servidor..."
 
 # Obrim el navegador automàticament passats 2 segons
-(sleep 2 && open "http://localhost:8000") &
+(sleep 2 && open "https://localhost:8000") &
 
 # Iniciem el servidor python
 python3 server.py
