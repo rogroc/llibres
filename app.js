@@ -1278,3 +1278,45 @@ window.addEventListener('DOMContentLoaded', () => {
   const app = new ISBNApp();
   app.start();
 });
+
+// --- PWA Installation Logic ---
+let deferredPrompt;
+const installContainer = document.getElementById('pwa-install-container');
+const btnInstallPwa = document.getElementById('btn-install-pwa');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome from showing the mini-infobar
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Update UI to notify the user they can install the PWA
+  if (installContainer) {
+    installContainer.style.display = 'flex';
+  }
+});
+
+if (btnInstallPwa) {
+  btnInstallPwa.addEventListener('click', async () => {
+    // Hide the app provided install promotion
+    installContainer.style.display = 'none';
+    // Show the install prompt
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      // We've used the prompt, and can't use it again, throw it away
+      deferredPrompt = null;
+    }
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  // Hide the app-provided install promotion
+  if (installContainer) {
+    installContainer.style.display = 'none';
+  }
+  // Clear the deferredPrompt so it can be garbage collected
+  deferredPrompt = null;
+  console.log('PWA was installed successfully');
+});
