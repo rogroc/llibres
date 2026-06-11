@@ -39,10 +39,16 @@
       <section id="scanner-section" class="scanner-card">
         <div class="scanner-view-wrapper">
           <!-- The container where html5-qrcode will render the video feed -->
-          <div id="reader" class="scanner-video-container"></div>
-          
-          <!-- Custom Scanning Overlay -->
-          <div id="scanner-overlay" class="scanner-overlay">
+          <div class="scanner-container glassmorphism">
+            <!-- Initial start overlay -->
+            <div id="start-camera-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background: rgba(10,14,23,0.85); z-index: 20; border-radius: var(--border-radius-lg); cursor:pointer; backdrop-filter: blur(5px); transition: opacity 0.3s;">
+              <div style="font-size: 3.5rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0,255,200,0.4));">📷</div>
+              <div style="font-weight: 600; font-size: 1.15rem; color: var(--text-main);">Toca per activar la càmera</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Requerit pel teu mòbil</div>
+            </div>
+            
+            <div id="reader"></div>
+            <div id="scanner-overlay" class="scanner-overlay active"></div>
             <div class="scanning-reticle">
               <div class="corner top-left"></div>
               <div class="corner top-right"></div>

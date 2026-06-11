@@ -533,6 +533,28 @@ class ISBNApp {
   }
   
   async start() {
+    this.updateScannerStatus('Llest per començar', false);
+    
+    // Set up click listener on the start overlay for user gesture requirement
+    const startOverlay = document.getElementById('start-camera-overlay');
+    if (startOverlay) {
+      startOverlay.addEventListener('click', () => {
+        startOverlay.style.opacity = '0';
+        setTimeout(() => {
+          startOverlay.style.display = 'none';
+        }, 300);
+        this.initializeCamera();
+      });
+    } else {
+      // Fallback if overlay is somehow missing
+      this.initializeCamera();
+    }
+    
+    // Lazy-load Tesseract in the background
+    this.initOCRWorker();
+  }
+  
+  async initializeCamera() {
     this.updateScannerStatus('Carregant dispositius de vídeo...', true);
     
     try {
@@ -577,9 +599,6 @@ class ISBNApp {
       // Auto-open permission instructions on error
       this.showPermissionModal();
     }
-    
-    // Lazy-load Tesseract in the background
-    this.initOCRWorker();
   }
   
   async startScanLoop() {
