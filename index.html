@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lector de Codis ISBN - Escaneig en temps real</title>
+  <!-- Google Fonts: Inter and Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="./style.css">
+  <!-- HTML5-QR Code for Barcode scanning -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+  <!-- Tesseract.js for OCR scanning -->
+  <script src="https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js" defer></script>
+  <!-- Main Application Script (Versioned to bust cache) -->
+  <script src="./app.js?v=11" type="module" defer></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M6 6h10"/>
+          <path d="M6 10h10"/>
+          <path d="M13 14h3"/>
+          <path d="M6 18H4"/>
+        </svg>
+        <h1>BiblioScan</h1>
+      </div>
+      <p class="tagline">Escaneja codis de barres o text ISBN a l'instant</p>
+    </header>
+
+    <main class="main-content">
+      <!-- SCANNER SECTION -->
+      <section id="scanner-section" class="scanner-card">
+        <div class="scanner-view-wrapper">
+          <!-- The container where html5-qrcode will render the video feed -->
+          <div id="reader" class="scanner-video-container"></div>
+          
+          <!-- Custom Scanning Overlay -->
+          <div id="scanner-overlay" class="scanner-overlay">
+            <div class="scanning-reticle">
+              <div class="corner top-left"></div>
+              <div class="corner top-right"></div>
+              <div class="corner bottom-left"></div>
+              <div class="corner bottom-right"></div>
+              <div class="laser-line"></div>
+            </div>
+            <p class="scan-instructions" id="scan-instructions-text">Enfoca un codi de barres o el text de l'ISBN</p>
+          </div>
+          
+          <!-- Scanner Info/Loading Badge -->
+          <div id="scanner-badge" class="scanner-badge hide">
+            <div class="spinner-inline"></div>
+            <span id="badge-text">Inicialitzant càmera...</span>
+          </div>
+        </div>
+
+        <!-- Quick Controls -->
+        <div class="scanner-controls">
+          <button id="btn-toggle-camera" class="btn-control" title="Canviar càmera" aria-label="Canviar càmera">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 19c-1.7 0-3.4-.7-4.6-1.9L3.7 14.4c-.9-.9-.9-2.5 0-3.4l7.3-7.3c.9-.9 2.5-.9 3.4 0l2.7 2.7c.9.9.9 2.5 0 3.4l-7.3 7.3c-.3.3-.6.4-1.1.4Z"/>
+              <path d="m16 16 3-3 3 3"/>
+              <path d="M19 13v6c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h3"/>
+            </svg>
+            <span>Càmera</span>
+          </button>
+          
+          <button id="btn-toggle-torch" class="btn-control disabled" title="Activar llanterneta" aria-label="Activar llanterneta" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6h.01"/>
+              <path d="M6 18h.01"/>
+              <path d="M12 2v2"/>
+              <path d="M12 20v2"/>
+              <path d="M2 12h2"/>
+              <path d="M20 12h2"/>
+              <path d="m4.93 4.93 1.41 1.41"/>
+              <path d="m17.66 17.66 1.41 1.41"/>
+              <path d="m17.66 4.93-1.41 1.41"/>
+              <path d="m4.93 17.66 1.41 1.41"/>
+            </svg>
+            <span>Llum</span>
+          </button>
+
+          <button id="btn-mode-toggle" class="btn-control" title="Mode de detecció" aria-label="Canviar mode de detecció">
+            <span class="mode-icon">📚</span>
+            <span id="scan-mode-label">Mode: Auto</span>
+          </button>
+          
+          <button id="btn-manual-input" class="btn-control" title="Escriure manualment" aria-label="Escriure manualment">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+            </svg>
+            <span>Escriviu</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- MANUAL INPUT MODAL / DRAWER -->
+      <div id="manual-modal" class="modal-overlay hide">
+        <div class="modal-content glassmorphism">
+          <div class="modal-header">
+            <h3>Cerca per Codi ISBN</h3>
+            <button id="btn-close-modal" class="btn-close" aria-label="Tancar">&times;</button>
+          </div>
+          <form id="manual-search-form" class="modal-body">
+            <label for="input-isbn">Introdueix el codi de 10 o 13 xifres:</label>
+            <div class="input-group">
+              <input type="text" id="input-isbn" placeholder="Ex: 9788412345678" maxlength="17" autofocus required>
+              <button type="submit" class="btn-primary">Cercar</button>
+            </div>
+            <p id="manual-error" class="error-text hide">Format ISBN no vàlid</p>
+          </form>
+        </div>
+      </div>
+
+      <!-- RESULTS SECTION -->
+      <section id="results-section" class="book-details-card glassmorphism hide">
+        <div class="book-card-grid">
+          <!-- Cover Column -->
+          <div class="book-cover-area">
+            <div id="book-cover-container" class="book-cover-container">
+              <!-- Dynamically populated cover image or beautiful placeholder -->
+            </div>
+          </div>
+          
+          <!-- Info Column -->
+          <div class="book-info-area">
+            <h2 id="book-title" class="book-title">Títol del Llibre</h2>
+            <h3 id="book-subtitle" class="book-subtitle hide">Subtítol</h3>
+            
+            <p class="book-authors" id="book-authors">Autor(s)</p>
+            
+            <div class="meta-tag-group">
+              <span id="meta-publisher" class="meta-tag">Editorial</span>
+              <span id="meta-year" class="meta-tag">Any</span>
+              <span id="meta-pages" class="meta-tag">Pàgines</span>
+              <span id="meta-lang" class="meta-tag">Idioma</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="book-description-container">
+              <h4>Sinopsi / Descripció</h4>
+              <p id="book-description" class="book-description">No hi ha cap descripció disponible.</p>
+              <button id="btn-toggle-desc" class="btn-text hide">Llegir més</button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="isbn-display-container">
+              <div class="isbn-field">
+                <span class="isbn-label">ISBN-13:</span>
+                <span id="isbn13-value" class="isbn-number">-</span>
+                <button class="btn-copy" data-target="isbn13-value" title="Copiar ISBN-13">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                </button>
+              </div>
+              <div class="isbn-field">
+                <span class="isbn-label">ISBN-10:</span>
+                <span id="isbn10-value" class="isbn-number">-</span>
+                <button class="btn-copy" data-target="isbn10-value" title="Copiar ISBN-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div id="ficha-tecnica-section" class="ficha-tecnica-section">
+              <h4>Fitxa Tècnica (Catàleg BNE / ISBN)</h4>
+              <table class="ficha-tecnica-table">
+                <tbody id="ficha-tecnica-tbody">
+                  <!-- Generat dinàmicament des de JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- External Databases & Actions -->
+            <div class="action-buttons-group">
+              <a id="link-google-books" href="#" target="_blank" rel="noopener" class="btn-outline btn-external">
+                <span>Google Books</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="external-icon"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              </a>
+              <a id="link-open-library" href="#" target="_blank" rel="noopener" class="btn-outline btn-external">
+                <span>Open Library</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="external-icon"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              </a>
+            </div>
+
+            <div class="action-footer">
+              <button id="btn-scan-again" class="btn-primary btn-large">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                <span>Escanejar un altre llibre</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCAN HISTORY SECTION -->
+      <section class="history-section">
+        <div class="history-header">
+          <h2>Historial de cerques</h2>
+          <button id="btn-clear-history" class="btn-text danger hide">Esborrar tot</button>
+        </div>
+        <div id="history-list" class="history-list empty">
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <p>Encara no has escanejat cap llibre. Escaneja un codi per desar-lo aquí.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Canvas for OCR Processing (Hidden) -->
+    <canvas id="ocr-canvas" style="display: none;"></canvas>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>&copy; 2026 BiblioScan. Creat amb passió pel disseny excel·lent.</p>
+    </footer>
+  </div>
+</body>
+</html>
