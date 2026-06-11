@@ -568,14 +568,11 @@ class ISBNApp {
     } catch (error) {
       console.error("Error starting app:", error);
       this.updateScannerStatus(`Error: ${error.message || 'Sense accés a la càmera'}`, false);
-      this.instructionsText.innerText = "Si us plau, permet l'accés a la càmera o escriu l'ISBN manualment.";
+      this.instructionsText.innerHTML = "Càmera no disponible. Prem el botó <strong>🔒 Permisos</strong> a sota per a instruccions, o utilitza la cerca manual.";
       
       // Disable camera controls
       this.btnToggleCamera.classList.add('disabled');
       this.btnToggleTorch.classList.add('disabled');
-      
-      // Auto-open permission instructions on error
-      this.showPermissionModal();
     }
     
     // Lazy-load Tesseract in the background
