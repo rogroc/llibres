@@ -396,6 +396,9 @@ body::after {
 .modal-content {
   width: 90%;
   max-width: 400px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
@@ -446,6 +449,7 @@ body::after {
 
 .modal-body {
   padding: 20px;
+  overflow-y: auto;
 }
 
 .modal-body label {
