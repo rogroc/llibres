@@ -1279,17 +1279,31 @@ window.addEventListener('DOMContentLoaded', () => {
   app.start();
 });
 
-// --- PWA Installation Logic ---
-let deferredPrompt;
+// --- PWA Installation Logic & Fallback ---
+let deferredPrompt = null;
 const installContainer = document.getElementById('pwa-install-container');
 const btnInstallPwa = document.getElementById('btn-install-pwa');
+const installModal = document.getElementById('install-instructions-modal');
+const btnCloseInstallModal = document.getElementById('btn-close-install-modal');
+const btnOkInstall = document.getElementById('btn-ok-install');
+
+// 1. Show the banner always on mobile after 3 seconds
+setTimeout(() => {
+  // Simple check if it's mobile and not already installed/standalone
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  
+  if (isMobile && !isStandalone && installContainer) {
+    installContainer.style.display = 'flex';
+  }
+}, 3000);
 
 window.addEventListener('beforeinstallprompt', (e) => {
   // Prevent Chrome from showing the mini-infobar
   e.preventDefault();
   // Stash the event so it can be triggered later.
   deferredPrompt = e;
-  // Update UI to notify the user they can install the PWA
+  // Make sure banner is visible
   if (installContainer) {
     installContainer.style.display = 'flex';
   }
@@ -1299,24 +1313,36 @@ if (btnInstallPwa) {
   btnInstallPwa.addEventListener('click', async () => {
     // Hide the app provided install promotion
     installContainer.style.display = 'none';
-    // Show the install prompt
+    
+    // Show the install prompt if available (Chrome allowed it)
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      // Wait for the user to respond to the prompt
       const { outcome } = await deferredPrompt.userChoice;
       console.log(`User response to the install prompt: ${outcome}`);
-      // We've used the prompt, and can't use it again, throw it away
       deferredPrompt = null;
+    } else {
+      // Fallback: Browser blocked it or it's Safari iOS
+      if (installModal) {
+        installModal.classList.remove('hide');
+      }
     }
   });
 }
 
+// Close fallback modal handlers
+if (btnCloseInstallModal && installModal) {
+  btnCloseInstallModal.addEventListener('click', () => installModal.classList.add('hide'));
+}
+if (btnOkInstall && installModal) {
+  btnOkInstall.addEventListener('click', () => installModal.classList.add('hide'));
+}
+installModal?.addEventListener('click', (e) => {
+  if (e.target === installModal) installModal.classList.add('hide');
+});
+
 window.addEventListener('appinstalled', () => {
-  // Hide the app-provided install promotion
-  if (installContainer) {
-    installContainer.style.display = 'none';
-  }
-  // Clear the deferredPrompt so it can be garbage collected
+  if (installContainer) installContainer.style.display = 'none';
+  if (installModal) installModal.classList.add('hide');
   deferredPrompt = null;
   console.log('PWA was installed successfully');
 });

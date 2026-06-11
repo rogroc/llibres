@@ -290,6 +290,33 @@
     </div>
 
     <!-- Footer -->
+    <!-- Install Instructions Modal -->
+    <div id="install-instructions-modal" class="modal-overlay hide">
+      <div class="modal-content glassmorphism">
+        <button id="btn-close-install-modal" class="modal-close" aria-label="Tancar">&times;</button>
+        <h2 style="font-size: 1.4rem; margin-bottom: 15px; color: var(--text-main);">Instal·la l'Aplicació 📱</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Com que el teu navegador està bloquejant la instal·lació automàtica, pots instal·lar-la tu mateix en 3 segons:</p>
+        
+        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; border: 1px solid rgba(255,255,255,0.05);">
+          <strong style="color: #fff; font-size: 1rem;">🍎 A iPhone (Safari):</strong>
+          <ol style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px; padding-left: 20px;">
+            <li>Clica la icona de <strong>Compartir</strong> (un quadrat amb una fletxa cap amunt) al mig de la barra inferior.</li>
+            <li>Baixa pel menú i clica <strong>"Afegeix a la pantalla d'inici"</strong>.</li>
+          </ol>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.05);">
+          <strong style="color: #fff; font-size: 1rem;">🤖 A Android (Chrome):</strong>
+          <ol style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px; padding-left: 20px;">
+            <li>Clica els <strong>3 puntets (⋮)</strong> a dalt a la dreta de la pantalla.</li>
+            <li>Clica <strong>"Instal·la l'aplicació"</strong> o "Afegeix a la pantalla d'inici".</li>
+          </ol>
+        </div>
+        
+        <button id="btn-ok-install" class="btn-primary" style="margin-top: 20px; width: 100%;">Ho tinc, gràcies!</button>
+      </div>
+    </div>
+    <!-- Footer -->
     <footer class="app-footer">
       <p>&copy; 2026 BiblioScan. Creat amb passió pel disseny excel·lent.</p>
     </footer>
