@@ -235,12 +235,12 @@
 
     <!-- CAMERA PERMISSION HELP MODAL -->
     <div id="permission-modal" class="modal-overlay hide">
-      <div class="modal-content glassmorphism" style="max-width: 450px;">
-        <div class="modal-header">
+      <div class="modal-content glassmorphism" style="max-width: 450px; position: relative;">
+        <div class="modal-header" style="position: relative; padding-right: 40px;">
           <h3 style="color: var(--warning); display: flex; align-items: center; gap: 8px;">
             <span>⚠️</span> Permisos de la Càmera
           </h3>
-          <button id="btn-close-permission-modal" class="btn-close" aria-label="Tancar">&times;</button>
+          <button id="btn-close-permission-modal" class="btn-close" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; line-height: 1;" aria-label="Tancar">&times;</button>
         </div>
         <div class="modal-body" style="font-size: 0.88rem; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; padding: 15px 0;">
           <p>Chrome i Safari en dispositius mòbils bloquegen l'accés a la càmera en llocs web que no siguin totalment segurs (HTTPS).</p>
