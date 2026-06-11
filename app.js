@@ -573,6 +573,9 @@ class ISBNApp {
       // Disable camera controls
       this.btnToggleCamera.classList.add('disabled');
       this.btnToggleTorch.classList.add('disabled');
+      
+      // Auto-open permission instructions on error
+      this.showPermissionModal();
     }
     
     // Lazy-load Tesseract in the background
