@@ -14,8 +14,18 @@
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
   <!-- Tesseract.js for OCR scanning -->
   <script src="https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js" defer></script>
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json">
   <!-- Main Application Script (Versioned to bust cache) -->
-  <script src="./app.js?v=12" type="module" defer></script>
+  <script src="./app.js?v=13" type="module" defer></script>
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.error("SW reg fail:", err));
+      });
+    }
+  </script>
 </head>
 <body>
   <div class="app-container">
