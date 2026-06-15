@@ -3,23 +3,37 @@ const sessionID = Math.random().toString(36).substring(2, 10);
 let eventSource = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  let localIp = 'localhost';
-  try {
-    const res = await fetch(`/api/ip?t=${Date.now()}`);
-    if (res.ok) {
-      const data = await res.json();
-      localIp = data.ip || 'localhost';
-    }
-  } catch (e) {
-    console.warn("No s'ha pogut obtenir la IP local per al QR:", e);
-  }
-
-  // Genera el QR apuntant a la IP local i al port HTTPS HTTPS (8443) on es serveix la versió local
-  const localUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
-  renderQrCode(localUrl);
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.');
   
-  // Comença a fer polling i subscriu-te al relay de ntfy.sh immediatament
-  pollServer();
+  if (isLocal) {
+    let localIp = 'localhost';
+    try {
+      const res = await fetch(`/api/ip?t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        localIp = data.ip || 'localhost';
+      }
+    } catch (e) {
+      console.warn("No s'ha pogut obtenir la IP local per al QR:", e);
+    }
+
+    // Genera el QR apuntant a la IP local i al port HTTPS (8443) on es serveix la versió local
+    const localUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
+    renderQrCode(localUrl);
+    
+    // Comença a fer polling
+    pollServer();
+  } else {
+    // Si estem a GitHub Pages, apuntem al mòbil de GitHub Pages enviant només el sid
+    const defaultUrl = 'https://rogroc.github.io/llibres/app/mobile/';
+    renderQrCode(`${defaultUrl}?sid=${sessionID}`);
+    
+    // Ocultem la nota de certificat SSL local ja que no és necessària a GitHub Pages
+    const certHelp = document.getElementById('cert-help');
+    if (certHelp) certHelp.style.display = 'none';
+  }
+  
+  // La subscripció a ntfy.sh la fem sempre com a canal universal de seguretat
   setupNtfy();
 });
 
