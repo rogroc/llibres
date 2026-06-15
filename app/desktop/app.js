@@ -93,7 +93,7 @@ function handleScan(data) {
     if (qrContainer) qrContainer.style.display = 'none';
     
     const descText = document.getElementById('connection-card').querySelector('p');
-    if (descText) descText.innerText = "L'escàner està actiu al teu mòbil. Enfoca un codi de barres o la portada d'un llibre.";
+    if (descText) descText.innerText = "L'escàner està actiu al teu mòbil. Enfoca un codi de barres, el text de l'ISBN o la portada d'un llibre.";
     
     document.getElementById('poll-status').innerHTML = '<span style="color: #27ae60; font-size: 1.15rem; font-weight: bold;">🟢 Mòbil connectat i actiu</span>';
     return;

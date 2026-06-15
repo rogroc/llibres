@@ -119,7 +119,7 @@ function switchMode(mode) {
   const statusMsg = document.getElementById('status-message');
   
   if (mode === 'isbn') {
-    statusMsg.innerText = 'Enfoca un codi de barres de llibre';
+    statusMsg.innerText = "Enfoca un codi de barres o el text de l'ISBN";
     startIsbnScanner();
   } else {
     statusMsg.innerText = 'Enfoca la portada i fes una foto';
@@ -217,7 +217,7 @@ function stopPortadaCamera() {
 async function initTesseract() {
   document.getElementById('status-message').innerText += ' (Carregant OCR...)';
   tesseractWorker = await Tesseract.createWorker('cat+spa+eng');
-  document.getElementById('status-message').innerText = currentMode === 'isbn' ? 'Enfoca un codi de barres de llibre' : 'Enfoca la portada i fes una foto';
+  document.getElementById('status-message').innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
 }
 
 async function processPortada() {
@@ -316,7 +316,7 @@ async function sendToServer(type, value) {
   if (localSuccess || ntfySuccess) {
     const statusMsg = document.getElementById('status-message');
     if (statusMsg.querySelector('div') && type === 'connection') {
-      statusMsg.innerText = currentMode === 'isbn' ? 'Enfoca un codi de barres de llibre' : 'Enfoca la portada i fes una foto';
+      statusMsg.innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
     }
     
     if (navigator.vibrate && type !== 'connection') {
