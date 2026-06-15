@@ -37,6 +37,14 @@ function isValidISBN13(isbn) {
 function cleanAndValidateISBN(rawText) {
   if (!rawText) return null;
   
+  // 0. Comprovar si el text conté les sigles "ISBN" seguit de xifres (amb guions/espais)
+  const isbnPrefixMatch = rawText.match(/isbn\s*:?\s*([0-9Xx -]{10,25})/i);
+  if (isbnPrefixMatch) {
+    const candidate = isbnPrefixMatch[1].replace(/[^0-9X]/gi, '').toUpperCase();
+    if (candidate.length === 13 && isValidISBN13(candidate)) return candidate;
+    if (candidate.length === 10 && isValidISBN10(candidate)) return candidate;
+  }
+  
   // 1. Remove obvious punctuation but keep digits and X. This merges all numbers on the page into a single string.
   let cleaned = rawText.replace(/[^0-9X]/gi, '').toUpperCase();
   
@@ -216,7 +224,7 @@ function stopPortadaCamera() {
 
 async function initTesseract() {
   document.getElementById('status-message').innerText += ' (Carregant OCR...)';
-  tesseractWorker = await Tesseract.createWorker('cat+spa+eng');
+  tesseractWorker = await Tesseract.createWorker('eng');
   document.getElementById('status-message').innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
 }
 
@@ -371,6 +379,9 @@ function preprocessImage(videoEl, canvasEl, cropRect) {
 
 // OCR processing loop ticker
 async function runOcrTick() {
+  const diagnosticVideo = document.querySelector('#reader video');
+  console.log("runOcrTick check: isScanning =", !!(html5QrCode && html5QrCode.isScanning), "mode =", currentMode, "worker =", !!tesseractWorker, "video =", !!diagnosticVideo, "readyState =", diagnosticVideo ? diagnosticVideo.readyState : "none");
+
   if (!html5QrCode || !html5QrCode.isScanning || currentMode !== 'isbn' || isOcrProcessing || isProcessing) {
     if (html5QrCode && html5QrCode.isScanning && currentMode === 'isbn') {
       ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
@@ -411,6 +422,7 @@ async function runOcrTick() {
     
     // Perform OCR
     const { data: { text } } = await tesseractWorker.recognize(canvas);
+    console.log("OCR Text read:", text);
     
     // Inspect for valid ISBN checksums
     const isbn = cleanAndValidateISBN(text);
