@@ -2,31 +2,25 @@ let isPolling = true;
 const sessionID = Math.random().toString(36).substring(2, 10);
 let eventSource = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const defaultUrl = 'https://rogroc.github.io/llibres/app/mobile/';
+document.addEventListener('DOMContentLoaded', async () => {
+  let localIp = 'localhost';
+  try {
+    const res = await fetch(`/api/ip?t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      localIp = data.ip || 'localhost';
+    }
+  } catch (e) {
+    console.warn("No s'ha pogut obtenir la IP local per al QR:", e);
+  }
+
+  // Genera el QR apuntant a la IP local i al port HTTPS HTTPS (8443) on es serveix la versió local
+  const localUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
+  renderQrCode(localUrl);
   
-  // 1. Genera el QR per defecte immediatament perquè la pàgina no quedi bloquejada
-  renderQrCode(`${defaultUrl}?sid=${sessionID}`);
-  
-  // 2. Comença a fer polling i subscriu-te al relay de ntfy.sh immediatament
+  // Comença a fer polling i subscriu-te al relay de ntfy.sh immediatament
   pollServer();
   setupNtfy();
-  
-  // 3. Consulta la IP local de forma asíncrona per afegir el paràmetre de l'API local
-  fetch('/api/ip?t=' + Date.now())
-    .then(res => {
-      if (res.ok) return res.json();
-    })
-    .then(data => {
-      if (data && data.ip) {
-        // En ambdós casos, usem l'app de GitHub Pages (té certificat vàlid) i passem els paràmetres sid i api
-        const mobileUrl = `${defaultUrl}?sid=${sessionID}&api=https://${data.ip}:8443`;
-        renderQrCode(mobileUrl);
-      }
-    })
-    .catch(e => {
-      console.warn("No s'ha pogut obtenir la IP local per al QR:", e);
-    });
 });
 
 function setupNtfy() {
