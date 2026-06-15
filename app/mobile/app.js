@@ -10,6 +10,50 @@ window.addEventListener('unhandledrejection', function(event) {
   sendToServer('error', errInfo);
 });
 
+// Setup console logging redirection to debug panel and python server
+let debugContent = null;
+let debugLogEl = null;
+
+function addDebugLog(msg, type = 'log') {
+  if (!debugContent) {
+    debugContent = document.getElementById('debug-log-content');
+    debugLogEl = document.getElementById('debug-log');
+  }
+  const color = type === 'error' ? '#ff3333' : type === 'warn' ? '#ffcc00' : '#00ffcc';
+  if (debugContent) {
+    const line = document.createElement('div');
+    line.style.color = color;
+    line.style.borderBottom = '1px solid #222';
+    line.style.padding = '2px 0';
+    line.style.whiteSpace = 'pre-wrap';
+    line.style.wordBreak = 'break-all';
+    line.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    debugContent.appendChild(line);
+    if (debugLogEl) {
+      debugLogEl.scrollTop = debugLogEl.scrollHeight;
+    }
+  }
+  // Send to server
+  sendToServer('log', `[${type}] ${msg}`);
+}
+
+const originalLog = console.log;
+const originalWarn = console.warn;
+const originalError = console.error;
+
+console.log = function(...args) {
+  originalLog.apply(console, args);
+  addDebugLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'log');
+};
+console.warn = function(...args) {
+  originalWarn.apply(console, args);
+  addDebugLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'warn');
+};
+console.error = function(...args) {
+  originalError.apply(console, args);
+  addDebugLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'error');
+};
+
 // ISBN Validation Functions
 function isValidISBN10(isbn) {
   isbn = isbn.replace(/[- ]/g, "").toUpperCase();
@@ -110,6 +154,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const modePortada = document.getElementById('mode-portada');
   const btnTakePhoto = document.getElementById('btn-take-photo');
   
+  const btnToggleDebug = document.getElementById('btn-toggle-debug');
+  if (btnToggleDebug) {
+    btnToggleDebug.addEventListener('click', () => {
+      const dbg = document.getElementById('debug-log');
+      if (dbg) {
+        dbg.style.display = dbg.style.display === 'none' ? 'block' : 'none';
+      }
+    });
+  }
+
   btnStart.addEventListener('click', async () => {
     overlay.style.display = 'none';
     await initCamera();
@@ -170,7 +224,12 @@ async function startIsbnScanner() {
       { facingMode: "environment" },
       { 
         fps: 10, 
-        qrbox: { width: 250, height: 150 },
+        qrbox: (width, height) => {
+          return {
+            width: Math.round(width * 0.75),
+            height: Math.round(height * 0.35)
+          };
+        },
         formatsToSupport: formats
       },
       (decodedText) => {
@@ -236,7 +295,18 @@ function stopPortadaCamera() {
 
 async function initTesseract() {
   document.getElementById('status-message').innerText += ' (Carregant OCR...)';
-  tesseractWorker = await Tesseract.createWorker('eng');
+  try {
+    tesseractWorker = await Tesseract.createWorker('eng', 1, {
+      logger: m => {
+        if (m.status) {
+          console.log(`[Tesseract] ${m.status}: ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`);
+        }
+      }
+    });
+    console.log("Tesseract Worker inicialitzat correctament.");
+  } catch (err) {
+    console.error("Error inicialitzant Tesseract:", err);
+  }
   document.getElementById('status-message').innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
 }
 
@@ -434,17 +504,26 @@ async function runOcrTick() {
     
     // Perform OCR
     const { data: { text } } = await tesseractWorker.recognize(canvas);
-    console.log("OCR Text read:", text);
+    console.log("OCR Text read:", text.trim());
+    
+    // Restore default instructions after recognition finishes
+    if (currentMode === 'isbn' && !isProcessing) {
+      document.getElementById('status-message').innerText = "Enfoca un codi de barres o el text de l'ISBN";
+    }
     
     // Inspect for valid ISBN checksums
     const isbn = cleanAndValidateISBN(text);
-    if (isbn && html5QrCode && html5QrCode.isScanning && !isProcessing) {
-      isProcessing = true;
-      document.getElementById('status-message').innerText = 'ISBN Detectat (OCR): ' + isbn;
-      sendToServer('isbn', isbn);
-      setTimeout(() => { isProcessing = false; }, 3000); // Debounce
-      isOcrProcessing = false;
-      return; // Break OCR cycle since we found one
+    if (isbn) {
+      if (html5QrCode && html5QrCode.isScanning && !isProcessing) {
+        isProcessing = true;
+        document.getElementById('status-message').innerText = 'ISBN Detectat (OCR): ' + isbn;
+        sendToServer('isbn', isbn);
+        setTimeout(() => { isProcessing = false; }, 3000); // Debounce
+        isOcrProcessing = false;
+        return; // Break OCR cycle since we found one
+      }
+    } else if (text.trim().length > 0) {
+      console.log("OCR: Text detectat, però cap ISBN vàlid.");
     }
   } catch (err) {
     console.warn("OCR worker error during frame recognition:", err);
