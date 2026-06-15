@@ -1,7 +1,7 @@
 let isPolling = true;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const mobileUrl = new URL('../mobile/', window.location.href).href;
+  const mobileUrl = 'https://rogroc.github.io/llibres/app/mobile/';
   
   const qr = qrcode(0, 'M');
   qr.addData(mobileUrl);
