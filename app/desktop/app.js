@@ -1,21 +1,7 @@
 let isPolling = true;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  let hostname = window.location.hostname;
-  
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    try {
-      const res = await fetch('/api/ip');
-      const data = await res.json();
-      if (data && data.ip && data.ip !== '127.0.0.1') {
-        hostname = data.ip;
-      }
-    } catch (e) {
-      console.warn("No s'ha pogut obtenir la IP", e);
-    }
-  }
-
-  const mobileUrl = `https://${hostname}:8443/mobile/`;
+  const mobileUrl = window.location.origin + '/mobile/';
   
   const qr = qrcode(0, 'M');
   qr.addData(mobileUrl);

@@ -203,9 +203,8 @@ async function processPortada() {
 
 async function sendToServer(type, value) {
   try {
-    const hostname = window.location.hostname;
-    // Call the python server api/scan
-    await fetch(`https://${hostname}:8443/api/scan`, {
+    // Call the server api/scan relatively so it works on any domain
+    await fetch(`/api/scan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, value })
