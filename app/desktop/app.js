@@ -1,21 +1,72 @@
 let isPolling = true;
+const sessionID = Math.random().toString(36).substring(2, 10);
+let eventSource = null;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const mobileUrl = 'https://rogroc.github.io/llibres/app/mobile/';
+document.addEventListener('DOMContentLoaded', () => {
+  const defaultUrl = 'https://rogroc.github.io/llibres/app/mobile/';
   
+  // 1. Genera el QR per defecte immediatament perquè la pàgina no quedi bloquejada
+  renderQrCode(`${defaultUrl}?sid=${sessionID}`);
+  
+  // 2. Comença a fer polling i subscriu-te al relay de ntfy.sh immediatament
+  pollServer();
+  setupNtfy();
+  
+  // 3. Consulta la IP local de forma asíncrona per afegir el paràmetre de l'API local
+  fetch('/api/ip?t=' + Date.now())
+    .then(res => {
+      if (res.ok) return res.json();
+    })
+    .then(data => {
+      if (data && data.ip) {
+        // En ambdós casos, usem l'app de GitHub Pages (té certificat vàlid) i passem els paràmetres sid i api
+        const mobileUrl = `${defaultUrl}?sid=${sessionID}&api=https://${data.ip}:8443`;
+        renderQrCode(mobileUrl);
+      }
+    })
+    .catch(e => {
+      console.warn("No s'ha pogut obtenir la IP local per al QR:", e);
+    });
+});
+
+function setupNtfy() {
+  if (eventSource) return;
+  eventSource = new EventSource(`https://ntfy.sh/llibreviu-sync-${sessionID}/sse`);
+  
+  eventSource.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      if (msg && msg.message) {
+        const data = JSON.parse(msg.message);
+        if (data && data.type) {
+          handleScan(data);
+        }
+      }
+    } catch (e) {
+      // Ignorar errors de parseig de missatges de control no-json
+    }
+  };
+  
+  eventSource.onerror = (e) => {
+    console.warn("Connexió SSE de ntfy.sh perduda, intentant reconnectar...", e);
+  };
+}
+
+function renderQrCode(url) {
   const qr = qrcode(0, 'M');
-  qr.addData(mobileUrl);
+  qr.addData(url);
   qr.make();
   document.getElementById('qr-container').innerHTML = qr.createImgTag(5);
-  
-  // 2. Start polling for mobile scans
-  pollServer();
-});
+  const qrUrlEl = document.getElementById('qr-url');
+  if (qrUrlEl) {
+    qrUrlEl.innerText = url;
+  }
+}
 
 async function pollServer() {
   if (!isPolling) return;
   try {
-    const res = await fetch('/api/poll');
+    const res = await fetch(`/api/poll?t=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (data && data.type) {
@@ -29,6 +80,17 @@ async function pollServer() {
 }
 
 function handleScan(data) {
+  if (data.type === 'connection') {
+    const qrContainer = document.getElementById('qr-container');
+    if (qrContainer) qrContainer.style.display = 'none';
+    
+    const descText = document.getElementById('connection-card').querySelector('p');
+    if (descText) descText.innerText = "L'escàner està actiu al teu mòbil. Enfoca un codi de barres o la portada d'un llibre.";
+    
+    document.getElementById('poll-status').innerHTML = '<span style="color: #27ae60; font-size: 1.15rem; font-weight: bold;">🟢 Mòbil connectat i actiu</span>';
+    return;
+  }
+
   document.getElementById('connection-card').style.display = 'none';
   document.getElementById('search-card').style.display = 'block';
   document.getElementById('results-card').style.display = 'none';
@@ -199,6 +261,12 @@ function selectBook(index) {
 }
 
 window.resetState = function() {
+  const qrContainer = document.getElementById('qr-container');
+  if (qrContainer) qrContainer.style.display = 'block';
+  
+  const descText = document.getElementById('connection-card').querySelector('p');
+  if (descText) descText.innerText = "Escaneja aquest codi QR per obrir l'escàner al teu mòbil.";
+  
   document.getElementById('connection-card').style.display = 'block';
   document.getElementById('search-card').style.display = 'none';
   document.getElementById('results-card').style.display = 'none';

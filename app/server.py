@@ -51,16 +51,36 @@ def run_server():
     
     class APIRequestHandler(http.server.SimpleHTTPRequestHandler):
         def setup(self):
+            self.ssl_failed = False
             if hasattr(self.server, 'ssl_context') and self.server.ssl_context:
                 try:
                     self.request = self.server.ssl_context.wrap_socket(self.request, server_side=True)
                 except Exception as e:
+                    self.ssl_failed = True
+                    print(f"⚠️ SSL Wrap Error: {type(e).__name__} - {e}")
                     try:
                         self.request.close()
                     except Exception:
                         pass
-                    raise e
+                    return
             super().setup()
+
+        def handle(self):
+            if getattr(self, 'ssl_failed', False):
+                return
+            super().handle()
+
+        def finish(self):
+            if hasattr(self, 'wfile') and self.wfile:
+                try:
+                    super().finish()
+                except Exception:
+                    pass
+            else:
+                try:
+                    self.request.close()
+                except Exception:
+                    pass
 
         def end_headers(self):
             self.send_header('Access-Control-Allow-Origin', '*')
@@ -102,6 +122,7 @@ def run_server():
             if clean_path == '/api/poll':
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
                 self.end_headers()
                 if latest_scan:
                     self.wfile.write(json.dumps(latest_scan).encode('utf-8'))
@@ -113,6 +134,7 @@ def run_server():
             if clean_path == '/api/ip':
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
                 self.end_headers()
                 self.wfile.write(json.dumps({"ip": get_local_ip()}).encode('utf-8'))
                 return

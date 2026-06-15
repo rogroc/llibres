@@ -60,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.style.display = 'none';
     await initCamera();
     initTesseract();
+    
+    // Envia un ping de connexió immediat i un de periòdic cada 3 segons (heartbeat)
+    sendToServer('connection', 'connected');
+    setInterval(() => {
+      sendToServer('connection', 'connected');
+    }, 3000);
   });
   
   modeIsbn.addEventListener('click', () => switchMode('isbn'));
@@ -100,10 +106,19 @@ async function startIsbnScanner() {
   
   if (html5QrCode.isScanning) return;
   
+  const formats = window.Html5QrcodeSupportedFormats ? [
+    window.Html5QrcodeSupportedFormats.EAN_13,
+    window.Html5QrcodeSupportedFormats.EAN_8
+  ] : undefined;
+  
   try {
     await html5QrCode.start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 150 } },
+      { 
+        fps: 10, 
+        qrbox: { width: 250, height: 150 },
+        formatsToSupport: formats
+      },
       (decodedText) => {
         if (isProcessing) return;
         const isbn = cleanAndValidateISBN(decodedText);
@@ -201,17 +216,72 @@ async function processPortada() {
   }
 }
 
+function showCertWarning(apiUrl) {
+  const statusMsg = document.getElementById('status-message');
+  statusMsg.innerHTML = `
+    <div style="background: #ffebeb; border: 1px solid #ffccd0; padding: 12px; border-radius: 8px; margin: 10px 0; color: #d32f2f; font-size: 0.95rem; text-align: left; line-height: 1.4;">
+      <strong>⚠️ Error de certificat SSL:</strong><br>
+      El mòbil està bloquejant la connexió segura provisional amb l'ordinador.<br><br>
+      <a href="${apiUrl}/api/ip" target="_blank" style="display: block; text-align: center; background: #d32f2f; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 5px;">
+        Clica aquí per autoritzar el certificat
+      </a>
+      <span style="font-size: 0.85rem; color: #555; display: block; margin-top: 8px;">
+        (Fes clic a <strong>"Avançat"</strong> i després a <strong>"Accedir a..."</strong> o <strong>"Continuar"</strong>. Després torna a aquesta pestanya i torna a escanejar.)
+      </span>
+    </div>
+  `;
+}
+
 async function sendToServer(type, value) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const apiParam = urlParams.get('api');
+  const sid = urlParams.get('sid');
+  const baseUrl = apiParam ? apiParam : '';
+  
+  let localSuccess = false;
+  let ntfySuccess = false;
+  
+  // 1. Envia al servidor local Python si està configurat
   try {
-    // Call the server api/scan relatively so it works on any domain
-    await fetch(`/api/scan`, {
+    const res = await fetch(`${baseUrl}/api/scan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, value })
     });
-    
-    if (navigator.vibrate) navigator.vibrate(200); // Haptic feedback
+    localSuccess = res.ok;
   } catch (e) {
-    console.error('Error enviant dades', e);
+    console.warn('Error enviant al servidor local:', e);
+  }
+  
+  // 2. Envia a ntfy.sh com a canal de comunicació universal
+  if (sid) {
+    try {
+      const res = await fetch(`https://ntfy.sh/llibreviu-sync-${sid}`, {
+        method: 'POST',
+        body: JSON.stringify({ type, value })
+      });
+      ntfySuccess = res.ok;
+    } catch (e) {
+      console.warn('Error enviant a ntfy.sh:', e);
+    }
+  }
+  
+  // Si qualsevol de les dues vies té èxit, considerem que és correcte
+  if (localSuccess || ntfySuccess) {
+    const statusMsg = document.getElementById('status-message');
+    if (statusMsg.querySelector('div') && type === 'connection') {
+      statusMsg.innerText = currentMode === 'isbn' ? 'Enfoca un codi de barres de llibre' : 'Enfoca la portada i fes una foto';
+    }
+    
+    if (navigator.vibrate && type !== 'connection') {
+      navigator.vibrate(200);
+    }
+  } else {
+    // Si ambdues fallen, mostrem l'error
+    if (apiParam) {
+      showCertWarning(apiParam);
+    } else {
+      document.getElementById('status-message').innerText = '❌ Error de connexió amb el servidor.';
+    }
   }
 }
