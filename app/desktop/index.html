@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <title>Llibreviu - Ordinador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; display: flex; flex-direction: column; align-items: center; }
+    h1 { color: #2c3e50; }
+    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px; width: 100%; max-width: 600px; }
+    #qr-container { margin: 20px auto; padding: 10px; background: white; border-radius: 8px; display: inline-block; }
+    .status { color: #e67e22; font-weight: bold; margin-bottom: 10px; }
+    #results { text-align: left; margin-top: 20px; }
+    .book-item { display: flex; gap: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; align-items: center; }
+    .book-item img { width: 60px; height: 90px; object-fit: cover; border-radius: 4px; background: #eee; }
+    .book-info { flex-grow: 1; }
+    .book-info h4 { margin: 0 0 5px 0; color: #2c3e50; }
+    .book-info p { margin: 0 0 5px 0; color: #555; font-size: 0.9rem; }
+    .btn-select { background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-select:hover { background: #2980b9; }
+    .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; background: #27ae60; color: white; margin-right: 5px; }
+    #notification { display: none; background: #2ecc71; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; width: 100%; max-width: 600px; text-align: center; }
+    pre { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; overflow-x: auto; text-align: left; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Llibreviu - Ordinador</h1>
+  
+  <div id="notification"></div>
+
+  <div class="card" id="connection-card">
+    <h3>📱 Connecta el teu mòbil</h3>
+    <p>Escaneja aquest codi QR per obrir l'escàner al teu mòbil.</p>
+    <div id="qr-container"></div>
+    <div class="status" id="poll-status">Esperant connexió...</div>
+  </div>
+
+  <div class="card" id="search-card" style="display: none;">
+    <h3>🔍 Cercant als catàlegs...</h3>
+    <p id="search-query" style="font-weight: bold; color: #3498db;"></p>
+    <div class="status" id="search-status">Processant...</div>
+  </div>
+
+  <div class="card" id="results-card" style="display: none;">
+    <h3>📚 Resultats trobats</h3>
+    <div id="results"></div>
+  </div>
+
+  <div class="card" id="db-card" style="display: none;">
+    <h3>💾 Dades enviades a la BD</h3>
+    <pre id="db-json"></pre>
+    <button class="btn-select" onclick="resetState()" style="margin-top: 10px;">Cercar un altre llibre</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

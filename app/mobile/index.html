@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <title>Llibreviu - Escàner Mòbil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <h2>Llibreviu Scanner</h2>
+      <div class="toggle-container">
+        <button id="mode-isbn" class="toggle-btn active">ISBN (Codi Barres)</button>
+        <button id="mode-portada" class="toggle-btn">Portada (OCR)</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div id="status-message" class="status-message">Toca per iniciar la càmera</div>
+
+      <!-- ISBN Scanner View -->
+      <div id="scanner-view" class="view active">
+        <div id="reader" style="width: 100%; border-radius: 8px; overflow: hidden;"></div>
+      </div>
+
+      <!-- Portada OCR View -->
+      <div id="ocr-view" class="view">
+        <video id="ocr-video" autoplay playsinline style="width: 100%; border-radius: 8px; display: none;"></video>
+        <canvas id="ocr-canvas" style="display:none;"></canvas>
+        <div id="ocr-preview-container" style="display:none; margin-top:10px;">
+          <img id="ocr-preview" style="width:100%; border-radius:8px;" />
+        </div>
+        <button id="btn-take-photo" class="btn-primary" style="display:none; margin-top: 20px;">Fes Foto i Extreu Text</button>
+      </div>
+      
+      <div id="start-overlay" class="overlay">
+        <button id="btn-start" class="btn-primary btn-large">📷 Activar Càmera</button>
+        <p style="margin-top: 10px; color: #7f8c8d; font-size: 0.9rem;">Requereix permisos al navegador</p>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
