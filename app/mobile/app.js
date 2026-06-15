@@ -33,11 +33,43 @@ function isValidISBN13(isbn) {
   return check === last;
 }
 
+// Regex ISBN parsing and checksum validation
 function cleanAndValidateISBN(rawText) {
   if (!rawText) return null;
+  
+  // 1. Remove obvious punctuation but keep digits and X. This merges all numbers on the page into a single string.
   let cleaned = rawText.replace(/[^0-9X]/gi, '').toUpperCase();
+  
+  // 2. Direct exact match (if the entire page is exactly one code)
   if (cleaned.length === 13 && isValidISBN13(cleaned)) return cleaned;
   if (cleaned.length === 10 && isValidISBN10(cleaned)) return cleaned;
+
+  // 3. Search inside the raw text with standard hyphens/spaces (Preserves word boundaries to avoid false positives)
+  let matches13 = rawText.match(/\b(?:97[89][ -]*)(?:\d[ -]*){9}\d\b/gi) || [];
+  for (let m of matches13) {
+    let d = m.replace(/[^0-9]/g, '');
+    if (isValidISBN13(d)) return m.replace(/\s+/g, ''); // Preserve dashes, remove spaces!
+  }
+  
+  let matches10 = rawText.match(/\b(?:\d[ -]*){9}[\dX]\b/gi) || [];
+  for (let m of matches10) {
+    let d = m.replace(/[^0-9X]/gi, '').toUpperCase();
+    if (isValidISBN10(d)) return m.replace(/\s+/g, ''); // Preserve dashes, remove spaces!
+  }
+  
+  // 4. SUPER ROBUST FALLBACK (La solució definitiva): 
+  // Look for any 13-digit sequence starting with 978 or 979
+  let clean13 = cleaned.match(/97[89]\d{10}/g) || [];
+  for (let d of clean13) {
+    if (isValidISBN13(d)) return d;
+  }
+  
+  // Look for any 10-digit sequence
+  let clean10 = cleaned.match(/\d{9}[\dX]/g) || [];
+  for (let d of clean10) {
+    if (isValidISBN10(d)) return d;
+  }
+
   return null;
 }
 
@@ -47,6 +79,8 @@ let html5QrCode = null;
 let stream = null;
 let tesseractWorker = null;
 let isProcessing = false;
+let ocrTimeoutId = null;
+let isOcrProcessing = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   const btnStart = document.getElementById('btn-start');
@@ -131,12 +165,19 @@ async function startIsbnScanner() {
       },
       (errorMessage) => {}
     );
+    
+    // Iniciar el bucle de reconeixement OCR en segon pla
+    runOcrTick();
   } catch (err) {
     document.getElementById('status-message').innerText = 'Error càmera ISBN: ' + err;
   }
 }
 
 async function stopIsbnScanner() {
+  if (ocrTimeoutId) {
+    clearTimeout(ocrTimeoutId);
+    ocrTimeoutId = null;
+  }
   if (html5QrCode && html5QrCode.isScanning) {
     await html5QrCode.stop();
   }
@@ -203,6 +244,11 @@ async function processPortada() {
   document.getElementById('status-message').innerText = '⏳ Extreient text...';
   
   try {
+    // Restablir el whitelist de caràcters per extreure text lliure a la portada
+    await tesseractWorker.setParameters({
+      tesseract_char_whitelist: ''
+    });
+    
     const { data: { text } } = await tesseractWorker.recognize(imgDataUrl);
     document.getElementById('status-message').innerText = '✅ Text extret. Enviant...';
     sendToServer('portada', text);
@@ -284,4 +330,102 @@ async function sendToServer(type, value) {
       document.getElementById('status-message').innerText = '❌ Error de connexió amb el servidor.';
     }
   }
+}
+
+// Preprocess video frame for OCR
+function preprocessImage(videoEl, canvasEl, cropRect) {
+  const ctx = canvasEl.getContext('2d');
+  canvasEl.width = cropRect.width;
+  canvasEl.height = cropRect.height;
+  
+  // Draw the cropped portion of the video feed
+  ctx.drawImage(
+    videoEl,
+    cropRect.x, cropRect.y, cropRect.width, cropRect.height,
+    0, 0, cropRect.width, cropRect.height
+  );
+  
+  // Enhance contrast & convert to grayscale to help Tesseract
+  const imgData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+  const data = imgData.data;
+  
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i+1];
+    const b = data[i+2];
+    
+    // Grayscale
+    let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+    
+    // Stretch contrast (removes shadow gray tones, darkens text, whitens paper)
+    gray = (gray - 65) * (255 / 120); 
+    gray = Math.max(0, Math.min(255, gray));
+    
+    data[i] = gray;
+    data[i+1] = gray;
+    data[i+2] = gray;
+  }
+  
+  ctx.putImageData(imgData, 0, 0);
+}
+
+// OCR processing loop ticker
+async function runOcrTick() {
+  if (!html5QrCode || !html5QrCode.isScanning || currentMode !== 'isbn' || isOcrProcessing || isProcessing) {
+    if (html5QrCode && html5QrCode.isScanning && currentMode === 'isbn') {
+      ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
+    }
+    return;
+  }
+  
+  if (!tesseractWorker) {
+    ocrTimeoutId = setTimeout(() => runOcrTick(), 1000);
+    return;
+  }
+  
+  const videoEl = document.querySelector('#reader video');
+  if (!videoEl || videoEl.readyState < 2) {
+    ocrTimeoutId = setTimeout(() => runOcrTick(), 500);
+    return;
+  }
+  
+  isOcrProcessing = true;
+  
+  try {
+    const vWidth = videoEl.videoWidth;
+    const vHeight = videoEl.videoHeight;
+    
+    // Crop area equivalent to the visual reticle
+    const cropWidth = Math.round(vWidth * 0.75);
+    const cropHeight = Math.round(vHeight * 0.35);
+    const cropX = Math.round((vWidth - cropWidth) / 2);
+    const cropY = Math.round((vHeight - cropHeight) / 2);
+    
+    const canvas = document.getElementById('ocr-canvas');
+    preprocessImage(videoEl, canvas, { x: cropX, y: cropY, width: cropWidth, height: cropHeight });
+    
+    // Limit charlist to speed up recognition
+    await tesseractWorker.setParameters({
+      tesseract_char_whitelist: '0123456789-ISBNisbnXx '
+    });
+    
+    // Perform OCR
+    const { data: { text } } = await tesseractWorker.recognize(canvas);
+    
+    // Inspect for valid ISBN checksums
+    const isbn = cleanAndValidateISBN(text);
+    if (isbn && html5QrCode && html5QrCode.isScanning && !isProcessing) {
+      isProcessing = true;
+      document.getElementById('status-message').innerText = 'ISBN Detectat (OCR): ' + isbn;
+      sendToServer('isbn', isbn);
+      setTimeout(() => { isProcessing = false; }, 3000); // Debounce
+      isOcrProcessing = false;
+      return; // Break OCR cycle since we found one
+    }
+  } catch (err) {
+    console.warn("OCR worker error during frame recognition:", err);
+  }
+  
+  isOcrProcessing = false;
+  ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
 }
