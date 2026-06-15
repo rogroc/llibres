@@ -1,7 +1,7 @@
 let isPolling = true;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const mobileUrl = window.location.origin + '/mobile/';
+  const mobileUrl = new URL('../mobile/', window.location.href).href;
   
   const qr = qrcode(0, 'M');
   qr.addData(mobileUrl);
