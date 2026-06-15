@@ -1,3 +1,15 @@
+// Send errors to python server for debugging
+window.onerror = function(message, source, lineno, colno, error) {
+  const errInfo = `${message} at ${source}:${lineno}:${colno}`;
+  sendToServer('error', errInfo);
+  return false;
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  const errInfo = `Unhandled Promise Rejection: ${event.reason}`;
+  sendToServer('error', errInfo);
+});
+
 // ISBN Validation Functions
 function isValidISBN10(isbn) {
   isbn = isbn.replace(/[- ]/g, "").toUpperCase();
