@@ -377,8 +377,8 @@ async function getOcrInstance() {
   statusMsg.innerText = '⚙️ Inicialitzant PaddleOCR (models ~15MB)...';
   
   try {
-    console.log("[PaddleOCR] Important la llibreria @paddleocr/paddleocr-js...");
-    const module = await import('https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.3.2/+esm');
+    console.log("[PaddleOCR] Important la llibreria local paddleocr.js...");
+    const module = await import('./paddleocr.js');
     const PaddleOCR = module.PaddleOCR;
     console.log("[PaddleOCR] Llibreria importada correctament.");
 
@@ -404,7 +404,7 @@ async function getOcrInstance() {
         backend: 'wasm',
         wasmPaths: 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.3/dist/',
         numThreads: 1,
-        simd: true,
+        simd: false,
         proxy: false
       }
     });
@@ -462,12 +462,41 @@ async function getOcrInstance() {
 
 async function fetchWithProgress(url, label) {
   const statusMsg = document.getElementById('status-message');
+  
+  // 1. Intentem carregar des de la Cache API del navegador per a emmagatzematge permanent i offline
+  let cache = null;
+  if ('caches' in window) {
+    try {
+      cache = await caches.open('llibreviu-models-cache');
+      const cachedResponse = await cache.match(url);
+      if (cachedResponse) {
+        console.log(`[Cache API] Carregant ${label} des de la memòria local...`);
+        statusMsg.innerText = `⚙️ Carregant ${label} des de la memòria local...`;
+        const blob = await cachedResponse.blob();
+        return URL.createObjectURL(blob);
+      }
+    } catch (cacheErr) {
+      console.warn("Error accedint a la Cache API:", cacheErr);
+    }
+  }
+
+  // 2. Si no es troba al cau, el descarreguem de la xarxa
   statusMsg.innerText = `⚙️ Descarregant ${label}...`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Error ${response.status} descarregant ${label}`);
   }
   
+  // Guardem una còpia al cau per a les properes vegades
+  if (cache) {
+    try {
+      await cache.put(url, response.clone());
+      console.log(`[Cache API] Desar ${label} al cau local per al futur.`);
+    } catch (saveErr) {
+      console.warn("No s'ha pogut guardar al cau:", saveErr);
+    }
+  }
+
   const contentLength = response.headers.get('content-length');
   const total = contentLength ? parseInt(contentLength, 10) : 0;
   
