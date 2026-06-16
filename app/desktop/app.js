@@ -1,6 +1,7 @@
 let isPolling = true;
 const sessionID = Math.random().toString(36).substring(2, 10);
 let eventSource = null;
+let isMobileConnected = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.');
@@ -88,12 +89,16 @@ async function pollServer() {
 }
 
 function handleScan(data) {
+  isMobileConnected = true;
   if (data.type === 'connection') {
     const qrContainer = document.getElementById('qr-container');
     if (qrContainer) qrContainer.style.display = 'none';
     
     const descText = document.getElementById('connection-card').querySelector('p');
     if (descText) descText.innerText = "L'escàner està actiu al teu mòbil. Enfoca un codi de barres, el text de l'ISBN o la portada d'un llibre.";
+    
+    const certHelp = document.getElementById('cert-help');
+    if (certHelp) certHelp.style.display = 'none';
     
     document.getElementById('poll-status').innerHTML = '<span style="color: #27ae60; font-size: 1.15rem; font-weight: bold;">🟢 Mòbil connectat i actiu</span>';
     return;
@@ -270,14 +275,25 @@ function selectBook(index) {
 
 window.resetState = function() {
   const qrContainer = document.getElementById('qr-container');
-  if (qrContainer) qrContainer.style.display = 'block';
-  
   const descText = document.getElementById('connection-card').querySelector('p');
-  if (descText) descText.innerText = "Escaneja aquest codi QR per obrir l'escàner al teu mòbil.";
+  const certHelp = document.getElementById('cert-help');
+  const pollStatus = document.getElementById('poll-status');
   
   document.getElementById('connection-card').style.display = 'block';
   document.getElementById('search-card').style.display = 'none';
   document.getElementById('results-card').style.display = 'none';
   document.getElementById('db-card').style.display = 'none';
-  document.getElementById('poll-status').innerText = 'Esperant nova connexió / escaneig...';
+  
+  if (isMobileConnected) {
+    if (qrContainer) qrContainer.style.display = 'none';
+    if (certHelp) certHelp.style.display = 'none';
+    if (descText) descText.innerText = "L'escàner està actiu al teu mòbil. Enfoca un codi de barres, el text de l'ISBN o la portada d'un llibre.";
+    if (pollStatus) pollStatus.innerHTML = '<span style="color: #27ae60; font-size: 1.15rem; font-weight: bold;">🟢 Mòbil connectat i actiu</span>';
+  } else {
+    if (qrContainer) qrContainer.style.display = 'block';
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.');
+    if (certHelp) certHelp.style.display = isLocal ? 'block' : 'none';
+    if (descText) descText.innerText = "Escaneja aquest codi QR per obrir l'escàner al teu mòbil.";
+    if (pollStatus) pollStatus.innerText = 'Esperant connexió...';
+  }
 };
