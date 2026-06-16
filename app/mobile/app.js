@@ -390,20 +390,22 @@ async function sendToServer(type, value) {
   let localSuccess = false;
   let ntfySuccess = false;
   
-  // 1. Envia al servidor local Python si està configurat
-  try {
-    const res = await fetch(`${baseUrl}/api/scan`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, value })
-    });
-    localSuccess = res.ok;
-  } catch (e) {
-    console.warn('Error enviant al servidor local:', e);
+  // 1. Envia al servidor local Python si està configurat i tenim baseUrl
+  if (baseUrl) {
+    try {
+      const res = await fetch(`${baseUrl}/api/scan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, value })
+      });
+      localSuccess = res.ok;
+    } catch (e) {
+      console.warn('Error enviant al servidor local:', e);
+    }
   }
   
-  // 2. Envia a ntfy.sh com a canal de comunicació universal
-  if (sid) {
+  // 2. Envia a ntfy.sh com a canal de comunicació universal (NOMÉS per a missatges crítics de control o resultats, no per a logs)
+  if (sid && type !== 'log' && type !== 'error') {
     try {
       const res = await fetch(`https://ntfy.sh/llibreviu-sync-${sid}`, {
         method: 'POST',
@@ -415,18 +417,18 @@ async function sendToServer(type, value) {
     }
   }
   
-  // Si qualsevol de les dues vies té èxit, considerem que és correcte
-  if (localSuccess || ntfySuccess) {
+  // Si qualsevol de les dues vies té èxit, o si és un tipus no crític (log, error)
+  if (localSuccess || ntfySuccess || type === 'log' || type === 'error') {
     const statusMsg = document.getElementById('status-message');
     if (statusMsg.querySelector('div') && type === 'connection') {
       statusMsg.innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
     }
     
-    if (navigator.vibrate && type !== 'connection') {
+    if (navigator.vibrate && type !== 'connection' && type !== 'log' && type !== 'error') {
       navigator.vibrate(200);
     }
   } else {
-    // Si ambdues fallen, mostrem l'error
+    // Si ambdues fallen per a tipus crítics (isbn, portada, connection), mostrem l'error
     if (apiParam) {
       showCertWarning(apiParam);
     } else {
