@@ -44,11 +44,13 @@
     <h3>🔍 Cercant als catàlegs...</h3>
     <p id="search-query" style="font-weight: bold; color: #3498db;"></p>
     <div class="status" id="search-status">Processant...</div>
+    <button class="btn-select" onclick="resetState()" style="margin-top: 15px; background: #e74c3c;">Cercar un altre llibre</button>
   </div>
 
   <div class="card" id="results-card" style="display: none;">
     <h3>📚 Resultats trobats</h3>
     <div id="results"></div>
+    <button class="btn-select" onclick="resetState()" style="margin-top: 15px;">Cercar un altre llibre</button>
   </div>
 
   <div class="card" id="db-card" style="display: none;">
