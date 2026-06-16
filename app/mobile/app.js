@@ -117,37 +117,17 @@ function cleanAndValidateISBN(rawText) {
     if (cleanedNumber.length === 10 && isValidISBN10(cleanedNumber)) return cleanedNumber;
   }
   
-  // 1. Remove obvious punctuation but keep digits and X. This merges all numbers on the page into a single string.
-  let cleaned = rawText.replace(/[^0-9X]/gi, '').toUpperCase();
-  
-  // 2. Direct exact match (if the entire page is exactly one code)
-  if (cleaned.length === 13 && isValidISBN13(cleaned)) return cleaned;
-  if (cleaned.length === 10 && isValidISBN10(cleaned)) return cleaned;
-
-  // 3. Search inside the raw text with standard hyphens/spaces (Preserves word boundaries to avoid false positives)
+  // 1. Cercar dins del text amb guions/espais i límits de paraula (evita falsos positius d'altres números de la pàgina)
   let matches13 = rawText.match(/\b(?:97[89][ -]*)(?:\d[ -]*){9}\d\b/gi) || [];
   for (let m of matches13) {
     let d = m.replace(/[^0-9]/g, '');
-    if (isValidISBN13(d)) return m.replace(/\s+/g, ''); // Preserve dashes, remove spaces!
+    if (isValidISBN13(d)) return m.replace(/\s+/g, ''); // Conservem guions, eliminem espais!
   }
   
   let matches10 = rawText.match(/\b(?:\d[ -]*){9}[\dX]\b/gi) || [];
   for (let m of matches10) {
     let d = m.replace(/[^0-9X]/gi, '').toUpperCase();
-    if (isValidISBN10(d)) return m.replace(/\s+/g, ''); // Preserve dashes, remove spaces!
-  }
-  
-  // 4. SUPER ROBUST FALLBACK (La solució definitiva): 
-  // Look for any 13-digit sequence starting with 978 or 979
-  let clean13 = cleaned.match(/97[89]\d{10}/g) || [];
-  for (let d of clean13) {
-    if (isValidISBN13(d)) return d;
-  }
-  
-  // Look for any 10-digit sequence
-  let clean10 = cleaned.match(/\d{9}[\dX]/g) || [];
-  for (let d of clean10) {
-    if (isValidISBN10(d)) return d;
+    if (isValidISBN10(d)) return m.replace(/\s+/g, ''); // Conservem guions, eliminem espais!
   }
 
   return null;
