@@ -569,11 +569,25 @@ async function processPortada() {
       }
       const darkBg = (cornerBr / samplePts.length) < 100;
 
-      // Binaritzem: grisos + llindar, invertim si el fons és fosc
-      for (let j = 0; j < d.length; j += 4) {
+      // Binaritzem: grisos amb llindar adaptatiu dinàmic basat en el contrast local de la regió.
+      // Això evita que les lletres s'engreixin i s'ajuntin paraules a causa d'un llindar fix massa alt.
+      let minG = 255;
+      let maxG = 0;
+      const grays = new Uint8Array(d.length / 4);
+      for (let j = 0, gIdx = 0; j < d.length; j += 4, gIdx++) {
         let gray = 0.299 * d[j] + 0.587 * d[j+1] + 0.114 * d[j+2];
         if (darkBg) gray = 255 - gray;
-        const val = gray < 160 ? 0 : 255;
+        grays[gIdx] = gray;
+        if (gray < minG) minG = gray;
+        if (gray > maxG) maxG = gray;
+      }
+
+      // Llindar dinàmic del 40% del rang per fer els traços una mica més fins i evitar que es fusionin
+      const range = maxG - minG;
+      const thresh = range > 10 ? Math.max(90, Math.min(160, minG + range * 0.40)) : 128;
+
+      for (let j = 0, gIdx = 0; j < d.length; j += 4, gIdx++) {
+        const val = grays[gIdx] < thresh ? 0 : 255;
         d[j] = val; d[j+1] = val; d[j+2] = val; d[j+3] = 255;
       }
 
@@ -602,6 +616,12 @@ async function processPortada() {
     // Creem un worker de Tesseract temporal específicament per a aquesta lectura
     const tempWorker = await Tesseract.createWorker('cat+spa+eng', 1, {
       logger: m => console.log(`[TempTesseract] ${m.status}: ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`)
+    });
+    
+    // Configurem el worker per preservar espais i ajustar la segmentació
+    await tempWorker.setParameters({
+      tessedit_pageseg_mode: '3',
+      preserve_interword_spaces: '1'
     });
     
     const { data } = await tempWorker.recognize(maskCanvas);
@@ -641,9 +661,12 @@ async function processPortada() {
       return;
     }
 
+    // Calculem un llindar dinàmic per agrupar per línies basat en l'alçada màxima de la lletra
+    const lineThreshold = Math.max(15, maxWordHeight * 0.5);
+
     // Ordenem de dalt a baix i d'esquerra a dreta per donar coherència a la lectura
     validWords.sort((a, b) => {
-      if (Math.abs(a.bbox.y0 - b.bbox.y0) < 15) {
+      if (Math.abs(a.bbox.y0 - b.bbox.y0) < lineThreshold) {
         return a.bbox.x0 - b.bbox.x0;
       }
       return a.bbox.y0 - b.bbox.y0;
@@ -688,7 +711,12 @@ async function sendToServer(type, value) {
   const urlParams = new URLSearchParams(window.location.search);
   const apiParam = urlParams.get('api');
   const sid = urlParams.get('sid');
-  const baseUrl = apiParam ? apiParam : '';
+  let baseUrl = apiParam ? apiParam : '';
+  
+  // Si estem en local, usem automàticament l'origen actual per evitar errors de connexió en proves locals
+  if (!baseUrl && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))) {
+    baseUrl = window.location.origin;
+  }
   
   let localSuccess = false;
   let ntfySuccess = false;
@@ -723,7 +751,8 @@ async function sendToServer(type, value) {
   // Si qualsevol de les dues vies té èxit, o si és un tipus no crític (log, error)
   if (localSuccess || ntfySuccess || type === 'log' || type === 'error') {
     const statusMsg = document.getElementById('status-message');
-    if (statusMsg.querySelector('div') && type === 'connection') {
+    // Si teníem un missatge d'error o de certificat bloquejat, el netegem quan la connexió funcioni correctament
+    if (type === 'connection' && (statusMsg.innerText.includes('Error') || statusMsg.querySelector('div'))) {
       statusMsg.innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
     }
     

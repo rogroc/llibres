@@ -1,0 +1,4 @@
+[2026-06-16 20:51:13] connection: connected
+[2026-06-16 20:51:53] portada: BIBLIOTECA DE CIENCIA ECONOMICA COLECCION DE MOS U"DITORIAL ARIEL
+[2026-06-16 20:51:58] connection: connected
+[2026-06-16 20:52:43] connection: connected
