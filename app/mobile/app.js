@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnTakePhoto.addEventListener('click', () => processPortada());
 });
 
-function switchMode(mode) {
+async function switchMode(mode) {
   currentMode = mode;
   document.getElementById('mode-isbn').classList.toggle('active', mode === 'isbn');
   document.getElementById('mode-portada').classList.toggle('active', mode === 'portada');
@@ -195,10 +195,23 @@ function switchMode(mode) {
   
   if (mode === 'isbn') {
     statusMsg.innerText = "Enfoca un codi de barres o el text de l'ISBN";
-    startIsbnScanner();
+    await startIsbnScanner();
+    if (!tesseractWorker) {
+      await initTesseract();
+    }
   } else {
     statusMsg.innerText = 'Enfoca la portada i fes una foto';
-    startPortadaCamera();
+    await startPortadaCamera();
+    // Alliberem el worker de Tesseract d'ISBN per estalviar memòria al mòbil
+    if (tesseractWorker) {
+      console.log("[Tesseract] Alliberant worker de Tesseract d'ISBN per estalviar memòria...");
+      try {
+        await tesseractWorker.terminate();
+      } catch (e) {
+        console.warn("Error alliberant Tesseract:", e);
+      }
+      tesseractWorker = null;
+    }
   }
 }
 
@@ -329,15 +342,15 @@ function stopPortadaCamera() {
 async function initTesseract() {
   document.getElementById('status-message').innerText += ' (Carregant OCR...)';
   try {
-    // Carreguem català, castellà i anglès per a un suport idiomàtic complet i precís en portades
-    tesseractWorker = await Tesseract.createWorker('cat+spa+eng', 1, {
+    // Per a l'ISBN només necessitem anglès ('eng') per llegir dígits, la qual cosa consumeix molt pocs recursos
+    tesseractWorker = await Tesseract.createWorker('eng', 1, {
       logger: m => {
         if (m.status) {
           console.log(`[Tesseract] ${m.status}: ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`);
         }
       }
     });
-    console.log("Tesseract Worker (cat+spa+eng) inicialitzat correctament.");
+    console.log("Tesseract Worker (eng) inicialitzat correctament per a ISBN.");
   } catch (err) {
     console.error("Error inicialitzant Tesseract:", err);
   }
@@ -469,11 +482,6 @@ async function fetchWithProgress(url, label) {
 }
 
 async function processPortada() {
-  if (!tesseractWorker) {
-    alert("L'OCR encara s'està carregant. Espera uns segons.");
-    return;
-  }
-  
   const video = document.getElementById('ocr-video');
   const canvas = document.getElementById('ocr-canvas');
   const ctx = canvas.getContext('2d');
@@ -507,6 +515,15 @@ async function processPortada() {
     const pageResult = ocrResult[0] || {};
     const detectedPolys = (pageResult.items || []).map(item => item.poly);
     console.log("PaddleOCR: regions detectades:", detectedPolys.length);
+    
+    // Alliberem immediatament la instància de PaddleOCR per alliberar la memòria WASM d'ONNX!
+    console.log("[PaddleOCR] Alliberant instància per a estalvi de memòria...");
+    try {
+      await ocr.dispose();
+    } catch(e) {
+      console.warn("Error disposant PaddleOCR:", e);
+    }
+    ocrInstance = null; // Ens assegurem de tornar-la a carregar la pròxima vegada
     
     if (detectedPolys.length === 0) {
       statusMsg.innerText = '⚠️ No s\'ha detectat text a la portada. Tenta de nou.';
@@ -582,12 +599,21 @@ async function processPortada() {
     
     statusMsg.innerText = '📖 Llegint text amb Tesseract (cat+spa+eng)...';
     
-    // Restablir el whitelist de caràcters per extreure text lliure a la portada
-    await tesseractWorker.setParameters({
-      tesseract_char_whitelist: ''
+    // Creem un worker de Tesseract temporal específicament per a aquesta lectura
+    const tempWorker = await Tesseract.createWorker('cat+spa+eng', 1, {
+      logger: m => console.log(`[TempTesseract] ${m.status}: ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`)
     });
     
-    const { data } = await tesseractWorker.recognize(maskCanvas);
+    const { data } = await tempWorker.recognize(maskCanvas);
+    
+    // Alliberem immediatament el worker temporal de Tesseract
+    console.log("[Tesseract] Alliberant worker temporal...");
+    try {
+      await tempWorker.terminate();
+    } catch(e) {
+      console.warn("Error alliberant worker temporal:", e);
+    }
+    
     const tesseractWords = data.words || [];
     
     const words = tesseractWords
