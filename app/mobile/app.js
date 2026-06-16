@@ -138,6 +138,7 @@ let currentMode = 'isbn'; // 'isbn' or 'portada'
 let html5QrCode = null;
 let stream = null;
 let tesseractWorker = null;
+let ocrInstance = null;
 let isProcessing = false;
 let ocrTimeoutId = null;
 let isOcrProcessing = false;
@@ -328,18 +329,143 @@ function stopPortadaCamera() {
 async function initTesseract() {
   document.getElementById('status-message').innerText += ' (Carregant OCR...)';
   try {
-    tesseractWorker = await Tesseract.createWorker('eng', 1, {
+    // Carreguem català, castellà i anglès per a un suport idiomàtic complet i precís en portades
+    tesseractWorker = await Tesseract.createWorker('cat+spa+eng', 1, {
       logger: m => {
         if (m.status) {
           console.log(`[Tesseract] ${m.status}: ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`);
         }
       }
     });
-    console.log("Tesseract Worker inicialitzat correctament.");
+    console.log("Tesseract Worker (cat+spa+eng) inicialitzat correctament.");
   } catch (err) {
     console.error("Error inicialitzant Tesseract:", err);
   }
   document.getElementById('status-message').innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
+}
+
+async function getOcrInstance() {
+  if (ocrInstance) return ocrInstance;
+  console.log("[PaddleOCR] getOcrInstance iniciat.");
+  
+  const statusMsg = document.getElementById('status-message');
+  statusMsg.innerText = '⚙️ Inicialitzant PaddleOCR (models ~15MB)...';
+  
+  try {
+    console.log("[PaddleOCR] Important la llibreria @paddleocr/paddleocr-js...");
+    const module = await import('https://cdn.jsdelivr.net/npm/@paddleocr/paddleocr-js@0.3.2/+esm');
+    const PaddleOCR = module.PaddleOCR;
+    console.log("[PaddleOCR] Llibreria importada correctament.");
+
+    // La ruta relativa "../models/" funciona perfectament tant en local com a GitHub Pages.
+    const detUrl = '../models/PP-OCRv5_mobile_det_onnx.tar?t=' + Date.now();
+    const recUrl = '../models/PP-OCRv5_mobile_rec_onnx.tar?t=' + Date.now();
+    
+    const localDetObjectUrl = await fetchWithProgress(detUrl, 'model de detecció (4.8MB)');
+    const localRecObjectUrl = await fetchWithProgress(recUrl, 'model de reconeixement (9.0MB)');
+
+    statusMsg.innerText = '⚙️ Inicialitzant motor de xarxa neuronal...';
+    
+    ocrInstance = await PaddleOCR.create({
+      lang: 'en',
+      ocrVersion: 'PP-OCRv5',
+      worker: false,
+      ensureServedFromHttp: () => {},
+      text_detection_model_name: 'PP-OCRv5_mobile_det',
+      text_detection_model_dir: { url: localDetObjectUrl },
+      text_recognition_model_name: 'PP-OCRv5_mobile_rec',
+      text_recognition_model_dir: { url: localRecObjectUrl },
+      ortOptions: {
+        backend: 'wasm',
+        wasmPaths: 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.3/dist/',
+        numThreads: 1,
+        simd: true,
+        proxy: false
+      }
+    });
+
+    if (ocrInstance) {
+      // Ampliem les àrees de detecció (polígons) de PaddleOCR amb un marge de 6px
+      if (ocrInstance.detModel) {
+        console.log("[HybridOCR] Configurant ampliació de marges de detecció (6px)...");
+        const originalDetPredict = ocrInstance.detModel.predict;
+        ocrInstance.detModel.predict = async function(cv, mats, options) {
+          const results = await originalDetPredict.call(ocrInstance.detModel, cv, mats, options);
+          const margin = 6;
+          results.forEach((res, imgIdx) => {
+            if (res && res.boxes) {
+              const mat = mats[imgIdx];
+              const maxW = mat ? mat.cols : 99999;
+              const maxH = mat ? mat.rows : 99999;
+              
+              res.boxes.forEach(box => {
+                if (box.poly && box.poly.length === 4) {
+                  box.poly[0][0] = Math.max(0, box.poly[0][0] - margin);
+                  box.poly[0][1] = Math.max(0, box.poly[0][1] - margin);
+                  
+                  box.poly[1][0] = Math.min(maxW, box.poly[1][0] + margin);
+                  box.poly[1][1] = Math.max(0, box.poly[1][1] - margin);
+                  
+                  box.poly[2][0] = Math.min(maxW, box.poly[2][0] + margin);
+                  box.poly[2][1] = Math.min(maxH, box.poly[2][1] + margin);
+                  
+                  box.poly[3][0] = Math.max(0, box.poly[3][0] - margin);
+                  box.poly[3][1] = Math.min(maxH, box.poly[3][1] + margin);
+                }
+              });
+            }
+          });
+          return results;
+        };
+      }
+
+      // Definim un mock de reconeixement ja que PaddleOCR només farà la detecció
+      if (ocrInstance.recModel) {
+        ocrInstance.recModel.predict = async function(cv, mats, options) {
+          return mats.map(() => ({ text: '__MASK_PENDING__', score: 1.0 }));
+        };
+      }
+    }
+
+    return ocrInstance;
+  } catch (err) {
+    console.error("[PaddleOCR] Error en getOcrInstance:", err);
+    statusMsg.innerText = '❌ Error inicialització: ' + err.message;
+    throw err;
+  }
+}
+
+async function fetchWithProgress(url, label) {
+  const statusMsg = document.getElementById('status-message');
+  statusMsg.innerText = `⚙️ Descarregant ${label}...`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Error ${response.status} descarregant ${label}`);
+  }
+  
+  const contentLength = response.headers.get('content-length');
+  const total = contentLength ? parseInt(contentLength, 10) : 0;
+  
+  if (total === 0) {
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  }
+  
+  const reader = response.body.getReader();
+  let loaded = 0;
+  const chunks = [];
+  
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    loaded += value.length;
+    const pct = Math.round((loaded / total) * 100);
+    statusMsg.innerText = `⚙️ Descarregant ${label}: ${pct}%...`;
+  }
+  
+  const blob = new Blob(chunks);
+  return URL.createObjectURL(blob);
 }
 
 async function processPortada() {
@@ -363,24 +489,156 @@ async function processPortada() {
   video.style.display = 'none';
   document.getElementById('btn-take-photo').style.display = 'none';
   
-  document.getElementById('status-message').innerText = '⏳ Extreient text...';
+  const statusMsg = document.getElementById('status-message');
+  statusMsg.innerText = '⏳ Inicialitzant PaddleOCR...';
   
   try {
+    // 1. Inicialitzar o recuperar la instància de PaddleOCR
+    const ocr = await getOcrInstance();
+    
+    statusMsg.innerText = '🔍 Detectant àrees de text amb PaddleOCR...';
+    const ocrResult = await ocr.predict(canvas, {
+      text_det_limit_side_len: 960,
+      text_det_limit_type: 'min',
+      text_det_thresh: 0.2,
+      text_det_box_thresh: 0.4
+    });
+    
+    const pageResult = ocrResult[0] || {};
+    const detectedPolys = (pageResult.items || []).map(item => item.poly);
+    console.log("PaddleOCR: regions detectades:", detectedPolys.length);
+    
+    if (detectedPolys.length === 0) {
+      statusMsg.innerText = '⚠️ No s\'ha detectat text a la portada. Tenta de nou.';
+      setTimeout(() => {
+        if (currentMode === 'portada') startPortadaCamera();
+      }, 3000);
+      return;
+    }
+    
+    statusMsg.innerText = '🎭 Generant imatge màscara...';
+    
+    // Canvas màscara: fons blanc, dibuixem cada polígon detectat
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = canvas.width;
+    maskCanvas.height = canvas.height;
+    const maskCtx = maskCanvas.getContext('2d');
+    maskCtx.fillStyle = '#ffffff';
+    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+    
+    const srcCtxM = canvas.getContext('2d');
+    const PAD_M = 8;
+    for (const poly of detectedPolys) {
+      if (!poly || poly.length < 3) continue;
+
+      const xs = poly.map(p => p[0]);
+      const ys = poly.map(p => p[1]);
+      const bx0 = Math.max(0, Math.floor(Math.min(...xs)) - PAD_M);
+      const by0 = Math.max(0, Math.floor(Math.min(...ys)) - PAD_M);
+      const bx1 = Math.min(canvas.width,  Math.ceil(Math.max(...xs)) + PAD_M);
+      const by1 = Math.min(canvas.height, Math.ceil(Math.max(...ys)) + PAD_M);
+      const bw = bx1 - bx0; const bh = by1 - by0;
+      if (bw <= 0 || bh <= 0) continue;
+
+      const regionData = srcCtxM.getImageData(bx0, by0, bw, bh);
+      const d = regionData.data;
+
+      // Mostregem els 4 cantons per detectar si el fons és fosc
+      const samplePts = [0, bw - 1, bw * (bh - 1), bw * bh - 1];
+      let cornerBr = 0;
+      for (const sp of samplePts) {
+        const i = sp * 4;
+        cornerBr += 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+      }
+      const darkBg = (cornerBr / samplePts.length) < 100;
+
+      // Binaritzem: grisos + llindar, invertim si el fons és fosc
+      for (let j = 0; j < d.length; j += 4) {
+        let gray = 0.299 * d[j] + 0.587 * d[j+1] + 0.114 * d[j+2];
+        if (darkBg) gray = 255 - gray;
+        const val = gray < 160 ? 0 : 255;
+        d[j] = val; d[j+1] = val; d[j+2] = val; d[j+3] = 255;
+      }
+
+      const tmpC = document.createElement('canvas');
+      tmpC.width = bw; tmpC.height = bh;
+      tmpC.getContext('2d').putImageData(regionData, 0, 0);
+
+      maskCtx.save();
+      maskCtx.beginPath();
+      const cxp = poly.reduce((s, p) => s + p[0], 0) / poly.length;
+      const cyp = poly.reduce((s, p) => s + p[1], 0) / poly.length;
+      poly.forEach((pt, idx) => {
+        const dx = pt[0] - cxp; const dy = pt[1] - cyp;
+        const len = Math.sqrt(dx*dx + dy*dy) || 1;
+        const ex = pt[0] + (dx/len)*PAD_M; const ey = pt[1] + (dy/len)*PAD_M;
+        if (idx === 0) maskCtx.moveTo(ex, ey); else maskCtx.lineTo(ex, ey);
+      });
+      maskCtx.closePath();
+      maskCtx.clip();
+      maskCtx.drawImage(tmpC, bx0, by0);
+      maskCtx.restore();
+    }
+    
+    statusMsg.innerText = '📖 Llegint text amb Tesseract (cat+spa+eng)...';
+    
     // Restablir el whitelist de caràcters per extreure text lliure a la portada
     await tesseractWorker.setParameters({
       tesseract_char_whitelist: ''
     });
     
-    const { data: { text } } = await tesseractWorker.recognize(imgDataUrl);
-    document.getElementById('status-message').innerText = '✅ Text extret. Enviant...';
-    sendToServer('portada', text);
+    const { data } = await tesseractWorker.recognize(maskCanvas);
+    const tesseractWords = data.words || [];
     
-    // Reset view after 3 seconds
+    const words = tesseractWords
+      .filter(w => w.confidence > 30 && w.text.trim().length > 0)
+      .map(w => ({
+        text: w.text.trim(),
+        confidence: w.confidence,
+        bbox: { x0: w.bbox.x0, y0: w.bbox.y0, x1: w.bbox.x1, y1: w.bbox.y1 }
+      }));
+
+    // Filtrem per alçada per descartar soroll residual
+    const allHeights = words.map(w => w.bbox.y1 - w.bbox.y0);
+    const maxWordHeight = allHeights.length > 0 ? Math.max(...allHeights) : 0;
+    const heightThreshold = maxWordHeight * 0.15;
+    const validWords = words.filter(w =>
+      (w.bbox.y1 - w.bbox.y0) >= heightThreshold &&
+      w.confidence > 30
+    );
+
+    if (validWords.length === 0) {
+      statusMsg.innerText = '⚠️ Text detectat de baixa qualitat o massa petit.';
+      setTimeout(() => {
+        if (currentMode === 'portada') startPortadaCamera();
+      }, 3000);
+      return;
+    }
+
+    // Ordenem de dalt a baix i d'esquerra a dreta per donar coherència a la lectura
+    validWords.sort((a, b) => {
+      if (Math.abs(a.bbox.y0 - b.bbox.y0) < 15) {
+        return a.bbox.x0 - b.bbox.x0;
+      }
+      return a.bbox.y0 - b.bbox.y0;
+    });
+
+    const cleanedText = validWords.map(w => w.text).join(' ');
+    console.log("Text OCR netejat:", cleanedText);
+    
+    statusMsg.innerText = '✅ Text extret. Enviant...';
+    sendToServer('portada', cleanedText);
+    
     setTimeout(() => {
       if (currentMode === 'portada') startPortadaCamera();
     }, 3000);
+    
   } catch (err) {
-    document.getElementById('status-message').innerText = '❌ Error OCR: ' + err.message;
+    console.error("Error OCR Híbrid:", err);
+    statusMsg.innerText = '❌ Error OCR: ' + err.message;
+    setTimeout(() => {
+      if (currentMode === 'portada') startPortadaCamera();
+    }, 3000);
   }
 }
 
