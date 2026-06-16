@@ -260,6 +260,26 @@ async function startIsbnScanner() {
     
     isScannerActive = true;
     console.log("startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...");
+    
+    // Aplicar zoom de x2 si és compatible amb la càmera del dispositiu
+    try {
+      const track = html5QrCode.getActiveCameraTrack();
+      if (track && typeof track.getCapabilities === 'function') {
+        const capabilities = track.getCapabilities();
+        if (capabilities.zoom) {
+          const targetZoom = Math.min(2, capabilities.zoom.max);
+          await track.applyConstraints({
+            advanced: [{ zoom: targetZoom }]
+          });
+          console.log(`Zoom x2 aplicat correctament (valor: ${targetZoom})`);
+        } else {
+          console.log("El zoom no és compatible amb aquest dispositiu.");
+        }
+      }
+    } catch (zoomErr) {
+      console.warn("No s'ha pogut aplicar el zoom:", zoomErr);
+    }
+    
     runOcrTick();
   } catch (err) {
     console.error("Error startIsbnScanner:", err);
