@@ -199,6 +199,16 @@ async function switchMode(mode) {
     if (!tesseractWorker) {
       await initTesseract();
     }
+    // Alliberem la instància de PaddleOCR de Portada per estalviar memòria en mode ISBN
+    if (ocrInstance) {
+      console.log("[PaddleOCR] Alliberant instància de Portada al sortir del mode Portada...");
+      try {
+        await ocrInstance.dispose();
+      } catch (e) {
+        console.warn("Error alliberant ocrInstance:", e);
+      }
+      ocrInstance = null;
+    }
   } else {
     statusMsg.innerText = 'Enfoca la portada i fes una foto';
     await startPortadaCamera();
@@ -207,6 +217,8 @@ async function switchMode(mode) {
       console.log("[Tesseract] Alliberant worker de Tesseract d'ISBN per estalviar memòria...");
       try {
         await tesseractWorker.terminate();
+        // Donem un petit respir de 300ms al mòbil perquè es reculli el garbage collection
+        await new Promise(r => setTimeout(r, 300));
       } catch (e) {
         console.warn("Error alliberant Tesseract:", e);
       }
@@ -516,14 +528,9 @@ async function processPortada() {
     const detectedPolys = (pageResult.items || []).map(item => item.poly);
     console.log("PaddleOCR: regions detectades:", detectedPolys.length);
     
-    // Alliberem immediatament la instància de PaddleOCR per alliberar la memòria WASM d'ONNX!
-    console.log("[PaddleOCR] Alliberant instància per a estalvi de memòria...");
-    try {
-      await ocr.dispose();
-    } catch(e) {
-      console.warn("Error disposant PaddleOCR:", e);
-    }
-    ocrInstance = null; // Ens assegurem de tornar-la a carregar la pròxima vegada
+    // NOTA: Mantenim ocrInstance actiu a la memòria durant la sessió de Portada per evitar
+    // la fragmentació del heap de WebAssembly que causa errors 'std::bad_alloc' si es recrea constantment.
+    // S'allibera correctament a la funció switchMode quan l'usuari torna a la pestanya d'ISBN.
     
     if (detectedPolys.length === 0) {
       statusMsg.innerText = '⚠️ No s\'ha detectat text a la portada. Tenta de nou.';
