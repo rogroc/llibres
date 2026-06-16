@@ -170,11 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
     await initCamera();
     initTesseract();
     
-    // Envia un ping de connexió immediat i un de periòdic cada 3 segons (heartbeat)
+    // Envia un ping de connexió immediat
     sendToServer('connection', 'connected');
+    
+    // Heartbeat molt més espaiat per evitar la limitació de taxa de ntfy.sh (429 Too Many Requests)
+    const hasApi = !!(new URLSearchParams(window.location.search).get('api'));
     setInterval(() => {
       sendToServer('connection', 'connected');
-    }, 3000);
+    }, hasApi ? 5000 : 45000); // 5s per a local, 45s per a GitHub Pages / ntfy
   });
   
   modeIsbn.addEventListener('click', () => switchMode('isbn'));
