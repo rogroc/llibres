@@ -435,21 +435,48 @@ function preprocessImage(videoEl, canvasEl, cropRect) {
     0, 0, cropRect.width, cropRect.height
   );
   
-  // Enhance contrast & convert to grayscale to help Tesseract
   const imgData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
   const data = imgData.data;
   
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i+1];
-    const b = data[i+2];
-    
-    // Grayscale
-    let gray = 0.299 * r + 0.587 * g + 0.114 * b;
-    
-    // Stretch contrast (removes shadow gray tones, darkens text, whitens paper)
-    gray = (gray - 65) * (255 / 120); 
+  let minG = 255;
+  let maxG = 0;
+  let avgG = 0;
+  
+  // First pass: calculate grayscale and find min/max
+  const grays = new Uint8Array(data.length / 4);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+    const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+    grays[j] = gray;
+    avgG += gray;
+    if (gray < minG) minG = gray;
+    if (gray > maxG) maxG = gray;
+  }
+  avgG = avgG / grays.length;
+  
+  // Use adaptive values if we have reasonable contrast, otherwise fallback
+  let lowThreshold = 65;
+  let highThreshold = 185;
+  const range = maxG - minG;
+  
+  if (range > 20) {
+    // Set threshold relative to the actual range of the image (adaptive binarization)
+    lowThreshold = minG + range * 0.15;
+    highThreshold = minG + range * 0.85;
+  }
+  
+  const stretchRange = highThreshold - lowThreshold || 1;
+  
+  let blackCount = 0;
+  let whiteCount = 0;
+  
+  // Second pass: apply stretch and update data
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+    let gray = grays[j];
+    gray = ((gray - lowThreshold) / stretchRange) * 255;
     gray = Math.max(0, Math.min(255, gray));
+    
+    if (gray === 0) blackCount++;
+    if (gray === 255) whiteCount++;
     
     data[i] = gray;
     data[i+1] = gray;
@@ -457,13 +484,11 @@ function preprocessImage(videoEl, canvasEl, cropRect) {
   }
   
   ctx.putImageData(imgData, 0, 0);
+  
+  console.log(`Preprocess: Min=${minG}, Max=${maxG}, Avg=${Math.round(avgG)}. Thresholds: [${Math.round(lowThreshold)}-${Math.round(highThreshold)}]. Blacks=${Math.round(blackCount/grays.length*100)}%, Whites=${Math.round(whiteCount/grays.length*100)}%`);
 }
 
-// OCR processing loop ticker
 async function runOcrTick() {
-  const diagnosticVideo = document.querySelector('#reader video');
-  console.log("runOcrTick check: isScanning =", !!(html5QrCode && html5QrCode.isScanning), "mode =", currentMode, "worker =", !!tesseractWorker, "video =", !!diagnosticVideo, "readyState =", diagnosticVideo ? diagnosticVideo.readyState : "none");
-
   if (!html5QrCode || !html5QrCode.isScanning || currentMode !== 'isbn' || isOcrProcessing || isProcessing) {
     if (html5QrCode && html5QrCode.isScanning && currentMode === 'isbn') {
       ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
@@ -483,6 +508,7 @@ async function runOcrTick() {
   }
   
   isOcrProcessing = true;
+  console.log("OCR Tick: processant fotograma...");
   
   try {
     const vWidth = videoEl.videoWidth;

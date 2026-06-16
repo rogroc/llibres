@@ -103,6 +103,9 @@ def run_server():
                     data = json.loads(post_data.decode('utf-8'))
                     latest_scan = data
                     print(f"\\n✅ Rebut des del mòbil: {data['type']} - {data['value'][:50]}...")
+                    # Write to mobile_logs.txt for remote debugging
+                    with open('mobile_logs.txt', 'a', encoding='utf-8') as f:
+                        f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {data['type']}: {data['value']}\n")
                 except Exception as e:
                     print("Error parsing /api/scan POST data:", e)
                     
