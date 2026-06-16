@@ -206,25 +206,33 @@ async function initCamera() {
 }
 
 async function startIsbnScanner() {
+  console.log("startIsbnScanner: Iniciant...");
   stopPortadaCamera();
   
   if (!html5QrCode) {
+    console.log("startIsbnScanner: Creant instància Html5Qrcode...");
     html5QrCode = new Html5Qrcode("reader");
   }
   
-  if (html5QrCode.isScanning) return;
+  console.log("startIsbnScanner: Estat isScanning =", html5QrCode.isScanning);
+  if (html5QrCode.isScanning) {
+    console.log("startIsbnScanner: Ja està escanejant. Ignorant start.");
+    return;
+  }
   
   const formats = window.Html5QrcodeSupportedFormats ? [
     window.Html5QrcodeSupportedFormats.EAN_13,
     window.Html5QrcodeSupportedFormats.EAN_8
   ] : undefined;
   
+  console.log("startIsbnScanner: Cridant html5QrCode.start...");
   try {
     await html5QrCode.start(
       { facingMode: "environment" },
       { 
         fps: 10, 
         qrbox: (width, height) => {
+          console.log(`qrbox callback: width=${width}, height=${height}`);
           return {
             width: Math.round(width * 0.75),
             height: Math.round(height * 0.35)
@@ -233,6 +241,7 @@ async function startIsbnScanner() {
         formatsToSupport: formats
       },
       (decodedText) => {
+        console.log("Barcode detectat:", decodedText);
         if (isProcessing) return;
         const isbn = cleanAndValidateISBN(decodedText);
         if (isbn) {
@@ -245,9 +254,10 @@ async function startIsbnScanner() {
       (errorMessage) => {}
     );
     
-    // Iniciar el bucle de reconeixement OCR en segon pla
+    console.log("startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...");
     runOcrTick();
   } catch (err) {
+    console.error("Error startIsbnScanner:", err);
     document.getElementById('status-message').innerText = 'Error càmera ISBN: ' + err;
   }
 }
@@ -489,6 +499,9 @@ function preprocessImage(videoEl, canvasEl, cropRect) {
 }
 
 async function runOcrTick() {
+  const videoElDiagnostic = document.querySelector('#reader video');
+  console.log(`runOcrTick: isScanning=${html5QrCode ? html5QrCode.isScanning : 'null'}, mode=${currentMode}, isOcrProcessing=${isOcrProcessing}, isProcessing=${isProcessing}, video=${!!videoElDiagnostic}`);
+
   if (!html5QrCode || !html5QrCode.isScanning || currentMode !== 'isbn' || isOcrProcessing || isProcessing) {
     if (html5QrCode && html5QrCode.isScanning && currentMode === 'isbn') {
       ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
