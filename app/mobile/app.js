@@ -145,6 +145,7 @@ let tesseractWorker = null;
 let isProcessing = false;
 let ocrTimeoutId = null;
 let isOcrProcessing = false;
+let isScannerActive = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   const btnStart = document.getElementById('btn-start');
@@ -214,8 +215,8 @@ async function startIsbnScanner() {
     html5QrCode = new Html5Qrcode("reader");
   }
   
-  console.log("startIsbnScanner: Estat isScanning =", html5QrCode.isScanning);
-  if (html5QrCode.isScanning) {
+  console.log("startIsbnScanner: Estat isScannerActive =", isScannerActive);
+  if (isScannerActive) {
     console.log("startIsbnScanner: Ja està escanejant. Ignorant start.");
     return;
   }
@@ -254,6 +255,7 @@ async function startIsbnScanner() {
       (errorMessage) => {}
     );
     
+    isScannerActive = true;
     console.log("startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...");
     runOcrTick();
   } catch (err) {
@@ -263,6 +265,7 @@ async function startIsbnScanner() {
 }
 
 async function stopIsbnScanner() {
+  isScannerActive = false;
   if (ocrTimeoutId) {
     clearTimeout(ocrTimeoutId);
     ocrTimeoutId = null;
@@ -500,10 +503,10 @@ function preprocessImage(videoEl, canvasEl, cropRect) {
 
 async function runOcrTick() {
   const videoElDiagnostic = document.querySelector('#reader video');
-  console.log(`runOcrTick: isScanning=${html5QrCode ? html5QrCode.isScanning : 'null'}, mode=${currentMode}, isOcrProcessing=${isOcrProcessing}, isProcessing=${isProcessing}, video=${!!videoElDiagnostic}`);
+  console.log(`runOcrTick: isActive=${isScannerActive}, mode=${currentMode}, isOcrProcessing=${isOcrProcessing}, isProcessing=${isProcessing}, video=${!!videoElDiagnostic}`);
 
-  if (!html5QrCode || !html5QrCode.isScanning || currentMode !== 'isbn' || isOcrProcessing || isProcessing) {
-    if (html5QrCode && html5QrCode.isScanning && currentMode === 'isbn') {
+  if (!isScannerActive || currentMode !== 'isbn' || isOcrProcessing || isProcessing) {
+    if (isScannerActive && currentMode === 'isbn') {
       ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
     }
     return;
@@ -553,7 +556,7 @@ async function runOcrTick() {
     // Inspect for valid ISBN checksums
     const isbn = cleanAndValidateISBN(text);
     if (isbn) {
-      if (html5QrCode && html5QrCode.isScanning && !isProcessing) {
+      if (isScannerActive && !isProcessing) {
         isProcessing = true;
         document.getElementById('status-message').innerText = 'ISBN Detectat (OCR): ' + isbn;
         sendToServer('isbn', isbn);
