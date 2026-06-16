@@ -93,12 +93,28 @@ function isValidISBN13(isbn) {
 function cleanAndValidateISBN(rawText) {
   if (!rawText) return null;
   
-  // 0. Comprovar si el text conté les sigles "ISBN" seguit de xifres (amb guions/espais)
-  const isbnPrefixMatch = rawText.match(/isbn\s*:?\s*([0-9Xx -]{10,25})/i);
+  // 0. Comprovar si el text conté les sigles "ISBN" (o typos comuns de reconeixement d'imatge d'OCR) seguit de xifres
+  const prefixRegex = /(?:isbn|1sbn|is8n|1s8n|isb1n|lsrn|isbln|isb|lsb|l5bn|i5bn|15bn)\s*:?\s*([0-9Xx -]{10,30})/i;
+  const isbnPrefixMatch = rawText.match(prefixRegex);
   if (isbnPrefixMatch) {
-    const candidate = isbnPrefixMatch[1].replace(/[^0-9X]/gi, '').toUpperCase();
-    if (candidate.length === 13 && isValidISBN13(candidate)) return candidate;
-    if (candidate.length === 10 && isValidISBN10(candidate)) return candidate;
+    const rawNumberPart = isbnPrefixMatch[1];
+    const cleanedNumber = rawNumberPart.replace(/[^0-9X]/gi, '').toUpperCase();
+    
+    // Provam primer amb els 13 dígits (ISBN-13)
+    let match13 = cleanedNumber.match(/97[89]\d{10}/);
+    if (match13 && isValidISBN13(match13[0])) {
+      return match13[0];
+    }
+    
+    // Provam amb els 10 dígits (ISBN-10)
+    let match10 = cleanedNumber.match(/\d{9}[\dX]/);
+    if (match10 && isValidISBN10(match10[0])) {
+      return match10[0];
+    }
+    
+    // Si la cadena sencera té 13 o 10 caràcters i és vàlida per si sola
+    if (cleanedNumber.length === 13 && isValidISBN13(cleanedNumber)) return cleanedNumber;
+    if (cleanedNumber.length === 10 && isValidISBN10(cleanedNumber)) return cleanedNumber;
   }
   
   // 1. Remove obvious punctuation but keep digits and X. This merges all numbers on the page into a single string.
