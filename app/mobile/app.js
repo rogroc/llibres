@@ -371,8 +371,8 @@ async function getOcrInstance() {
     console.log("[PaddleOCR] Llibreria importada correctament.");
 
     // La ruta relativa "../models/" funciona perfectament tant en local com a GitHub Pages.
-    const detUrl = '../models/PP-OCRv5_mobile_det_onnx.tar?t=' + Date.now();
-    const recUrl = '../models/PP-OCRv5_mobile_rec_onnx.tar?t=' + Date.now();
+    const detUrl = '../models/PP-OCRv5_mobile_det_onnx.tar';
+    const recUrl = '../models/PP-OCRv5_mobile_rec_onnx.tar';
     
     const localDetObjectUrl = await fetchWithProgress(detUrl, 'model de detecció (4.8MB)');
     const localRecObjectUrl = await fetchWithProgress(recUrl, 'model de reconeixement (9.0MB)');
