@@ -22,13 +22,29 @@ let tesseractWorkerSpa = null;
 let ocrInstance = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.');
+  let isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.');
   let localIp = 'localhost';
   let connectionMode = 'local'; // 'local' o 'public'
 
+  // Si estem en una web remota (ex: GitHub Pages), comprovem si respon el servidor local HTTPS a localhost
+  if (!isLocal) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200);
+      const testRes = await fetch('https://localhost:8443/api/ip', { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (testRes.ok) {
+        isLocal = true;
+        console.log("🟢 Servidor local HTTPS detectat a https://localhost:8443. Mode mixt habilitat!");
+      }
+    } catch (e) {
+      console.log("ℹ️ No s'ha detectat servidor local HTTPS a https://localhost:8443 o cal acceptar el certificat.");
+    }
+  }
+
   if (isLocal) {
     try {
-      const res = await fetch(`/api/ip?t=${Date.now()}`);
+      const res = await fetch(`${getBaseUrl()}/api/ip?t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
         localIp = data.ip || 'localhost';
@@ -361,7 +377,7 @@ function renderQrCode(url) {
 async function pollServer() {
   if (!isPolling) return;
   try {
-    const res = await fetch(`/api/poll?t=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch(`${getBaseUrl()}/api/poll?t=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -448,7 +464,7 @@ function handleScan(data) {
     statusEl.innerText = `Rebuda captura del mòbil. Descarregant i analitzant...`;
     (async () => {
       try {
-        const response = await fetch(`/api/camera-frame?t=${Date.now()}`);
+        const response = await fetch(`${getBaseUrl()}/api/camera-frame?t=${Date.now()}`);
         if (response.ok) {
           const blob = await response.blob();
           const file = new File([blob], 'captured-cover.jpg', { type: 'image/jpeg' });
@@ -503,7 +519,7 @@ function initCameraRelay() {
       path = '/';
     }
     let localIp = 'localhost';
-    fetch(`/api/ip?t=${Date.now()}`).then(res => res.json()).then(data => {
+    fetch(`${getBaseUrl()}/api/ip?t=${Date.now()}`).then(res => res.json()).then(data => {
       localIp = data.ip || 'localhost';
       relayOpenMobile.href = `https://${localIp}:8443${path}../mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
     }).catch(() => {
@@ -513,7 +529,7 @@ function initCameraRelay() {
 
   async function pollFrame() {
     try {
-      const res = await fetch(`/api/camera-frame?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`${getBaseUrl()}/api/camera-frame?t=${Date.now()}`, { cache: 'no-store' });
       if (res.status === 204) {
         setInactive();
       } else if (res.ok) {
@@ -559,7 +575,7 @@ function initCameraRelay() {
   // Comprovem estat del relay cada 2 segons
   setInterval(async () => {
     try {
-      const res = await fetch(`/api/camera-status`);
+      const res = await fetch(`${getBaseUrl()}/api/camera-status`);
       if (res.ok) {
         const data = await res.json();
         if (!data.active) setInactive();
@@ -1651,7 +1667,7 @@ async function searchByIsbn(isbn) {
   } catch (err) {
     console.error(err);
     statusEl.innerText = 'Error en la cerca: ' + err.message;
-    fetch('/api/scan', {
+    fetch(`${getBaseUrl()}/api/scan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'log', value: '[Desktop Error] ' + err.stack })
@@ -1667,6 +1683,10 @@ async function searchByIsbn(isbn) {
 function getBaseUrl() {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')) {
     return window.location.origin;
+  }
+  // Si estem en HTTPS (com GitHub Pages), usem el port HTTPS del servidor local
+  if (window.location.protocol === 'https:') {
+    return 'https://localhost:8443';
   }
   return 'http://localhost:8080';
 }
