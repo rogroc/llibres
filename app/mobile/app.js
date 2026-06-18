@@ -857,11 +857,11 @@ function showCertWarning(apiUrl) {
     <div style="background: #ffebeb; border: 1px solid #ffccd0; padding: 12px; border-radius: 8px; margin: 10px 0; color: #d32f2f; font-size: 0.95rem; text-align: left; line-height: 1.4;">
       <strong>⚠️ Error de certificat SSL:</strong><br>
       El mòbil està bloquejant la connexió segura provisional amb l'ordinador.<br><br>
-      <a href="${apiUrl}/api/ip" target="_blank" style="display: block; text-align: center; background: #d32f2f; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 5px;">
+      <a href="${apiUrl}/api/ip" style="display: block; text-align: center; background: #d32f2f; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 5px;">
         Clica aquí per autoritzar el certificat
       </a>
       <span style="font-size: 0.85rem; color: #555; display: block; margin-top: 8px;">
-        (Fes clic a <strong>"Avançat"</strong> i després a <strong>"Accedir a..."</strong> o <strong>"Continuar"</strong>. Després torna a aquesta pestanya i torna a escanejar.)
+        (Fes clic a <strong>"Configuració avançada"</strong> i després a <strong>"Procedir a..."</strong> o <strong>"Continuar"</strong>. Un cop vegis la IP en pantalla, clica el botó <strong>"Enrere"</strong> del teu navegador per tornar a l'escàner.)
       </span>
     </div>
   `;
