@@ -26,14 +26,15 @@ echo "Netejant sessions anteriors..."
 lsof -t -i :8080 -i :8443 | xargs kill -9 2>/dev/null
 
 echo "S'està iniciant el servidor local de sincronització..."
-# Iniciem el servidor python en segon pla
-/usr/bin/python3 server.py &
+# Iniciem el servidor python en segon pla buscant python3 al PATH de l'usuari
+python3 server.py &
 SERVER_PID=$!
 
 # Obtenim la ruta absoluta de la intranet de llibreviu
 cd ..
 PROJECT_ROOT="$(pwd)"
 INTRANET_PATH="${PROJECT_ROOT}/intranet/afegir_registres.html"
+cd app # Retornem al directori d'execució original
 
 # Obrim les pestanyes de Chrome de forma normal passats 2 segons
 echo "Obrint aplicacions a Google Chrome..."
@@ -42,6 +43,9 @@ sleep 2
 
 # Obrim el lector (GitHub) i la validació de localhost en pestanyes
 open -a "Google Chrome" "https://rogroc.github.io/llibres/app/desktop/" "https://localhost:8443/api/sync-poll"
+
+# Esperem 1 segon per evitar col·lisions si Chrome s'inicia de zero
+sleep 1
 
 # Obrim la intranet en una pestanya del mateix Chrome de l'usuari
 open -a "Google Chrome" "file://${INTRANET_PATH}"

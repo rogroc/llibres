@@ -64,7 +64,7 @@ def run_server():
                     self.ssl_failed = True
                     # Silenciem els errors de certificat no acceptat o desconnexions prematures per evitar inundar la terminal
                     err_msg = str(e).lower()
-                    silent_terms = ["certificate unknown", "handshake", "violation of protocol", "eof occurred"]
+                    silent_terms = ["certificate unknown", "handshake", "violation of protocol", "eof occurred", "invalid argument", "errno 22"]
                     if not any(term in err_msg for term in silent_terms):
                         print(f"⚠️ SSL Wrap Error: {type(e).__name__} - {e}")
                     try:
