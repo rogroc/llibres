@@ -10,10 +10,15 @@ echo ""
 echo "Aquest script iniciarà el servidor local i obrirà l'aplicació"
 echo "i la intranet de Llibreviu al vostre navegador Google Chrome."
 echo ""
-echo "⚠️  NOTA IMPORTANT LA PRIMERA VEGADA:"
-echo "A la pestanya 'localhost' de la finestra del cercador, si us surt"
-echo "un avís de seguretat, feu clic a 'Configuració avançada'"
-echo "i després a 'Procedir a localhost (no segur)' perquè tot funcioni."
+echo "⚠️  NOTA IMPORTANT PER AL MÒBIL (només per al mode local directe):"
+echo "Si feu servir la connexió local per Wi-Fi directe, el navegador del mòbil"
+echo "pot bloquejar la càmera o donar error de connexió fins que entreu un cop"
+echo "a la URL HTTPS de l'ordinador (ex: https://192.168.1.XX:8443/api/ip) des del"
+echo "telèfon i accepteu/ignoreu l'avís de seguretat (Configuració avançada)."
+echo ""
+echo "💡 ALTERNATIVA MÉS SENZILLA (Públic ntfy.sh):"
+echo "Si no voleu configurar certificats al mòbil, canvieu a la pestanya"
+echo "'Públic' al catàleg desktop. Funcionarà a l'instant a través d'Internet!"
 echo ""
 echo "💡 CONSELL PER A PANTALLA PARTIDA:"
 echo "Per treballar còmodament, poseu el cursor sobre el botó verd de"
@@ -41,8 +46,8 @@ echo "Obrint aplicacions a Google Chrome..."
 (
 sleep 2
 
-# Obrim el lector (GitHub) i la validació de localhost en pestanyes
-open -a "Google Chrome" "https://rogroc.github.io/llibres/app/desktop/" "https://localhost:8443/api/sync-poll"
+# Obrim el lector (GitHub)
+open -a "Google Chrome" "https://rogroc.github.io/llibres/app/desktop/"
 
 # Esperem 1 segon per evitar col·lisions si Chrome s'inicia de zero
 sleep 1

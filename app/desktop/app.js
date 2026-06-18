@@ -26,19 +26,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   let localIp = 'localhost';
   let connectionMode = 'local'; // 'local' o 'public'
 
-  // Si estem en una web remota (ex: GitHub Pages), comprovem si respon el servidor local HTTPS a localhost
+  // Si estem en una web remota (ex: GitHub Pages), comprovem si respon el servidor local HTTP a localhost
   if (!isLocal) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 1200);
-      const testRes = await fetch('https://localhost:8443/api/ip', { signal: controller.signal });
+      const testRes = await fetch('http://localhost:8080/api/ip', { signal: controller.signal });
       clearTimeout(timeoutId);
       if (testRes.ok) {
         isLocal = true;
-        console.log("🟢 Servidor local HTTPS detectat a https://localhost:8443. Mode mixt habilitat!");
+        console.log("🟢 Servidor local HTTP detectat a http://localhost:8080.");
       }
     } catch (e) {
-      console.log("ℹ️ No s'ha detectat servidor local HTTPS a https://localhost:8443 o cal acceptar el certificat.");
+      console.log("ℹ️ No s'ha detectat servidor local HTTP a http://localhost:8080.");
     }
   }
 
@@ -73,7 +73,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         tabPublic.style.color = '#7f8c8d';
       }
       
-      const localUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
+      // Carreguem l'app del mòbil des de GitHub Pages per evitar el bloqueig inicial de certificat SSL auto-signat al telèfon
+      const localUrl = `https://rogroc.github.io/llibres/app/mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
       renderQrCode(localUrl);
       if (instructions) instructions.innerText = 'Escaneja aquest codi QR per obrir l\'escàner local directe. Requereix que el mòbil estigui connectat al mateix Wi-Fi i que el tallafocs de l\'ordinador no bloquegi els ports (8080/8443).';
       if (certHelp) certHelp.style.display = 'block';
@@ -164,7 +165,10 @@ function initBookmarklet() {
       const pollInterval = setInterval(async () => {
         if (!active) { clearInterval(pollInterval); return; }
         try {
-          const response = await fetch('${getBaseUrl()}/api/sync-poll');
+          const targetUrl = window.location.protocol === 'https:'
+            ? 'https://localhost:8443/api/sync-poll'
+            : 'http://localhost:8080/api/sync-poll';
+          const response = await fetch(targetUrl);
           if (response.ok) {
             const data = await response.json();
             if (data && data.type === 'sync_book' && data.value) {
@@ -1684,10 +1688,8 @@ function getBaseUrl() {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')) {
     return window.location.origin;
   }
-  // Si estem en HTTPS (com GitHub Pages), usem el port HTTPS del servidor local
-  if (window.location.protocol === 'https:') {
-    return 'https://localhost:8443';
-  }
+  // Si estem a GitHub Pages o un altre entorn remoti, demanem al servidor local HTTP al port 8080
+  // ja que els navegadors permeten peticions HTTP a localhost de forma segura des d'HTTPS.
   return 'http://localhost:8080';
 }
 
