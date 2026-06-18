@@ -73,8 +73,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         tabPublic.style.color = '#7f8c8d';
       }
       
-      // Carreguem l'app del mòbil des de GitHub Pages per evitar el bloqueig inicial de certificat SSL auto-signat al telèfon
-      const localUrl = `https://rogroc.github.io/llibres/app/mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
+      // Carreguem l'app del mòbil directament des del servidor HTTPS local de l'ordinador.
+      // Això força la confirmació de seguretat SSL immediatament al mòbil en entrar,
+      // facilitant que l'usuari l'accepti sense bloquejos silenciosos ni necessitat de pujar a GitHub.
+      const localUrl = `https://${localIp}:8443/mobile/?sid=${sessionID}`;
       renderQrCode(localUrl);
       if (instructions) instructions.innerText = 'Escaneja aquest codi QR per obrir l\'escàner local directe. Requereix que el mòbil estigui connectat al mateix Wi-Fi i que el tallafocs de l\'ordinador no bloquegi els ports (8080/8443).';
       if (certHelp) certHelp.style.display = 'block';
@@ -525,9 +527,9 @@ function initCameraRelay() {
     let localIp = 'localhost';
     fetch(`${getBaseUrl()}/api/ip?t=${Date.now()}`).then(res => res.json()).then(data => {
       localIp = data.ip || 'localhost';
-      relayOpenMobile.href = `https://${localIp}:8443${path}../mobile/?api=https://${localIp}:8443&sid=${sessionID}`;
+      relayOpenMobile.href = `https://${localIp}:8443/mobile/?sid=${sessionID}`;
     }).catch(() => {
-      relayOpenMobile.href = `https://localhost:8443${path}../mobile/?api=https://localhost:8443&sid=${sessionID}`;
+      relayOpenMobile.href = `https://localhost:8443/mobile/?sid=${sessionID}`;
     });
   }
 
