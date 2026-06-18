@@ -12,6 +12,11 @@ PORT_HTTPS = 8443  # Mobile HTTPS
 
 # State to pass between mobile and desktop
 latest_scan = None
+latest_camera_frame = None
+camera_frame_timestamp = 0
+latest_synced_book = None
+scan_queue = []
+queue_lock = threading.Lock()
 
 def generate_ssl_certs():
     if not os.path.exists('key.pem') or not os.path.exists('cert.pem'):
@@ -68,7 +73,12 @@ def run_server():
         def handle(self):
             if getattr(self, 'ssl_failed', False):
                 return
-            super().handle()
+            try:
+                super().handle()
+            except BrokenPipeError:
+                pass  # Client ha tancat la connexió abans de rebre la resposta
+            except ConnectionResetError:
+                pass
 
         def finish(self):
             if hasattr(self, 'wfile') and self.wfile:
@@ -82,6 +92,12 @@ def run_server():
                 except Exception:
                     pass
 
+        def log_message(self, format, *args):
+            # Silenciem els logs HTTP per reduir soroll (BrokenPipe, polls, etc.)
+            # Descomenta la línia següent si vols veure tots els accessos:
+            # super().log_message(format, *args)
+            pass
+
         def end_headers(self):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -93,8 +109,44 @@ def run_server():
             self.end_headers()
 
         def do_POST(self):
-            global latest_scan
+            global latest_scan, latest_camera_frame, camera_frame_timestamp, latest_synced_book
             clean_path = self.path.split('?')[0]
+            
+            if clean_path == '/api/camera-frame':
+                content_length = int(self.headers.get('Content-Length', 0))
+                # Límit de 2MB per frame: evita que frames massa grans esgotin la memòria
+                MAX_FRAME_SIZE = 2 * 1024 * 1024  # 2 MB
+                if content_length > MAX_FRAME_SIZE:
+                    self.rfile.read(content_length)  # Buidem el buffer
+                    self.send_response(413)  # Payload Too Large
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(b'{"error": "frame massa gran"}')
+                    return
+                frame_data = self.rfile.read(content_length)
+                latest_camera_frame = frame_data
+                camera_frame_timestamp = int(time.time() * 1000)
+                
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(b'{"ok": true}')
+                return
+
+            if clean_path == '/api/sync':
+                content_length = int(self.headers.get('Content-Length', 0))
+                post_data = self.rfile.read(content_length)
+                latest_synced_book = post_data
+                try:
+                    book = json.loads(post_data.decode('utf-8'))
+                    print(f"\n  ✅ Llibre sincronitzat des del mòbil: {book.get('title','?')} ({book.get('source','?')})")
+                except Exception:
+                     pass
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(b'{"status": "success"}')
+                return
             
             if clean_path == '/api/scan':
                 content_length = int(self.headers.get('Content-Length', 0))
@@ -102,10 +154,23 @@ def run_server():
                 try:
                     data = json.loads(post_data.decode('utf-8'))
                     latest_scan = data
-                    print(f"\\n✅ Rebut des del mòbil: {data['type']} - {data['value'][:50]}...")
-                    # Write to mobile_logs.txt for remote debugging
-                    with open('mobile_logs.txt', 'a', encoding='utf-8') as f:
-                        f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {data['type']}: {data['value']}\n")
+                    if data.get('type') in ('isbn', 'portada', 'portada-captured', 'connection', 'reset'):
+                        with queue_lock:
+                            scan_queue.append(data)
+                    print(f"\n✅ Rebut des del mòbil: {data['type']} - {str(data.get('value',''))[:50]}...")
+                    # Rotació del log: mantenim màxim 500 línies
+                    log_path = 'mobile_logs.txt'
+                    log_line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {data['type']}: {data.get('value','')}\n"
+                    try:
+                        with open(log_path, 'a', encoding='utf-8') as f:
+                            f.write(log_line)
+                        with open(log_path, 'r', encoding='utf-8') as f:
+                            lines = f.readlines()
+                        if len(lines) > 500:
+                            with open(log_path, 'w', encoding='utf-8') as f:
+                                f.writelines(lines[-500:])
+                    except Exception:
+                        pass
                 except Exception as e:
                     print("Error parsing /api/scan POST data:", e)
                     
@@ -119,19 +184,56 @@ def run_server():
             self.end_headers()
 
         def do_GET(self):
-            global latest_scan
+            global latest_scan, latest_camera_frame, camera_frame_timestamp, latest_synced_book
             clean_path = self.path.split('?')[0]
+
+            if clean_path == '/api/camera-frame':
+                if latest_camera_frame:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'image/jpeg')
+                    self.send_header('Content-Length', str(len(latest_camera_frame)))
+                    self.send_header('Cache-Control', 'no-store')
+                    self.send_header('X-Frame-Timestamp', str(camera_frame_timestamp))
+                    self.end_headers()
+                    self.wfile.write(latest_camera_frame)
+                else:
+                    self.send_response(204)  # No Content yet
+                    self.end_headers()
+                return
+
+            if clean_path == '/api/camera-status':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                import time
+                is_active = (time.time() * 1000 - camera_frame_timestamp) < 3000  # active if frame < 3s
+                self.wfile.write(json.dumps({
+                    'active': is_active and latest_camera_frame is not None,
+                    'timestamp': camera_frame_timestamp
+                }).encode('utf-8'))
+                return
+
+            if clean_path == '/api/sync-poll':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                if latest_synced_book:
+                    self.wfile.write(latest_synced_book)
+                    latest_synced_book = None
+                else:
+                    self.wfile.write(b'{}')
+                return
 
             if clean_path == '/api/poll':
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
                 self.end_headers()
-                if latest_scan:
-                    self.wfile.write(json.dumps(latest_scan).encode('utf-8'))
+                with queue_lock:
+                    to_send = list(scan_queue)
+                    scan_queue.clear()
                     latest_scan = None
-                else:
-                    self.wfile.write(b'{}')
+                self.wfile.write(json.dumps(to_send).encode('utf-8'))
                 return
 
             if clean_path == '/api/ip':
@@ -140,6 +242,63 @@ def run_server():
                 self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
                 self.end_headers()
                 self.wfile.write(json.dumps({"ip": get_local_ip()}).encode('utf-8'))
+                return
+
+            if clean_path.startswith('/api/bne'):
+                from urllib.parse import urlparse, parse_qs
+                query = parse_qs(urlparse(self.path).query)
+                isbn = query.get('isbn', [''])[0]
+                
+                if not isbn:
+                    self.send_response(400)
+                    self.end_headers()
+                    return
+                
+                try:
+                    import urllib.request
+                    from urllib.parse import quote
+                    context = ssl._create_unverified_context()
+                    isbn_encoded = quote(isbn, safe='')
+                    
+                    url = (
+                        f"https://catalogo.bne.es/primaws/rest/pub/pnxs"
+                        f"?blendFacetsSeparately=false"
+                        f"&disableCache=false"
+                        f"&getMore=0"
+                        f"&inst=34BNE_INST"
+                        f"&isCDSearch=false"
+                        f"&lang=es"
+                        f"&limit=30"
+                        f"&newspapersActive=false"
+                        f"&newspapersSearch=false"
+                        f"&offset=0"
+                        f"&pcAvailability=true"
+                        f"&q=any,contains,{isbn_encoded},AND;rtype,exact,books"
+                        f"&rtaLinks=true"
+                        f"&scope=MyInstitution"
+                        f"&searchInFulltextUserSelection=true"
+                        f"&skipDelivery=Y"
+                        f"&sort=rank"
+                        f"&tab=LibraryCatalog"
+                        f"&vid=34BNE_INST:CATALOGO"
+                    )
+                    
+                    req = urllib.request.Request(url, headers={
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'application/json'
+                    })
+                    resp = urllib.request.urlopen(req, context=context, timeout=15)
+                    data = resp.read()
+                    
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(data)
+                except Exception as e:
+                    self.send_response(500)
+                    self.send_header('Content-Type', 'text/plain; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(str(e).encode('utf-8'))
                 return
                 
             # Allow directory redirection for cleaner URLs
@@ -152,8 +311,16 @@ def run_server():
             super().do_GET()
 
         def log_message(self, format, *args):
-            # Silence polling noise
-            if '/api/poll' in format % args:
+            try:
+                msg = format % args
+            except Exception:
+                msg = str(format)
+            SILENT = (
+                '/api/poll', '/api/camera-frame', '/api/camera-status', '/api/sync-poll',
+                'Bad request version', 'Bad HTTP/0.9 request', 'Bad request syntax',
+                '\x16\x03',  # TLS ClientHello (Chrome intentant HTTPS al port HTTP)
+            )
+            if any(p in msg for p in SILENT):
                 return
             super().log_message(format, *args)
 

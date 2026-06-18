@@ -18,4 +18,4 @@ echo "S'està iniciant el servidor..."
 (sleep 2 && open "http://localhost:8080/desktop/") &
 
 # Iniciem el servidor python
-python3 server.py
+/usr/bin/python3 server.py

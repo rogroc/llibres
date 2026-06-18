@@ -33,8 +33,14 @@ function addDebugLog(msg, type = 'log') {
       debugLogEl.scrollTop = debugLogEl.scrollHeight;
     }
   }
-  // Send to server
-  sendToServer('log', `[${type}] ${msg}`);
+  // Send to server (evitem saturar amb logs de Tesseract de progrés continu)
+  const isSpammyLog = msg.includes('[Tesseract]') || 
+                      msg.includes('recognizing text') || 
+                      msg.includes('loading tesseract') || 
+                      msg.includes('initializing tesseract');
+  if (!isSpammyLog) {
+    sendToServer('log', `[${type}] ${msg}`);
+  }
 }
 
 const originalLog = console.log;
@@ -89,60 +95,254 @@ function isValidISBN13(isbn) {
   return check === last;
 }
 
+// Substituïm caràcters visuals que l'OCR confon sovint per dígits
+function fixOcrDigits(s) {
+  return s
+    .replace(/[oO]/g, '0')
+    .replace(/[lI|!]/g, '1')
+    .replace(/[sS]/g, '5')  // només en contextos de dígits, es fa net posteriorment
+    .replace(/[gq]/g, '9')
+    .replace(/[bB]/g, '8');
+}
+
+// Intenta trobar un ISBN-13 vàlid dins una seqüència de dígits (finestra lliscant)
+function findISBN13InDigits(digits) {
+  for (let i = 0; i <= digits.length - 13; i++) {
+    const candidate = digits.substring(i, i + 13);
+    if (/^97[89]/.test(candidate) && isValidISBN13(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+// Intenta trobar un ISBN-10 vàlid dins una seqüència (finestra lliscant)
+function findISBN10InDigits(digits) {
+  for (let i = 0; i <= digits.length - 10; i++) {
+    const candidate = digits.substring(i, i + 10);
+    if (isValidISBN10(candidate)) {
+      return candidate;
+    }
+  }
+  // Versió que permet X com a darrer caràcter
+  for (let i = 0; i <= digits.length - 10; i++) {
+    const candidate = digits.substring(i, i + 9) + 'X';
+    if (/^\d{9}X$/.test(candidate) && isValidISBN10(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+// Extreu tots els dígits i X d'una cadena, corregint errors d'OCR habituals
+function extractDigitsAggressive(rawPart) {
+  // Primer passada: netegem separadors visuals (guions, punts, espais, barres, cometes)
+  let cleaned = rawPart.replace(/[\s\-–—._,;:'"\/\\|()[\]{}]/g, '');
+  // Segon: corregim caràcters OCR comuns
+  // O→0, l/I/!→1, S→5 SOLO si ja estem en context numèric
+  let result = '';
+  for (let ch of cleaned.toUpperCase()) {
+    if ('0123456789X'.includes(ch)) {
+      result += ch;
+    } else if (ch === 'O') {
+      result += '0';
+    } else if (ch === 'L' || ch === 'I' || ch === '!' || ch === '|') {
+      result += '1';
+    } else if (ch === 'G' || ch === 'Q') {
+      result += '9';
+    } else if (ch === 'B') {
+      result += '8';
+      // No corregim S→5 automàticament perquè és massa ambigua fora de context
+    }
+    // Ignorem qualsevol altra lletra
+  }
+  return result;
+}
+
 // Regex ISBN parsing and checksum validation
 function cleanAndValidateISBN(rawText) {
   if (!rawText) return null;
   
-  // 0. Comprovar si el text conté les sigles "ISBN" (o typos comuns de reconeixement d'imatge d'OCR) seguit de xifres
-  const prefixRegex = /(?:isbn|1sbn|is8n|1s8n|isb1n|lsrn|isbln|isb|lsb|l5bn|i5bn|15bn)\s*:?\s*([0-9Xx -]{10,30})/i;
-  const isbnPrefixMatch = rawText.match(prefixRegex);
-  if (isbnPrefixMatch) {
-    const rawNumberPart = isbnPrefixMatch[1];
-    const cleanedNumber = rawNumberPart.replace(/[^0-9X]/gi, '').toUpperCase();
+  // =========================================================
+  // ESTRATÈGIA 0: detecció forçada per prefix ISBN
+  // Si el text conté "ISBN" (o errors OCR típics), extreiem
+  // de forma molt agressiva tot el que vingui a continuació
+  // =========================================================
+  const isbnPrefixPat = /(?:isbn|1sbn|is8n|1s8n|isb1n|lsrn|isbln|isbn|lsbn|l5bn|i5bn|15bn|isb|lsb)\s*[:\.\-]?\s*(.{6,40})/i;
+  const prefixMatch = rawText.match(isbnPrefixPat);
+  if (prefixMatch) {
+    const rawAfterPrefix = prefixMatch[1];
+    // Extracció agressiva: dígits + correccions d'OCR comunes
+    const digits = extractDigitsAggressive(rawAfterPrefix);
     
-    // Provam primer amb els 13 dígits (ISBN-13)
-    let match13 = cleanedNumber.match(/97[89]\d{10}/);
-    if (match13 && isValidISBN13(match13[0])) {
-      return match13[0];
+    if (digits.length >= 10) {
+      // Primer intentem ISBN-13 (finestra lliscant)
+      const found13 = findISBN13InDigits(digits);
+      if (found13) return found13;
+      
+      // Ara intentem ISBN-10 (finestra lliscant)
+      const found10 = findISBN10InDigits(digits);
+      if (found10) return found10;
+      
+      // Si tenim exactament 10 o 13 caràcters, validem directament
+      if (digits.length === 13 && isValidISBN13(digits)) return digits;
+      if (digits.length === 10 && isValidISBN10(digits)) return digits;
     }
-    
-    // Provam amb els 10 dígits (ISBN-10)
-    let match10 = cleanedNumber.match(/\d{9}[\dX]/);
-    if (match10 && isValidISBN10(match10[0])) {
-      return match10[0];
-    }
-    
-    // Si la cadena sencera té 13 o 10 caràcters i és vàlida per si sola
-    if (cleanedNumber.length === 13 && isValidISBN13(cleanedNumber)) return cleanedNumber;
-    if (cleanedNumber.length === 10 && isValidISBN10(cleanedNumber)) return cleanedNumber;
   }
   
-  // 1. Cercar dins del text amb guions/espais i límits de paraula (evita falsos positius d'altres números de la pàgina)
-  let matches13 = rawText.match(/\b(?:97[89][ -]*)(?:\d[ -]*){9}\d\b/gi) || [];
+  // =========================================================
+  // ESTRATÈGIA 1: patrons clàssics amb guions/espais i límits
+  // =========================================================
+  let matches13 = rawText.match(/\b(?:97[89][\s\-]*)(?:\d[\s\-]*){9}\d\b/gi) || [];
   for (let m of matches13) {
     let d = m.replace(/[^0-9]/g, '');
-    if (isValidISBN13(d)) return m.replace(/\s+/g, ''); // Conservem guions, eliminem espais!
+    if (isValidISBN13(d)) return m.replace(/\s+/g, '');
   }
   
-  let matches10 = rawText.match(/\b(?:\d[ -]*){9}[\dX]\b/gi) || [];
+  let matches10 = rawText.match(/\b(?:\d[\s\-]*){9}[\dX]\b/gi) || [];
   for (let m of matches10) {
     let d = m.replace(/[^0-9X]/gi, '').toUpperCase();
-    if (isValidISBN10(d)) return m.replace(/\s+/g, ''); // Conservem guions, eliminem espais!
+    if (isValidISBN10(d)) return m.replace(/\s+/g, '');
   }
 
   return null;
+}
+
+function resolveBaseUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const apiParam = urlParams.get('api');
+  let baseUrl = apiParam ? apiParam : '';
+  if (!baseUrl && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))) {
+    baseUrl = window.location.origin;
+  }
+  return baseUrl;
 }
 
 // App Logic
 let currentMode = 'isbn'; // 'isbn' or 'portada'
 let html5QrCode = null;
 let stream = null;
+let isTorchOn = false;
 let tesseractWorker = null;
 let ocrInstance = null;
 let isProcessing = false;
 let ocrTimeoutId = null;
 let isOcrProcessing = false;
 let isScannerActive = false;
+
+let relayStreaming = false;
+let relayTimerId = null;
+
+async function scheduleRelayFrame() {
+  if (!relayStreaming || currentMode !== 'portada') return;
+  
+  const video = document.getElementById('ocr-video');
+  const canvas = document.getElementById('ocr-canvas');
+  if (!video || !canvas || video.readyState < 2) {
+    relayTimerId = setTimeout(scheduleRelayFrame, 500);
+    return;
+  }
+  
+  const baseUrl = resolveBaseUrl();
+  if (!baseUrl) {
+    return; // No local server to stream to
+  }
+  
+  const ctx = canvas.getContext('2d');
+  const vw = video.videoWidth || 640;
+  const vh = video.videoHeight || 480;
+  const scale = Math.min(1, 1024 / vw);
+  canvas.width = Math.round(vw * scale);
+  canvas.height = Math.round(vh * scale);
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  updateMobileReadability(canvas, ctx);
+  
+  const quality = 0.85;
+  canvas.toBlob(async (blob) => {
+    if (blob && relayStreaming && currentMode === 'portada') {
+      try {
+        await fetch(`${baseUrl}/api/camera-frame`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'image/jpeg', 'Content-Length': blob.size },
+          body: blob
+        });
+      } catch (err) {
+        console.warn('Error sending relay frame:', err);
+      }
+    }
+    if (relayStreaming && currentMode === 'portada') {
+      relayTimerId = setTimeout(scheduleRelayFrame, 150); // ~6-7 fps
+    }
+  }, 'image/jpeg', quality);
+}
+
+function updateMobileReadability(canvas, ctx) {
+  const checkWidth = Math.min(120, canvas.width);
+  const checkHeight = Math.min(120, canvas.height);
+  const checkX = Math.round((canvas.width - checkWidth) / 2);
+  const checkY = Math.round((canvas.height - checkHeight) / 2);
+  if (checkX < 0 || checkY < 0) return;
+  
+  try {
+    const imgData = ctx.getImageData(checkX, checkY, checkWidth, checkHeight);
+    const data = imgData.data;
+    const w = imgData.width;
+    const h = imgData.height;
+    
+    let minGray = 255;
+    let maxGray = 0;
+    let edgeSum = 0;
+    let count = 0;
+    
+    const grays = new Uint8Array(w * h);
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = Math.round((data[i] + data[i+1] + data[i+2]) / 3);
+      grays[i / 4] = gray;
+      if (gray < minGray) minGray = gray;
+      if (gray > maxGray) maxGray = gray;
+    }
+    
+    const contrast = maxGray - minGray;
+    const statusMsg = document.getElementById('status-message');
+    if (contrast < 40) {
+      statusMsg.innerHTML = '<span style="color: #ff3333;">⚠️ Sense text o massa fosc (Busca bona llum)</span>';
+      return;
+    }
+    
+    for (let y = 1; y < h - 1; y += 2) {
+      for (let x = 1; x < w - 1; x += 2) {
+        const idx = y * w + x;
+        const val = grays[idx];
+        const diffX = Math.abs(val - grays[idx + 1]);
+        const diffY = Math.abs(val - grays[idx + w]);
+        if (diffX > 15 || diffY > 15) {
+          edgeSum += (diffX + diffY);
+          count++;
+        }
+      }
+    }
+    
+    const edgeDensity = count / ((w * h) / 4);
+    const avgEdgeStrength = count > 0 ? (edgeSum / count) : 0;
+    let focusScore = Math.min(100, Math.round((avgEdgeStrength / 50) * 100));
+    let densityScore = Math.min(100, Math.round((edgeDensity / 0.16) * 100));
+    let score = Math.round((focusScore * 0.6) + (densityScore * 0.4));
+    
+    if (contrast < 90) {
+      score = Math.round(score * (contrast / 90));
+    }
+    score = Math.max(5, Math.min(99, score));
+    
+    if (score < 40) {
+      statusMsg.innerHTML = `<span style="color: #ff3333;">⚠️ Desenfocat (${score}%) - Mou el mòbil</span>`;
+    } else if (score < 75) {
+      statusMsg.innerHTML = `<span style="color: #ffcc00;">⚡ Enfocant (${score}%) - Busca bon angle</span>`;
+    } else {
+      statusMsg.innerHTML = `<span style="color: #00ffcc;">✨ Nitidesa excel·lent (${score}%)! Fes la foto!</span>`;
+    }
+  } catch (e) {}
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const btnStart = document.getElementById('btn-start');
@@ -167,6 +367,13 @@ document.addEventListener('DOMContentLoaded', () => {
     await initCamera();
     initTesseract();
     
+    // Mostrem el botó d'activar/desactivar càmera un cop s'ha iniciat el flux
+    const btnToggleCamera = document.getElementById('btn-toggle-camera');
+    if (btnToggleCamera) {
+      btnToggleCamera.style.display = 'inline-flex';
+    }
+    updateCameraToggleBtnUI();
+
     // Envia un ping de connexió immediat
     sendToServer('connection', 'connected');
     
@@ -181,6 +388,16 @@ document.addEventListener('DOMContentLoaded', () => {
   modePortada.addEventListener('click', () => switchMode('portada'));
   
   btnTakePhoto.addEventListener('click', () => processPortada());
+
+  const btnToggleCamera = document.getElementById('btn-toggle-camera');
+  if (btnToggleCamera) {
+    btnToggleCamera.addEventListener('click', () => toggleCamera());
+  }
+
+  const btnFlash = document.getElementById('btn-flash');
+  if (btnFlash) {
+    btnFlash.addEventListener('click', () => toggleTorch());
+  }
 });
 
 async function switchMode(mode) {
@@ -198,16 +415,6 @@ async function switchMode(mode) {
     await startIsbnScanner();
     if (!tesseractWorker) {
       await initTesseract();
-    }
-    // Alliberem la instància de PaddleOCR de Portada per estalviar memòria en mode ISBN
-    if (ocrInstance) {
-      console.log("[PaddleOCR] Alliberant instància de Portada al sortir del mode Portada...");
-      try {
-        await ocrInstance.dispose();
-      } catch (e) {
-        console.warn("Error alliberant ocrInstance:", e);
-      }
-      ocrInstance = null;
     }
   } else {
     statusMsg.innerText = 'Enfoca la portada i fes una foto';
@@ -235,16 +442,22 @@ async function startIsbnScanner() {
   console.log("startIsbnScanner: Iniciant...");
   stopPortadaCamera();
   
-  if (!html5QrCode) {
-    console.log("startIsbnScanner: Creant instància Html5Qrcode...");
-    html5QrCode = new Html5Qrcode("reader");
+  // Resetem el flag de processament perquè el nou escaneig pugui detectar ISBNs
+  isProcessing = false;
+  isOcrProcessing = false;
+
+  // Avisem l'ordinador que estem a punt per escanejar un nou llibre (ell es reseteja sol)
+  sendToServer('reset', '');
+
+  // Sempre creem una instància nova per evitar errors d'estat intern de Html5Qrcode
+  if (html5QrCode) {
+    try { if (html5QrCode.isScanning) await html5QrCode.stop(); } catch(e) {}
+    try { html5QrCode.clear(); } catch(e) {}
+    html5QrCode = null;
+    await new Promise(r => setTimeout(r, 300));
   }
-  
-  console.log("startIsbnScanner: Estat isScannerActive =", isScannerActive);
-  if (isScannerActive) {
-    console.log("startIsbnScanner: Ja està escanejant. Ignorant start.");
-    return;
-  }
+  console.log("startIsbnScanner: Creant instància Html5Qrcode nova...");
+  html5QrCode = new Html5Qrcode("reader");
   
   const formats = window.Html5QrcodeSupportedFormats ? [
     window.Html5QrcodeSupportedFormats.EAN_13,
@@ -266,15 +479,16 @@ async function startIsbnScanner() {
         },
         formatsToSupport: formats
       },
-      (decodedText) => {
+      async (decodedText) => {
         console.log("Barcode detectat:", decodedText);
         if (isProcessing) return;
         const isbn = cleanAndValidateISBN(decodedText);
         if (isbn) {
           isProcessing = true;
-          document.getElementById('status-message').innerText = 'ISBN Detectat: ' + isbn;
+          document.getElementById('status-message').innerText = '✅ ISBN enviat: ' + isbn + ' — Clica «Encendre Càmera» per llegir un altre.';
           sendToServer('isbn', isbn);
-          setTimeout(() => { isProcessing = false; }, 3000); // Debounce
+          // Aturem la càmera: l'usuari ha d'engegar-la manualment per llegir el següent
+          await stopIsbnScanner();
         }
       },
       (errorMessage) => {}
@@ -282,6 +496,12 @@ async function startIsbnScanner() {
     
     isScannerActive = true;
     console.log("startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...");
+    
+    setTimeout(updateTorchBtnUI, 200);
+    setTimeout(updateTorchBtnUI, 600);
+    setTimeout(updateTorchBtnUI, 1200);
+    setTimeout(updateTorchBtnUI, 2500);
+    updateCameraToggleBtnUI();
     
     // Aplicar zoom de x2 si és compatible amb la càmera del dispositiu
     try {
@@ -306,6 +526,7 @@ async function startIsbnScanner() {
   } catch (err) {
     console.error("Error startIsbnScanner:", err);
     document.getElementById('status-message').innerText = 'Error càmera ISBN: ' + err;
+    updateCameraToggleBtnUI();
   }
 }
 
@@ -315,9 +536,25 @@ async function stopIsbnScanner() {
     clearTimeout(ocrTimeoutId);
     ocrTimeoutId = null;
   }
-  if (html5QrCode && html5QrCode.isScanning) {
-    await html5QrCode.stop();
+  isOcrProcessing = false;
+  isTorchOn = false;
+  updateTorchBtnUI();
+  updateCameraToggleBtnUI();
+  if (html5QrCode) {
+    try {
+      if (html5QrCode.isScanning) {
+        await html5QrCode.stop();
+      }
+    } catch (e) {
+      console.warn("stopIsbnScanner: error en aturar:", e);
+    }
+    try {
+      html5QrCode.clear();
+    } catch (e) { /* ignorat */ }
+    html5QrCode = null;  // Destruïm la instància per evitar "Cannot clear while..."
   }
+  // Petit marge perquè el navegador alliberi la càmera completament
+  await new Promise(r => setTimeout(r, 300));
 }
 
 async function startPortadaCamera() {
@@ -330,18 +567,36 @@ async function startPortadaCamera() {
   video.style.display = 'block';
   previewContainer.style.display = 'none';
   btnTakePhoto.style.display = 'block';
+  btnTakePhoto.disabled = false;
+  btnTakePhoto.innerText = "📷 Enviar Portada a l'Ordinador";
   
   try {
     stream = await navigator.mediaDevices.getUserMedia({ 
-      video: { facingMode: 'environment' } 
+      video: { 
+        facingMode: 'environment',
+        width: { ideal: 3840 },
+        height: { ideal: 2160 }
+      } 
     });
     video.srcObject = stream;
+    setTimeout(updateTorchBtnUI, 600);
+    updateCameraToggleBtnUI();
+    
+    // L'enviament en directe s'ha desactivat. Només s'enviarà foto quan es cliqui el botó.
   } catch (err) {
     document.getElementById('status-message').innerText = 'Error càmera Portada: ' + err;
+    updateCameraToggleBtnUI();
   }
 }
 
 function stopPortadaCamera() {
+  relayStreaming = false;
+  if (relayTimerId) {
+    clearTimeout(relayTimerId);
+    relayTimerId = null;
+  }
+  isTorchOn = false;
+  updateTorchBtnUI();
   if (stream) {
     stream.getTracks().forEach(track => track.stop());
     stream = null;
@@ -349,6 +604,7 @@ function stopPortadaCamera() {
   const video = document.getElementById('ocr-video');
   video.style.display = 'none';
   document.getElementById('btn-take-photo').style.display = 'none';
+  updateCameraToggleBtnUI();
 }
 
 async function initTesseract() {
@@ -369,300 +625,161 @@ async function initTesseract() {
   document.getElementById('status-message').innerText = currentMode === 'isbn' ? "Enfoca un codi de barres o el text de l'ISBN" : 'Enfoca la portada i fes una foto';
 }
 
-async function getOcrInstance() {
-  if (ocrInstance) return ocrInstance;
-  console.log("[PaddleOCR] getOcrInstance iniciat.");
-  
-  const statusMsg = document.getElementById('status-message');
-  statusMsg.innerText = '⚙️ Inicialitzant PaddleOCR (models ~15MB)...';
-  
-  try {
-    console.log("[PaddleOCR] Important la llibreria local paddleocr.js...");
-    const module = await import('./paddleocr.js');
-    const PaddleOCR = module.PaddleOCR;
-    console.log("[PaddleOCR] Llibreria importada correctament.");
-
-    // La ruta relativa "../models/" funciona perfectament tant en local com a GitHub Pages.
-    const detUrl = '../models/PP-OCRv5_mobile_det_onnx.tar';
-    const recUrl = '../models/PP-OCRv5_mobile_rec_onnx.tar';
-    
-    const localDetObjectUrl = await fetchWithProgress(detUrl, 'model de detecció (4.8MB)');
-    const localRecObjectUrl = await fetchWithProgress(recUrl, 'model de reconeixement (9.0MB)');
-
-    statusMsg.innerText = '⚙️ Inicialitzant motor de xarxa neuronal...';
-    
-    ocrInstance = await PaddleOCR.create({
-      lang: 'en',
-      ocrVersion: 'PP-OCRv5',
-      worker: false,
-      ensureServedFromHttp: () => {},
-      text_detection_model_name: 'PP-OCRv5_mobile_det',
-      text_detection_model_dir: { url: localDetObjectUrl },
-      text_recognition_model_name: 'PP-OCRv5_mobile_rec',
-      text_recognition_model_dir: { url: localRecObjectUrl },
-      ortOptions: {
-        backend: 'wasm',
-        wasmPaths: 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.3/dist/',
-        numThreads: 1,
-        simd: false,
-        proxy: false
-      }
-    });
-
-    if (ocrInstance) {
-      // Ampliem les àrees de detecció (polígons) de PaddleOCR amb un marge de 6px
-      if (ocrInstance.detModel) {
-        console.log("[HybridOCR] Configurant ampliació de marges de detecció (6px)...");
-        const originalDetPredict = ocrInstance.detModel.predict;
-        ocrInstance.detModel.predict = async function(cv, mats, options) {
-          const results = await originalDetPredict.call(ocrInstance.detModel, cv, mats, options);
-          const margin = 6;
-          results.forEach((res, imgIdx) => {
-            if (res && res.boxes) {
-              const mat = mats[imgIdx];
-              const maxW = mat ? mat.cols : 99999;
-              const maxH = mat ? mat.rows : 99999;
-              
-              res.boxes.forEach(box => {
-                if (box.poly && box.poly.length === 4) {
-                  box.poly[0][0] = Math.max(0, box.poly[0][0] - margin);
-                  box.poly[0][1] = Math.max(0, box.poly[0][1] - margin);
-                  
-                  box.poly[1][0] = Math.min(maxW, box.poly[1][0] + margin);
-                  box.poly[1][1] = Math.max(0, box.poly[1][1] - margin);
-                  
-                  box.poly[2][0] = Math.min(maxW, box.poly[2][0] + margin);
-                  box.poly[2][1] = Math.min(maxH, box.poly[2][1] + margin);
-                  
-                  box.poly[3][0] = Math.max(0, box.poly[3][0] - margin);
-                  box.poly[3][1] = Math.min(maxH, box.poly[3][1] + margin);
-                }
-              });
-            }
-          });
-          return results;
-        };
-      }
-
-      // Definim un mock de reconeixement ja que PaddleOCR només farà la detecció
-      if (ocrInstance.recModel) {
-        ocrInstance.recModel.predict = async function(cv, mats, options) {
-          return mats.map(() => ({ text: '__MASK_PENDING__', score: 1.0 }));
-        };
-      }
-    }
-
-    return ocrInstance;
-  } catch (err) {
-    console.error("[PaddleOCR] Error en getOcrInstance:", err);
-    statusMsg.innerText = '❌ Error inicialització: ' + err.message;
-    throw err;
-  }
-}
-
-async function fetchWithProgress(url, label) {
-  const statusMsg = document.getElementById('status-message');
-  
-  // 1. Intentem carregar des de la Cache API del navegador per a emmagatzematge permanent i offline
-  let cache = null;
-  if ('caches' in window) {
-    try {
-      cache = await caches.open('llibreviu-models-cache');
-      const cachedResponse = await cache.match(url);
-      if (cachedResponse) {
-        console.log(`[Cache API] Carregant ${label} des de la memòria local...`);
-        statusMsg.innerText = `⚙️ Carregant ${label} des de la memòria local...`;
-        const blob = await cachedResponse.blob();
-        return URL.createObjectURL(blob);
-      }
-    } catch (cacheErr) {
-      console.warn("Error accedint a la Cache API:", cacheErr);
-    }
-  }
-
-  // 2. Si no es troba al cau, el descarreguem de la xarxa
-  statusMsg.innerText = `⚙️ Descarregant ${label}...`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Error ${response.status} descarregant ${label}`);
-  }
-  
-  // Guardem una còpia al cau per a les properes vegades
-  if (cache) {
-    try {
-      await cache.put(url, response.clone());
-      console.log(`[Cache API] Desar ${label} al cau local per al futur.`);
-    } catch (saveErr) {
-      console.warn("No s'ha pogut guardar al cau:", saveErr);
-    }
-  }
-
-  const contentLength = response.headers.get('content-length');
-  const total = contentLength ? parseInt(contentLength, 10) : 0;
-  
-  if (total === 0) {
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-  }
-  
-  const reader = response.body.getReader();
-  let loaded = 0;
-  const chunks = [];
-  
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    loaded += value.length;
-    const pct = Math.round((loaded / total) * 100);
-    statusMsg.innerText = `⚙️ Descarregant ${label}: ${pct}%...`;
-  }
-  
-  const blob = new Blob(chunks);
-  return URL.createObjectURL(blob);
-}
-
 async function processPortada() {
   const video = document.getElementById('ocr-video');
   const canvas = document.getElementById('ocr-canvas');
   const ctx = canvas.getContext('2d');
   
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const MAX_DIMENSION = 3840;
+  let w = video.videoWidth || 640;
+  let h = video.videoHeight || 480;
+  
+  if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
+    if (w > h) {
+      h = Math.round((h * MAX_DIMENSION) / w);
+      w = MAX_DIMENSION;
+    } else {
+      w = Math.round((w * MAX_DIMENSION) / h);
+      h = MAX_DIMENSION;
+    }
+  }
+  
+  canvas.width = w;
+  canvas.height = h;
+  ctx.drawImage(video, 0, 0, w, h);
   
   // Convert to image for preview
   const imgDataUrl = canvas.toDataURL('image/jpeg');
   document.getElementById('ocr-preview').src = imgDataUrl;
   document.getElementById('ocr-preview-container').style.display = 'block';
   video.style.display = 'none';
-  document.getElementById('btn-take-photo').style.display = 'none';
+  
+  const btn = document.getElementById('btn-take-photo');
+  btn.disabled = true;
+  btn.innerText = '📤 Enviant imatge...';
   
   const statusMsg = document.getElementById('status-message');
-  statusMsg.innerText = '⏳ Inicialitzant PaddleOCR...';
+  statusMsg.innerText = '⚙️ Aplicant filtres de visió artificial...';
   
   try {
-    // 1. Inicialitzar o recuperar la instància de PaddleOCR
-    const ocr = await getOcrInstance();
-    
-    statusMsg.innerText = '🔍 Detectant àrees de text amb PaddleOCR...';
-    const ocrResult = await ocr.predict(canvas, {
-      text_det_limit_side_len: 960,
-      text_det_limit_type: 'min',
-      text_det_thresh: 0.2,
-      text_det_box_thresh: 0.4
-    });
-    
-    const pageResult = ocrResult[0] || {};
-    const detectedPolys = (pageResult.items || []).map(item => item.poly);
-    console.log("PaddleOCR: regions detectades:", detectedPolys.length);
-    
-    // NOTA: Mantenim ocrInstance actiu a la memòria durant la sessió de Portada per evitar
-    // la fragmentació del heap de WebAssembly que causa errors 'std::bad_alloc' si es recrea constantment.
-    // S'allibera correctament a la funció switchMode quan l'usuari torna a la pestanya d'ISBN.
-    
-    if (detectedPolys.length === 0) {
-      statusMsg.innerText = '⚠️ No s\'ha detectat text a la portada. Tenta de nou.';
-      setTimeout(() => {
-        if (currentMode === 'portada') startPortadaCamera();
-      }, 3000);
+    const baseUrl = resolveBaseUrl();
+    const isPublicChannel = !baseUrl;
+
+    if (!isPublicChannel) {
+      statusMsg.innerText = '📤 Enviant imatge a l\'ordinador...';
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          statusMsg.innerText = '❌ Error al processar la imatge.';
+          setTimeout(() => { if (currentMode === 'portada') startPortadaCamera(); }, 3000);
+          return;
+        }
+        try {
+          const uploadRes = await fetch(`${baseUrl}/api/camera-frame`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'image/jpeg', 'Content-Length': blob.size },
+            body: blob
+          });
+          if (uploadRes.ok) {
+            statusMsg.innerText = '✅ Imatge enviada. Processant a l\'ordinador...';
+            await sendToServer('portada-captured', '');
+          } else {
+            statusMsg.innerText = '❌ Error al pujar la imatge.';
+          }
+        } catch (err) {
+          console.error('Error enviant captura de portada:', err);
+          statusMsg.innerText = '❌ Error de connexió: ' + err.message;
+        }
+        setTimeout(() => {
+          if (currentMode === 'portada') startPortadaCamera();
+        }, 3000);
+      }, 'image/jpeg', 0.95);
       return;
     }
+
+    // 1. Capturem el canvas en escala de grisos per aplicar el filtre local Bradley-Roth
+    const numPixels = canvas.width * canvas.height;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
     
-    statusMsg.innerText = '🎭 Generant imatge màscara...';
-    
-    // Canvas màscara: fons blanc, dibuixem cada polígon detectat
-    const maskCanvas = document.createElement('canvas');
-    maskCanvas.width = canvas.width;
-    maskCanvas.height = canvas.height;
-    const maskCtx = maskCanvas.getContext('2d');
-    maskCtx.fillStyle = '#ffffff';
-    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-    
-    const srcCtxM = canvas.getContext('2d');
-    const PAD_M = 8;
-    for (const poly of detectedPolys) {
-      if (!poly || poly.length < 3) continue;
-
-      const xs = poly.map(p => p[0]);
-      const ys = poly.map(p => p[1]);
-      const bx0 = Math.max(0, Math.floor(Math.min(...xs)) - PAD_M);
-      const by0 = Math.max(0, Math.floor(Math.min(...ys)) - PAD_M);
-      const bx1 = Math.min(canvas.width,  Math.ceil(Math.max(...xs)) + PAD_M);
-      const by1 = Math.min(canvas.height, Math.ceil(Math.max(...ys)) + PAD_M);
-      const bw = bx1 - bx0; const bh = by1 - by0;
-      if (bw <= 0 || bh <= 0) continue;
-
-      const regionData = srcCtxM.getImageData(bx0, by0, bw, bh);
-      const d = regionData.data;
-
-      // Mostregem els 4 cantons per detectar si el fons és fosc
-      const samplePts = [0, bw - 1, bw * (bh - 1), bw * bh - 1];
-      let cornerBr = 0;
-      for (const sp of samplePts) {
-        const i = sp * 4;
-        cornerBr += 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
-      }
-      const darkBg = (cornerBr / samplePts.length) < 100;
-
-      // Binaritzem: grisos amb llindar adaptatiu dinàmic basat en el contrast local de la regió.
-      // Això evita que les lletres s'engreixin i s'ajuntin paraules a causa d'un llindar fix massa alt.
-      let minG = 255;
-      let maxG = 0;
-      const grays = new Uint8Array(d.length / 4);
-      for (let j = 0, gIdx = 0; j < d.length; j += 4, gIdx++) {
-        let gray = 0.299 * d[j] + 0.587 * d[j+1] + 0.114 * d[j+2];
-        if (darkBg) gray = 255 - gray;
-        grays[gIdx] = gray;
-        if (gray < minG) minG = gray;
-        if (gray > maxG) maxG = gray;
-      }
-
-      // Llindar dinàmic del 40% del rang per fer els traços una mica més fins i evitar que es fusionin
-      const range = maxG - minG;
-      const thresh = range > 10 ? Math.max(90, Math.min(160, minG + range * 0.40)) : 128;
-
-      for (let j = 0, gIdx = 0; j < d.length; j += 4, gIdx++) {
-        const val = grays[gIdx] < thresh ? 0 : 255;
-        d[j] = val; d[j+1] = val; d[j+2] = val; d[j+3] = 255;
-      }
-
-      const tmpC = document.createElement('canvas');
-      tmpC.width = bw; tmpC.height = bh;
-      tmpC.getContext('2d').putImageData(regionData, 0, 0);
-
-      maskCtx.save();
-      maskCtx.beginPath();
-      const cxp = poly.reduce((s, p) => s + p[0], 0) / poly.length;
-      const cyp = poly.reduce((s, p) => s + p[1], 0) / poly.length;
-      poly.forEach((pt, idx) => {
-        const dx = pt[0] - cxp; const dy = pt[1] - cyp;
-        const len = Math.sqrt(dx*dx + dy*dy) || 1;
-        const ex = pt[0] + (dx/len)*PAD_M; const ey = pt[1] + (dy/len)*PAD_M;
-        if (idx === 0) maskCtx.moveTo(ex, ey); else maskCtx.lineTo(ex, ey);
-      });
-      maskCtx.closePath();
-      maskCtx.clip();
-      maskCtx.drawImage(tmpC, bx0, by0);
-      maskCtx.restore();
+    const normalGrays = new Uint8Array(numPixels);
+    for (let i = 0; i < numPixels; i++) {
+      const r = data[i * 4];
+      const g = data[i * 4 + 1];
+      const b = data[i * 4 + 2];
+      normalGrays[i] = Math.round((r + g + b) / 3);
     }
     
-    statusMsg.innerText = '📖 Llegint text amb Tesseract (cat+spa+eng)...';
+    // 2. Filtre de binarització local d'alt contrast (Bradley-Roth)
+    const integralNormal = new Float64Array(numPixels);
+    for (let y = 0; y < canvas.height; y++) {
+      let sumNormal = 0;
+      for (let x = 0; x < canvas.width; x++) {
+        const idx = y * canvas.width + x;
+        sumNormal += normalGrays[idx];
+        if (y === 0) {
+          integralNormal[idx] = sumNormal;
+        } else {
+          integralNormal[idx] = integralNormal[(y - 1) * canvas.width + x] + sumNormal;
+        }
+      }
+    }
     
-    // Creem un worker de Tesseract temporal específicament per a aquesta lectura
-    const tempWorker = await Tesseract.createWorker('cat+spa+eng', 1, {
-      logger: m => console.log(`[TempTesseract] ${m.status}: ${m.progress ? Math.round(m.progress * 100) + '%' : ''}`)
+    const windowSize = Math.max(30, Math.round(canvas.width / 8));
+    const halfWin = Math.floor(windowSize / 2);
+    const C = 10;
+    
+    const normalCanvas = document.createElement('canvas');
+    normalCanvas.width = canvas.width;
+    normalCanvas.height = canvas.height;
+    const nCtx = normalCanvas.getContext('2d');
+    const nImgData = nCtx.createImageData(canvas.width, canvas.height);
+    const nData = nImgData.data;
+    
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        const idx = y * canvas.width + x;
+        const x0 = Math.max(0, x - halfWin);
+        const x1 = Math.min(canvas.width - 1, x + halfWin);
+        const y0 = Math.max(0, y - halfWin);
+        const y1 = Math.min(canvas.height - 1, y + halfWin);
+        
+        const count = (x1 - x0 + 1) * (y1 - y0 + 1);
+        let sumN = integralNormal[y1 * canvas.width + x1];
+        if (y0 > 0) sumN -= integralNormal[(y0 - 1) * canvas.width + x1];
+        if (x0 > 0) sumN -= integralNormal[y1 * canvas.width + (x0 - 1)];
+        if (x0 > 0 && y0 > 0) sumN += integralNormal[(y0 - 1) * canvas.width + (x0 - 1)];
+        
+        const avgN = sumN / count;
+        const val = (normalGrays[idx] < (avgN - C)) ? 0 : 255;
+        const outIdx = idx * 4;
+        nData[outIdx] = val;
+        nData[outIdx+1] = val;
+        nData[outIdx+2] = val;
+        nData[outIdx+3] = 255;
+      }
+    }
+    nCtx.putImageData(nImgData, 0, 0);
+    const normalUrl = normalCanvas.toDataURL('image/jpeg', 1.0);
+    
+    statusMsg.innerText = '⚙️ Inicialitzant motor d\'OCR local (spa+cat)...';
+    
+    // 3. Executem Tesseract al mòbil (spa+cat per a portades)
+    const tempWorker = await Tesseract.createWorker('spa+cat', 1, {
+      logger: m => {
+        if (m && m.status === 'recognizing text') {
+          statusMsg.innerText = `🔍 Processant OCR: ${Math.round(m.progress * 100)}%`;
+        }
+      }
     });
     
-    // Configurem el worker per preservar espais i ajustar la segmentació
     await tempWorker.setParameters({
       tessedit_pageseg_mode: '3',
       preserve_interword_spaces: '1'
     });
     
-    const { data } = await tempWorker.recognize(maskCanvas);
+    statusMsg.innerText = '🔍 Reconeixent lletres de la portada...';
+    const { data: ocrResult } = await tempWorker.recognize(normalUrl);
     
-    // Alliberem immediatament el worker temporal de Tesseract
     console.log("[Tesseract] Alliberant worker temporal...");
     try {
       await tempWorker.terminate();
@@ -670,23 +787,24 @@ async function processPortada() {
       console.warn("Error alliberant worker temporal:", e);
     }
     
-    const tesseractWords = data.words || [];
+    const words = ocrResult.words || [];
+    console.log("OCR completat al mòbil. Paraules detectades:", words.map(w => w.text).join(' '));
     
-    const words = tesseractWords
-      .filter(w => w.confidence > 30 && w.text.trim().length > 0)
-      .map(w => ({
-        text: w.text.trim(),
-        confidence: w.confidence,
-        bbox: { x0: w.bbox.x0, y0: w.bbox.y0, x1: w.bbox.x1, y1: w.bbox.y1 }
-      }));
+    if (words.length === 0) {
+      statusMsg.innerText = '⚠️ No s\'ha trobat cap text a la portada. Enfoca millor.';
+      setTimeout(() => {
+        if (currentMode === 'portada') startPortadaCamera();
+      }, 3000);
+      return;
+    }
 
-    // Filtrem per alçada per descartar soroll residual
     const allHeights = words.map(w => w.bbox.y1 - w.bbox.y0);
     const maxWordHeight = allHeights.length > 0 ? Math.max(...allHeights) : 0;
-    const heightThreshold = maxWordHeight * 0.15;
-    const validWords = words.filter(w =>
-      (w.bbox.y1 - w.bbox.y0) >= heightThreshold &&
-      w.confidence > 30
+    const heightThreshold = maxWordHeight * 0.20;
+
+    const validWords = words.filter(w => 
+      (w.bbox.y1 - w.bbox.y0) >= heightThreshold && 
+      w.confidence > 40
     );
 
     if (validWords.length === 0) {
@@ -697,29 +815,35 @@ async function processPortada() {
       return;
     }
 
-    // Calculem un llindar dinàmic per agrupar per línies basat en l'alçada màxima de la lletra
-    const lineThreshold = Math.max(15, maxWordHeight * 0.5);
-
-    // Ordenem de dalt a baix i d'esquerra a dreta per donar coherència a la lectura
+    // Ordenem les paraules de dalt a baix i d'esquerra a dreta per tenir coherència de lectura
     validWords.sort((a, b) => {
-      if (Math.abs(a.bbox.y0 - b.bbox.y0) < lineThreshold) {
+      if (Math.abs(a.bbox.y0 - b.bbox.y0) < 15) {
         return a.bbox.x0 - b.bbox.x0;
       }
       return a.bbox.y0 - b.bbox.y0;
     });
 
-    const cleanedText = validWords.map(w => w.text).join(' ');
-    console.log("Text OCR netejat:", cleanedText);
+    let text = validWords.map(w => w.text).join(' ');
+
+    // Normalització d'artefactes d'OCR
+    text = text.replace(/ufia/gi, 'uña')
+               .replace(/fio/gi, 'ño')
+               .replace(/fia/gi, 'ña')
+               .replace(/iriba/gi, 'i riba')
+               .replace(/\brba\b/gi, 'riba')
+               .replace(/ll['’]?imperí?/gi, "i l'imperi")
+               .replace(/il['’]?imperí?/gi, "i l'imperi")
+               .replace(/l['’]?imperí?/gi, "l'imperi");
     
     statusMsg.innerText = '✅ Text extret. Enviant...';
-    sendToServer('portada', cleanedText);
+    sendToServer('portada', text);
     
     setTimeout(() => {
       if (currentMode === 'portada') startPortadaCamera();
     }, 3000);
     
   } catch (err) {
-    console.error("Error OCR Híbrid:", err);
+    console.error("Error OCR local mòbil:", err);
     statusMsg.innerText = '❌ Error OCR: ' + err.message;
     setTimeout(() => {
       if (currentMode === 'portada') startPortadaCamera();
@@ -872,6 +996,9 @@ function preprocessImage(videoEl, canvasEl, cropRect) {
 }
 
 async function runOcrTick() {
+  // Actualitzem l'estat del botó de flash a cada tick per assegurar-nos que es mostra quan la càmera està a punt
+  updateTorchBtnUI();
+
   const videoElDiagnostic = document.querySelector('#reader video');
   console.log(`runOcrTick: isActive=${isScannerActive}, mode=${currentMode}, isOcrProcessing=${isOcrProcessing}, isProcessing=${isProcessing}, video=${!!videoElDiagnostic}`);
 
@@ -909,9 +1036,9 @@ async function runOcrTick() {
     const canvas = document.getElementById('ocr-canvas');
     preprocessImage(videoEl, canvas, { x: cropX, y: cropY, width: cropWidth, height: cropHeight });
     
-    // Limit charlist to speed up recognition
+    // Whitelist inclou lletres que l'OCR confon amb dígits (O→0, l/I→1, B→8, etc.)
     await tesseractWorker.setParameters({
-      tesseract_char_whitelist: '0123456789-ISBNisbnXx '
+      tesseract_char_whitelist: '0123456789-ISBNisbnXxOolLIiGgBbSsQq:. '
     });
     
     // Perform OCR
@@ -928,11 +1055,12 @@ async function runOcrTick() {
     if (isbn) {
       if (isScannerActive && !isProcessing) {
         isProcessing = true;
-        document.getElementById('status-message').innerText = 'ISBN Detectat (OCR): ' + isbn;
+        document.getElementById('status-message').innerText = '✅ ISBN enviat: ' + isbn + ' — Clica «Encendre Càmera» per llegir un altre.';
         sendToServer('isbn', isbn);
-        setTimeout(() => { isProcessing = false; }, 3000); // Debounce
+        // Aturem la càmera: l'usuari ha d'engegar-la manualment per llegir el següent
         isOcrProcessing = false;
-        return; // Break OCR cycle since we found one
+        await stopIsbnScanner();
+        return; // Trenquem el cicle OCR
       }
     } else if (text.trim().length > 0) {
       console.log("OCR: Text detectat, però cap ISBN vàlid.");
@@ -943,4 +1071,155 @@ async function runOcrTick() {
   
   isOcrProcessing = false;
   ocrTimeoutId = setTimeout(() => runOcrTick(), 600);
+}
+
+// Helpers per controlar el Flash/Torch des de la WebApp
+function getActiveTrack() {
+  if (currentMode === 'isbn') {
+    if (html5QrCode && html5QrCode.isScanning) {
+      try {
+        const track = html5QrCode.getActiveCameraTrack();
+        if (track) return track;
+      } catch (e) {
+        // Fallback silenciós si encara no s'ha iniciat completament
+      }
+    }
+    // Fallback: buscar element video de html5-qrcode
+    const video = document.querySelector('#reader video');
+    if (video && video.srcObject) {
+      try {
+        const tracks = video.srcObject.getVideoTracks();
+        if (tracks && tracks.length > 0) {
+          return tracks[0];
+        }
+      } catch (e) {
+        console.warn("Error obtenint pistes del video fallback en mode ISBN:", e);
+      }
+    }
+  } else if (currentMode === 'portada') {
+    if (stream) {
+      const tracks = stream.getVideoTracks();
+      if (tracks && tracks.length > 0) {
+        return tracks[0];
+      }
+    }
+    const video = document.getElementById('ocr-video');
+    if (video && video.srcObject) {
+      try {
+        const tracks = video.srcObject.getVideoTracks();
+        if (tracks && tracks.length > 0) {
+          return tracks[0];
+        }
+      } catch (e) {}
+    }
+  }
+  return null;
+}
+
+async function toggleTorch() {
+  const track = getActiveTrack();
+  if (!track) return;
+  
+  try {
+    if (typeof track.getCapabilities !== 'function') return;
+    
+    const capabilities = track.getCapabilities();
+    if (!capabilities.torch) return;
+    
+    isTorchOn = !isTorchOn;
+    await track.applyConstraints({
+      advanced: [{ torch: isTorchOn }]
+    });
+    
+    updateTorchBtnUI();
+  } catch (err) {
+    console.error("Error toggling torch:", err);
+  }
+}
+
+function updateTorchBtnUI() {
+  const btn = document.getElementById('btn-flash');
+  if (!btn) return;
+  
+  const track = getActiveTrack();
+  let supported = false;
+  
+  if (track && typeof track.getCapabilities === 'function') {
+    const capabilities = track.getCapabilities();
+    if (capabilities.torch) {
+      supported = true;
+    }
+  }
+  
+  if (supported) {
+    btn.style.display = 'inline-flex';
+    if (isTorchOn) {
+      btn.innerHTML = '⚡ Apagar Flash';
+      btn.style.background = '#fcf3cf';
+      btn.style.color = '#b7950b';
+      btn.style.borderColor = '#b7950b';
+    } else {
+      btn.innerHTML = '💡 Encendre Flash';
+      btn.style.background = '#fffbeb';
+      btn.style.color = '#d35400';
+      btn.style.borderColor = '#f1c40f';
+    }
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+// Helpers per activar / desactivar la càmera
+function isCameraActive() {
+  if (currentMode === 'isbn') {
+    return isScannerActive;
+  } else {
+    return stream !== null;
+  }
+}
+
+async function toggleCamera() {
+  const statusMsg = document.getElementById('status-message');
+  if (isCameraActive()) {
+    console.log("[Camera] Desactivant càmera per petició de l'usuari...");
+    if (currentMode === 'isbn') {
+      await stopIsbnScanner();
+    } else {
+      stopPortadaCamera();
+    }
+    statusMsg.innerText = "📷 Càmera desactivada. Clica per activar-la de nou.";
+  } else {
+    console.log("[Camera] Re-activant càmera...");
+    if (currentMode === 'isbn') {
+      await startIsbnScanner();
+      statusMsg.innerText = "Enfoca un codi de barres o el text de l'ISBN";
+    } else {
+      await startPortadaCamera();
+      statusMsg.innerText = "Enfoca la portada i fes una foto";
+    }
+  }
+  updateCameraToggleBtnUI();
+}
+
+function updateCameraToggleBtnUI() {
+  const btnToggleCamera = document.getElementById('btn-toggle-camera');
+  if (!btnToggleCamera) return;
+  
+  if (isCameraActive()) {
+    btnToggleCamera.style.display = 'inline-flex';
+    btnToggleCamera.innerText = "📷 Apagar Càmera";
+    btnToggleCamera.style.border = "1px solid #3498db";
+    btnToggleCamera.style.background = "#ebf5fb";
+    btnToggleCamera.style.color = "#2980b9";
+  } else {
+    btnToggleCamera.style.display = 'inline-flex';
+    btnToggleCamera.innerText = "📷 Encendre Càmera";
+    btnToggleCamera.style.border = "1px solid #27ae60";
+    btnToggleCamera.style.background = "#e8f8f5";
+    btnToggleCamera.style.color = "#27ae60";
+    
+    // Si la càmera està apagada, també ocultem el flash
+    const btnFlash = document.getElementById('btn-flash');
+    if (btnFlash) btnFlash.style.display = 'none';
+  }
 }
