@@ -18,8 +18,7 @@ echo.
 
 :: Tancar qualsevol servidor anterior que estigui ocupant els ports 8080 o 8443
 echo Netejant sessions anteriors...
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8080 2^>nul') do taskkill /F /PID %%a 2>nul
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8443 2^>nul') do taskkill /F /PID %%a 2>nul
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr /r /c:":8080 " /c:":8443 " 2^>nul') do taskkill /F /PID %%a 2>nul
 
 echo S'està iniciant el servidor local de sincronització...
 :: Iniciem el servidor python en segon pla
