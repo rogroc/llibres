@@ -32,8 +32,3 @@ timeout /t 2 /nobreak >nul
 :: Obrim la pàgina de registre de la intranet real
 start chrome "https://www.llibreviu.org/admin/registre/"
 
-:: Esperem 3 segons per evitar col·lisions
-timeout /t 3 /nobreak >nul
-
-:: Obrim el lector en local (HTTP) per sincronitzar amb el mòbil (codi QR)
-start chrome "http://localhost:8080/desktop/"
