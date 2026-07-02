@@ -1,0 +1,500 @@
+[2026-07-01 19:10:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-01 19:10:43] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:10:48] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:10:53] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:10:54] [Session: yz2np7xh] log: [log] [History] Ignorat popstate programàtic
+[2026-07-01 19:10:54] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:18 -> scanning:19). Descarregant detalls...
+[2026-07-01 19:10:54] [Session: yz2np7xh] log: [log] Estat de la sessió: selection -> scanning
+[2026-07-01 19:10:55] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-01 19:10:55] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-01 19:10:55] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-01 19:10:55] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-01 19:10:56] [Session: yz2np7xh] log: [warn] [Camera] Error amb restriccions 4K, provant restriccions posteriors estàndard... {}
+[2026-07-01 19:10:56] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-01 19:10:58] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:11:03] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:11:06] [Session: yz2np7xh] portada-captured: 
+[2026-07-01 19:11:06] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:19 -> searching:20). Descarregant detalls...
+[2026-07-01 19:11:06] [Session: yz2np7xh] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-01 19:11:07] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-01 19:11:07] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-01 19:11:07] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-01 19:11:07] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-01 19:11:08] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:11:09] [Session: yz2np7xh] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-01 19:11:13] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:11:14] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (searching:20 -> selection:21). Descarregant detalls...
+[2026-07-01 19:11:14] [Session: yz2np7xh] log: [log] Estat de la sessió: searching -> selection
+[2026-07-01 19:11:15] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-01 19:11:15] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-01 19:11:18] [Session: yz2np7xh] log: [log] Llibre seleccionat al mòbil: El Monestir de Sant Llorenç del Munt sobre Terrassa : diplomatari dels segles X i XI
+[2026-07-01 19:11:18] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:11:19] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:21 -> filling:22). Descarregant detalls...
+[2026-07-01 19:11:19] [Session: yz2np7xh] log: [log] Estat de la sessió: selection -> filling
+[2026-07-01 19:11:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Message-Sync] Processant estat: filling (v22)
+[2026-07-01 19:11:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-01 19:11:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: filling
+[2026-07-01 19:11:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...
+[2026-07-01 19:11:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📥 Injectant dades: {"key":"/bnc/L/id","title":"El Monestir de Sant Llorenç del Munt sobre Terrassa : diplomatari dels segles X i XI","author_name":["Autor desconegut"],"author":"Autor desconegut","authors":"Autor desconegut","publisher":["Fundació Noguera"],"editorial":"Fundació Noguera","first_publish_year":"1995","year":"1995","any":"1995","publishYear":"1995","isbn":"8479352981","cover":"https://covers.openlibrary.org/b/isbn/8479352981-M.jpg","isISBNMode":false,"source":"BNC","isBNE":true,"subjects":"Monestir de Sant Llorenç del Munt -- Història -- Fonts","matchScore":0.6}
+[2026-07-01 19:11:20] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-01 19:11:20] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Historia de Catalunya" (valor: 2)
+[2026-07-01 19:11:21] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-01 19:11:21] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (filling:22 -> editing:23). Descarregant detalls...
+[2026-07-01 19:11:21] [Session: yz2np7xh] log: [log] Estat de la sessió: filling -> editing
+[2026-07-01 19:11:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-01 19:11:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-01 19:11:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-01 19:11:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: editing
+[2026-07-01 19:11:23] [Session: yz2np7xh] connection: connected
+[2026-07-01 19:11:28] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:02:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Registrant aquesta pestanya com activa al servidor (motiu: visible o buida al servidor).
+[2026-07-02 13:02:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:02:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:02:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:02:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=yz2np7xh).
+[2026-07-02 13:02:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:02:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:02:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:02:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:02:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: editing
+[2026-07-02 13:02:48] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:02:48] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:02:52] [Session: yz2np7xh] log: [log] startIsbnScanner: Iniciant...
+[2026-07-02 13:02:52] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:02:52] [Session: yz2np7xh] reset: 
+[2026-07-02 13:02:53] [Session: yz2np7xh] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-02 13:02:53] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:2). Descarregant detalls...
+[2026-07-02 13:02:54] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:02:54] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:02:54] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:02:54] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:02:54] [Session: yz2np7xh] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-02 13:02:54] [Session: yz2np7xh] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-02 13:02:55] [Session: yz2np7xh] error: Script error. at :0:0
+[2026-07-02 13:02:56] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-02 13:02:57] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:01] [Session: yz2np7xh] portada-captured: 
+[2026-07-02 13:03:01] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:2 -> searching:3). Descarregant detalls...
+[2026-07-02 13:03:01] [Session: yz2np7xh] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-02 13:03:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-02 13:03:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:03:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:02] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:04] [Session: yz2np7xh] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-02 13:03:07] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:07] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (searching:3 -> selection:4). Descarregant detalls...
+[2026-07-02 13:03:07] [Session: yz2np7xh] log: [log] Estat de la sessió: searching -> selection
+[2026-07-02 13:03:08] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:08] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-02 13:03:10] [Session: yz2np7xh] log: [log] Llibre seleccionat al mòbil: Tota la veritat
+[2026-07-02 13:03:12] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:03:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: filling
+[2026-07-02 13:03:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📥 Injectant dades: {"key":"/bne/L/id","title":"Tota la veritat","author_name":["Ferran  autor Casas"],"author":"Ferran  autor Casas","authors":"Ferran  autor Casas","publisher":["Ara Llibres"],"editorial":"Ara Llibres","first_publish_year":"2019","year":"2019","any":"2019","publishYear":"2019","isbn":"9788417804183","cover":"https://covers.openlibrary.org/b/isbn/9788417804183-M.jpg","isISBNMode":false,"source":"BNE","isBNE":true,"subjects":"Autodeterminación nacional -- Cataluña, Cataluña -- Política y gobierno -- 2010-2016, Cataluña -- Política y gobierno -- 2016-2018","matchScore":0.8666666666666667}
+[2026-07-02 13:03:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...
+[2026-07-02 13:03:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-02 13:03:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-02 13:03:14] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:4 -> filling:7). Descarregant detalls...
+[2026-07-02 13:03:14] [Session: yz2np7xh] log: [log] Estat de la sessió: selection -> filling
+[2026-07-02 13:03:15] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:03:15] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-02 13:03:15] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Sociologia - Poli­tica" (valor: 23)
+[2026-07-02 13:03:17] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:18] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:03:18] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (filling:7 -> editing:8). Descarregant detalls...
+[2026-07-02 13:03:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:03:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:03:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Message-Sync] Processant estat: editing (v8)
+[2026-07-02 13:03:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:03:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: editing
+[2026-07-02 13:03:19] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:03:22] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:27] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:32] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:37] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:39] [Session: yz2np7xh] log: [log] [History] Ignorat popstate programàtic
+[2026-07-02 13:03:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:03:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:03:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:40] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (editing:8 -> scanning:9). Descarregant detalls...
+[2026-07-02 13:03:41] [Session: yz2np7xh] log: [log] Estat de la sessió: editing -> scanning
+[2026-07-02 13:03:42] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-02 13:03:42] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:47] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:49] [Session: yz2np7xh] portada-captured: 
+[2026-07-02 13:03:49] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:49] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-02 13:03:49] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:03:49] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:03:49] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:9 -> searching:10). Descarregant detalls...
+[2026-07-02 13:03:49] [Session: yz2np7xh] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-02 13:03:52] [Session: yz2np7xh] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-02 13:03:52] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:03:57] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:02] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:03] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:04:03] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-02 13:04:03] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (searching:10 -> selection:11). Descarregant detalls...
+[2026-07-02 13:04:03] [Session: yz2np7xh] log: [log] Estat de la sessió: searching -> selection
+[2026-07-02 13:04:07] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:10] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-02 13:04:12] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:17] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:22] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:27] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:32] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:37] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:42] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:47] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:52] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:04:57] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:02] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:07] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:12] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:17] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:22] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:27] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:32] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:37] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:42] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:47] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:52] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:05:57] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:02] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:07] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:12] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:17] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:22] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:27] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:32] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:37] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:42] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:47] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:52] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:06:57] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:02] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:07] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:12] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:17] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:22] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-02 13:07:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-02 13:07:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:07:24] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:11 -> selection:13). Descarregant detalls...
+[2026-07-02 13:07:27] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:30] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=yz2np7xh).
+[2026-07-02 13:07:30] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 👁️ Inicialització: registrant pàgina com activa...
+[2026-07-02 13:07:30] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:07:30] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:13 -> selection:14). Descarregant detalls...
+[2026-07-02 13:07:31] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:07:31] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-02 13:07:32] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:07:36] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:07:59] [Session: yz2np7xh] log: [log] [History] Popstate detectat. Target: scanning, depth: 0
+[2026-07-02 13:08:12] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:08:13] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:08:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:08:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:08:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:08:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:08:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:08:14] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:08:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-02 13:08:58] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:08:58] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:08:59] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:08:59] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:08:59] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:08:59] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:08:59] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:08:59] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:09:00] [Session: yz2np7xh] log: [log] startIsbnScanner: Iniciant...
+[2026-07-02 13:09:00] [Session: yz2np7xh] reset: 
+[2026-07-02 13:09:00] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:00] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:09:00] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:09:00] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:09:00] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:09:01] [Session: yz2np7xh] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-02 13:09:01] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:2). Descarregant detalls...
+[2026-07-02 13:09:02] [Session: yz2np7xh] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-02 13:09:03] [Session: yz2np7xh] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-02 13:09:04] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:04] [Session: yz2np7xh] log: [log] OCR Text read: 
+[2026-07-02 13:09:05] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:05] [Session: yz2np7xh] log: [log] OCR Text read: 
+[2026-07-02 13:09:05] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:05] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:05] [Session: yz2np7xh] log: [log] OCR Text read: E .
+[2026-07-02 13:09:06] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:06] [Session: yz2np7xh] log: [log] OCR Text read: 
+[2026-07-02 13:09:07] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:08] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:08] [Session: yz2np7xh] log: [log] OCR Text read: 
+[2026-07-02 13:09:08] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:08] [Session: yz2np7xh] log: [log] OCR Text read: 
+[2026-07-02 13:09:09] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:09] [Session: yz2np7xh] log: [log] OCR Text read: 
+[2026-07-02 13:09:10] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:10] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:10] [Session: yz2np7xh] log: [log] OCR Text read: AAA TEEN | BEAT
+®
+A | CQ
+[2026-07-02 13:09:11] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:12] [Session: yz2np7xh] log: [log] OCR Text read: yr
+Grier
+
+/ 4 sh
+2G
+
+Pp ry i
+[2026-07-02 13:09:12] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:13] [Session: yz2np7xh] log: [log] OCR Text read: — ——
+- =
+5 4
+[2026-07-02 13:09:13] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:14] [Session: yz2np7xh] log: [log] OCR Text read: pr 9
+hs |
+[2026-07-02 13:09:14] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:15] [Session: yz2np7xh] log: [log] OCR Text read: : = <2
+[2026-07-02 13:09:15] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:15] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:16] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:17] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:09:18] [Session: yz2np7xh] log: [log] OCR Text read: | SY
+Res QO
+“NX
+QQ
+AES
+~ TS, is !
+- RE S55
+Se
+So 4
+[2026-07-02 13:09:18] [Session: yz2np7xh] log: [log] runOcrTick: isActive=false, mode=portada, isOcrProcessing=false, isProcessing=false, video=false
+[2026-07-02 13:09:19] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-02 13:09:20] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:24] [Session: yz2np7xh] portada-captured: 
+[2026-07-02 13:09:24] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:2 -> searching:3). Descarregant detalls...
+[2026-07-02 13:09:24] [Session: yz2np7xh] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-02 13:09:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:09:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:09:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-02 13:09:24] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:09:25] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:27] [Session: yz2np7xh] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-02 13:09:29] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (searching:3 -> selection:4). Descarregant detalls...
+[2026-07-02 13:09:29] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:09:29] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-02 13:09:30] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:35] [Session: yz2np7xh] log: [log] Llibre seleccionat al mòbil: Toda la verdad
+[2026-07-02 13:09:35] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:37] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:09:37] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📥 Injectant dades: {"key":"/bne/L/id","title":"Toda la verdad","author_name":["Ferran  autor Casas"],"author":"Ferran  autor Casas","authors":"Ferran  autor Casas","publisher":["Ara Llibres"],"editorial":"Ara Llibres","first_publish_year":"2020","year":"2020","any":"2020","publishYear":"2020","isbn":"9788417804411","cover":"https://covers.openlibrary.org/b/isbn/9788417804411-M.jpg","isISBNMode":false,"source":"BNE","isBNE":true,"subjects":"Autodeterminación nacional -- Cataluña, Cataluña -- Política y gobierno -- 2010-2016, Cataluña -- Política y gobierno -- 2016-2018","matchScore":0.4666666666666667}
+[2026-07-02 13:09:37] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: filling
+[2026-07-02 13:09:37] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...
+[2026-07-02 13:09:38] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:4 -> filling:5). Descarregant detalls...
+[2026-07-02 13:09:38] [Session: yz2np7xh] log: [log] Estat de la sessió: selection -> filling
+[2026-07-02 13:09:38] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Sociologia - Poli­tica" (valor: 23)
+[2026-07-02 13:09:38] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-02 13:09:40] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:43] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:09:44] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:09:44] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:09:44] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (filling:5 -> editing:6). Descarregant detalls...
+[2026-07-02 13:09:44] [Session: yz2np7xh] log: [log] Estat de la sessió: filling -> editing
+[2026-07-02 13:09:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Message-Sync] Processant estat: editing (v6)
+[2026-07-02 13:09:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:09:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: editing
+[2026-07-02 13:09:45] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:09:50] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:09:55] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:10:00] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:10:05] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:10:09] [Session: yz2np7xh] log: [log] [History] Ignorat popstate programàtic
+[2026-07-02 13:10:10] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:10:10] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:10:10] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:10:10] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:10:10] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:10:10] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (editing:6 -> scanning:7). Descarregant detalls...
+[2026-07-02 13:10:10] [Session: yz2np7xh] log: [log] Estat de la sessió: editing -> scanning
+[2026-07-02 13:10:11] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-02 13:10:21] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-02 13:18:20] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=yz2np7xh).
+[2026-07-02 13:18:20] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:18:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:18:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:18:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-02 13:18:22] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-02 13:18:23] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:23] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:18:23] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:18:23] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:23] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:18:23] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:18:39] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:18:39] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:18:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:18:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:18:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:18:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:18:41] [Session: yz2np7xh] log: [log] startIsbnScanner: Iniciant...
+[2026-07-02 13:18:42] [Session: yz2np7xh] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-02 13:18:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:18:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:18:42] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:42] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:2). Descarregant detalls...
+[2026-07-02 13:18:43] [Session: yz2np7xh] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-02 13:18:43] [Session: yz2np7xh] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-02 13:18:44] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:18:45] [Session: yz2np7xh] log: [log] OCR Text read: CT ——
+
+LL
+
+:
+LT
+LL TT
+ro ed 54 0)
+[2026-07-02 13:18:46] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-02 13:18:46] [Session: yz2np7xh] log: [log] runOcrTick: isActive=false, mode=portada, isOcrProcessing=false, isProcessing=false, video=false
+[2026-07-02 13:18:46] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:18:51] [Session: yz2np7xh] portada-captured: 
+[2026-07-02 13:18:51] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:18:51] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:2 -> searching:3). Descarregant detalls...
+[2026-07-02 13:18:51] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-02 13:18:51] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:51] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:18:51] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:51] [Session: yz2np7xh] log: [warn] No s'ha pogut auto-activar el flash de fons: {}
+[2026-07-02 13:18:54] [Session: yz2np7xh] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-02 13:18:56] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:18:56] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (searching:3 -> selection:4). Descarregant detalls...
+[2026-07-02 13:18:56] [Session: yz2np7xh] log: [log] Estat de la sessió: searching -> selection
+[2026-07-02 13:18:56] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-02 13:18:56] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:18:59] [Session: yz2np7xh] log: [log] Llibre seleccionat al mòbil: Tota la veritat
+[2026-07-02 13:19:01] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Message-Sync] Processant estat: filling (v5)
+[2026-07-02 13:19:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:19:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: filling
+[2026-07-02 13:19:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📥 Injectant dades: {"key":"/bne/L/id","title":"Tota la veritat","author_name":["Ferran  autor Casas"],"author":"Ferran  autor Casas","authors":"Ferran  autor Casas","publisher":["Ara Llibres"],"editorial":"Ara Llibres","first_publish_year":"2019","year":"2019","any":"2019","publishYear":"2019","isbn":"9788417804183","cover":"https://covers.openlibrary.org/b/isbn/9788417804183-M.jpg","isISBNMode":false,"source":"BNE","isBNE":true,"subjects":"Autodeterminación nacional -- Cataluña, Cataluña -- Política y gobierno -- 2010-2016, Cataluña -- Política y gobierno -- 2016-2018","matchScore":0.8666666666666667}
+[2026-07-02 13:19:02] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:4 -> filling:5). Descarregant detalls...
+[2026-07-02 13:19:02] [Session: yz2np7xh] log: [log] Estat de la sessió: selection -> filling
+[2026-07-02 13:19:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-02 13:19:02] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Sociologia - Poli­tica" (valor: 23)
+[2026-07-02 13:19:05] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:19:05] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Message-Sync] Processant estat: editing (v6)
+[2026-07-02 13:19:05] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:19:05] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:19:05] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (filling:5 -> editing:6). Descarregant detalls...
+[2026-07-02 13:19:05] [Session: yz2np7xh] log: [log] Estat de la sessió: filling -> editing
+[2026-07-02 13:19:05] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:19:05] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: editing
+[2026-07-02 13:19:06] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:19:06] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:11] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:16] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:20] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-02 13:19:21] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:26] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:31] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:36] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:41] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:46] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:51] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:19:56] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:01] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:06] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:11] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:16] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:21] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:26] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:31] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:36] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:41] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:46] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:51] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:20:56] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:01] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:06] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:11] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:16] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:21] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:26] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:31] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:36] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:41] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:46] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:51] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:21:56] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:01] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:06] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:11] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:16] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:21] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:26] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:31] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:36] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:37] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (editing:6 -> scanning:0). Descarregant detalls...
+[2026-07-02 13:22:39] [Session: yz2np7xh] log: [log] [Camera] ocr-video plays successfully
+[2026-07-02 13:22:40] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.
+[2026-07-02 13:22:40] [Session: yz2np7xh] log: [log] [History] Popstate detectat. Target: editing, depth: 2
+[2026-07-02 13:22:40] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:0 -> editing:2). Descarregant detalls...
+[2026-07-02 13:22:40] [Session: yz2np7xh] log: [warn] No s'ha pogut auto-activar el flash de fons: {}
+[2026-07-02 13:22:41] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-02 13:22:41] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-02 13:22:41] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-02 13:22:41] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: editing
+[2026-07-02 13:22:41] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:42] [Session: yz2np7xh] log: [log] [History] Popstate detectat. Target: selection, depth: 1
+[2026-07-02 13:22:42] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (editing:2 -> selection:3). Descarregant detalls...
+[2026-07-02 13:22:43] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:22:43] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] Estat de la sincronització: selection
+[2026-07-02 13:22:44] [Session: yz2np7xh] log: [log] [History] Popstate detectat. Target: scanning, depth: 0
+[2026-07-02 13:22:44] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (selection:3 -> scanning:4). Descarregant detalls...
+[2026-07-02 13:22:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:22:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:22:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:22:45] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:22:51] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
+[2026-07-02 13:22:52] [Session: yz2np7xh] log: [log] startIsbnScanner: Iniciant...
+[2026-07-02 13:22:52] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:52] [Session: yz2np7xh] reset: 
+[2026-07-02 13:22:52] [Session: yz2np7xh] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-02 13:22:53] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] [Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-02 13:22:53] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:22:53] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🧹 Netejant fitxer de portada i previsualitzacions del formulari...
+[2026-07-02 13:22:53] [Session: yz2np7xh] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=yz2np7xh] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-02 13:22:53] [Session: yz2np7xh] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:5). Descarregant detalls...
+[2026-07-02 13:22:53] [Session: yz2np7xh] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-02 13:22:54] [Session: yz2np7xh] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-02 13:22:55] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:22:56] [Session: yz2np7xh] log: [log] OCR Text read: [ Ww E [+] 6
+_€ [+]
+
+Dog:
+J X ci.
+[2026-07-02 13:22:57] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:22:57] [Session: yz2np7xh] connection: connected
+[2026-07-02 13:22:57] [Session: yz2np7xh] log: [log] OCR Text read: 80
+
+| 6 |
+|
+JOE Y u
+[2026-07-02 13:22:58] [Session: yz2np7xh] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-02 13:23:00] [Session: yz2np7xh] log: [log] OCR Text read: CT — EE Ne =
+~- N
+TI ——
+1HHEHE
+, pt =
+#% z
+s ded 7)z1-=
+[2026-07-02 13:23:00] [Session: yz2np7xh] log: [log] [Session] Active Session ID: yz2np7xh
