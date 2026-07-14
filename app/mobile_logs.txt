@@ -1,0 +1,500 @@
+[2026-07-13 23:41:24] [Session: swtltusu] portada-captured: 
+[2026-07-13 23:41:24] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:2 -> searching:3). Descarregant detalls...
+[2026-07-13 23:41:24] [Session: swtltusu] log: [warn] No s'ha pogut auto-activar el flash de fons: {}
+[2026-07-13 23:41:24] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-13 23:41:24] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-13 23:41:26] [Session: swtltusu] connection: connected
+[2026-07-13 23:41:27] [Session: swtltusu] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-13 23:41:30] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:3 -> selection:4). Descarregant detalls...
+[2026-07-13 23:41:30] [Session: swtltusu] log: [log] Estat de la sessió: searching -> selection
+[2026-07-13 23:41:30] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: selection (v4)
+[2026-07-13 23:41:30] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-13 23:41:30] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: selection
+[2026-07-13 23:41:31] [Session: swtltusu] connection: connected
+[2026-07-13 23:41:36] [Session: swtltusu] connection: connected
+[2026-07-13 23:41:37] [Session: swtltusu] log: [log] Llibre seleccionat al mòbil: Tota la veritat
+[2026-07-13 23:41:40] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (selection:4 -> filling:5). Descarregant detalls...
+[2026-07-13 23:41:40] [Session: swtltusu] log: [log] Estat de la sessió: selection -> filling
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: filling (v5)
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: filling
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 📥 Injectant dades: {"key":"/bne/L/id","title":"Tota la veritat","author_name":["Ferran  autor Casas"],"author":"Ferran  autor Casas","authors":"Ferran  autor Casas","publisher":["Ara Llibres"],"editorial":"Ara Llibres","year":"2019","any":"2019","publishYear":"2019","first_publish_year":"2019","isbn":"9788417804183","cover":"https://covers.openlibrary.org/b/isbn/9788417804183-M.jpg","matchScore":0.8666666666666667,"isISBNMode":false,"source":"BNE","isBNE":true,"subjects":"Autodeterminación nacional -- Cataluña, Cataluña -- Política y gobierno -- 2010-2016, Cataluña -- Política y gobierno -- 2016-2018","_ocr":{"titol":"TOTA LA VERITAT","autor":"Ferran Casas, Odei A.-Etxearte, Marc Martínez Amat, Roger Mateos, Gerard Pruna, Neus Tomàs","editorial":"ara llibres","id_tema":""}}
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...
+[2026-07-13 23:41:41] [Session: swtltusu] connection: connected
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Sociologia - Poli­tica" (valor: 23)
+[2026-07-13 23:41:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-13 23:41:44] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-13 23:41:44] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (filling:5 -> editing:6). Descarregant detalls...
+[2026-07-13 23:41:44] [Session: swtltusu] log: [log] Estat de la sessió: filling -> editing
+[2026-07-13 23:41:45] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-13 23:41:45] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: editing (v6)
+[2026-07-13 23:41:45] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-13 23:41:46] [Session: swtltusu] connection: connected
+[2026-07-13 23:41:46] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-13 23:41:46] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: editing
+[2026-07-13 23:41:51] [Session: swtltusu] connection: connected
+[2026-07-13 23:41:56] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:01] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:03] [Session: swtltusu] log: [log] [History] Ignorat popstate programàtic
+[2026-07-13 23:42:03] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (editing:6 -> scanning:7). Descarregant detalls...
+[2026-07-13 23:42:03] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-13 23:42:03] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-13 23:42:04] [Session: swtltusu] log: [log] [Camera] ocr-video plays successfully
+[2026-07-13 23:42:06] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:09] [Session: swtltusu] portada-captured: 
+[2026-07-13 23:42:10] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:7 -> searching:8). Descarregant detalls...
+[2026-07-13 23:42:10] [Session: swtltusu] log: [warn] No s'ha pogut auto-activar el flash de fons: {}
+[2026-07-13 23:42:11] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-13 23:42:11] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-13 23:42:11] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:12] [Session: swtltusu] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-13 23:42:15] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:8 -> selection:9). Descarregant detalls...
+[2026-07-13 23:42:15] [Session: swtltusu] log: [log] Estat de la sessió: searching -> selection
+[2026-07-13 23:42:15] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: selection (v9)
+[2026-07-13 23:42:15] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: selection
+[2026-07-13 23:42:15] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-13 23:42:16] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:21] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:25] [Session: swtltusu] log: [log] Llibre seleccionat al mòbil: Esglèsia, territori i sociabilitat als segles XVII-XIX
+[2026-07-13 23:42:25] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (selection:9 -> filling:10). Descarregant detalls...
+[2026-07-13 23:42:25] [Session: swtltusu] log: [log] Estat de la sessió: selection -> filling
+[2026-07-13 23:42:26] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: filling (v10)
+[2026-07-13 23:42:26] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-13 23:42:26] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:26] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Historia de Catalunya" (valor: 2)
+[2026-07-13 23:42:26] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-13 23:42:27] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-13 23:42:27] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (filling:10 -> editing:11). Descarregant detalls...
+[2026-07-13 23:42:27] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: editing (v11)
+[2026-07-13 23:42:27] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-13 23:42:27] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-13 23:42:31] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:36] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:41] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:46] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:51] [Session: swtltusu] connection: connected
+[2026-07-13 23:42:52] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-13 23:42:56] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:01] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:06] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:11] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:16] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:21] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:26] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:31] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:36] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:41] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:46] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:51] [Session: swtltusu] connection: connected
+[2026-07-13 23:43:56] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:01] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:06] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:11] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:16] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:21] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:26] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:31] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:36] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:41] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:46] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:51] [Session: swtltusu] connection: connected
+[2026-07-13 23:44:56] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:01] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:06] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:11] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:16] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:21] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:26] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:31] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:36] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:41] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:46] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:51] [Session: swtltusu] connection: connected
+[2026-07-13 23:45:56] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:01] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:06] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:11] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:16] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:21] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:26] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:31] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:36] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:41] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:46] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:51] [Session: swtltusu] connection: connected
+[2026-07-13 23:46:56] [Session: swtltusu] connection: connected
+[2026-07-13 23:47:01] [Session: swtltusu] connection: connected
+[2026-07-13 23:47:06] [Session: swtltusu] connection: connected
+[2026-07-13 23:47:11] [Session: swtltusu] connection: connected
+[2026-07-13 23:47:16] [Session: swtltusu] connection: connected
+[2026-07-13 23:47:21] [Session: swtltusu] connection: connected
+[2026-07-14 18:21:05] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 👁️ Inicialització: registrant pàgina com activa...
+[2026-07-14 18:21:05] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=swtltusu).
+[2026-07-14 18:21:05] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🚀 Llibreviu Sync: Sincronització de fons gestionada per l'extensió (background.js).
+[2026-07-14 18:22:39] [Session: swtltusu] log: [log] [Session] Active Session ID: swtltusu
+[2026-07-14 18:22:43] [Session: swtltusu] log: [log] startIsbnScanner: Iniciant...
+[2026-07-14 18:22:43] [Session: swtltusu] reset: 
+[2026-07-14 18:22:44] [Session: swtltusu] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-14 18:22:44] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:13). Descarregant detalls...
+[2026-07-14 18:22:48] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:22:48] [Session: swtltusu] connection: connected
+[2026-07-14 18:22:48] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:22:48] [Session: swtltusu] log: [log] qrbox callback: width=330, height=440
+[2026-07-14 18:22:49] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:22:50] [Session: swtltusu] log: [log] OCR Text read: EE —
+[2026-07-14 18:22:50] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:22:50] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:22:51] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:22:51] [Session: swtltusu] log: [log] OCR Text read: BE ——
+[2026-07-14 18:22:53] [Session: swtltusu] log: [log] [Camera] ocr-video plays successfully
+[2026-07-14 18:22:53] [Session: swtltusu] connection: connected
+[2026-07-14 18:22:54] [Session: swtltusu] log: [log] startIsbnScanner: Iniciant...
+[2026-07-14 18:22:54] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:13 -> scanning:14). Descarregant detalls...
+[2026-07-14 18:22:55] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:22:55] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:22:56] [Session: swtltusu] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-14 18:22:57] [Session: swtltusu] log: [log] OCR Text read: E—
+TTT
+[2026-07-14 18:22:58] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:22:58] [Session: swtltusu] connection: connected
+[2026-07-14 18:22:58] [Session: swtltusu] log: [log] OCR Text read: —
+BEEBEaA)
+TTT TI TTT
+[2026-07-14 18:22:59] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:22:59] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:23:00] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:23:00] [Session: swtltusu] log: [log] Barcode detectat: 9788476027172
+[2026-07-14 18:23:00] [Session: swtltusu] isbn: 9788476027172
+[2026-07-14 18:23:01] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:14 -> searching:15). Descarregant detalls...
+[2026-07-14 18:23:03] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:08] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:13] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:18] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:23] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:28] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:33] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:39] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:39] [Session: swtltusu] reset: 
+[2026-07-14 18:23:39] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:15 -> scanning:0). Descarregant detalls...
+[2026-07-14 18:23:40] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:23:41] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:23:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🚀 Llibreviu Sync: Sincronització de fons gestionada per l'extensió (background.js).
+[2026-07-14 18:23:41] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:23:41] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:1 -> scanning:2). Descarregant detalls...
+[2026-07-14 18:23:41] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:23:42] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:23:42] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:23:43] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=swtltusu).
+[2026-07-14 18:23:43] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:43] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:2 -> scanning:3). Descarregant detalls...
+[2026-07-14 18:23:44] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:23:44] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:23:52] [Session: swtltusu] log: [log] [Session] Active Session ID: swtltusu
+[2026-07-14 18:23:53] [Session: swtltusu] log: [log] startIsbnScanner: Iniciant...
+[2026-07-14 18:23:53] [Session: swtltusu] reset: 
+[2026-07-14 18:23:53] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:54] [Session: swtltusu] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-14 18:23:55] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:4). Descarregant detalls...
+[2026-07-14 18:23:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:23:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:23:55] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:23:56] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:23:56] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:23:57] [Session: swtltusu] log: [log] OCR Text read: rE |
+[2026-07-14 18:23:58] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:23:58] [Session: swtltusu] log: [log] OCR Text read: yy ve
+Nf Lv
+Ee. Ie
+[2026-07-14 18:23:58] [Session: swtltusu] connection: connected
+[2026-07-14 18:23:59] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:23:59] [Session: swtltusu] log: [log] OCR Text read: 9 x.
+i ¢
+[2026-07-14 18:24:00] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:00] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:24:00] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:01] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:01] [Session: swtltusu] log: [log] OCR Text read: _»
+[2026-07-14 18:24:02] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:03] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:03] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:24:03] [Session: swtltusu] log: [log] Barcode detectat: 9788476027172
+[2026-07-14 18:24:03] [Session: swtltusu] isbn: 9788476027172
+[2026-07-14 18:24:03] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:03] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:4 -> searching:5). Descarregant detalls...
+[2026-07-14 18:24:03] [Session: swtltusu] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-14 18:24:04] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:24:04] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-14 18:24:04] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:24:04] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:5 -> scanning:6). Descarregant detalls...
+[2026-07-14 18:24:05] [Session: swtltusu] reset: 
+[2026-07-14 18:24:05] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:24:05] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:24:05] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:24:06] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:6 -> scanning:7). Descarregant detalls...
+[2026-07-14 18:24:06] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:24:06] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:07] [Session: swtltusu] log: [log] OCR Text read: —
+[2026-07-14 18:24:07] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:07] [Session: swtltusu] log: [log] OCR Text read: 1 —
+[2026-07-14 18:24:08] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:08] [Session: swtltusu] log: [log] OCR Text read: or
+[2026-07-14 18:24:08] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:09] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:10] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:10] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:24:10] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:10] [Session: swtltusu] log: [log] OCR Text read: ,
+[2026-07-14 18:24:11] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:11] [Session: swtltusu] log: [log] OCR Text read: BR
+[2026-07-14 18:24:12] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:12] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:24:13] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:13] [Session: swtltusu] log: [log] OCR Text read: 4 - |
+[2026-07-14 18:24:13] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:13] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:14] [Session: swtltusu] log: [log] OCR Text read: . gm - <
+[2026-07-14 18:24:14] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:14] [Session: swtltusu] log: [log] OCR Text read: A 1
+[2026-07-14 18:24:15] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:15] [Session: swtltusu] log: [log] OCR Text read: - =
+[2026-07-14 18:24:16] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:16] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:24:16] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:24:17] [Session: swtltusu] log: [log] Barcode detectat: 9788476027172
+[2026-07-14 18:24:17] [Session: swtltusu] isbn: 9788476027172
+[2026-07-14 18:24:17] [Session: swtltusu] log: [log] OCR Text read: LE
+[2026-07-14 18:24:17] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-14 18:24:17] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:24:17] [Session: swtltusu] log: [log] runOcrTick: isActive=false, mode=isbn, isOcrProcessing=false, isProcessing=true, video=false
+[2026-07-14 18:24:17] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:7 -> scanning:9). Descarregant detalls...
+[2026-07-14 18:24:18] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:19] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:24:19] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:24:23] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:29] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:34] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:34] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-14 18:24:38] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:43] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:48] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:53] [Session: swtltusu] connection: connected
+[2026-07-14 18:24:59] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:04] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:08] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:13] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-14 18:25:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-14 18:25:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:25:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:25:14] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:9 -> scanning:11). Descarregant detalls...
+[2026-07-14 18:25:18] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:23] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:29] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:34] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:38] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:43] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:48] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:53] [Session: swtltusu] connection: connected
+[2026-07-14 18:25:58] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:01] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-14 18:26:01] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-14 18:26:01] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:11 -> scanning:13). Descarregant detalls...
+[2026-07-14 18:26:02] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:26:02] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:26:04] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:08] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:12] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:13 -> scanning:0). Descarregant detalls...
+[2026-07-14 18:26:13] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=swtltusu).
+[2026-07-14 18:26:13] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:26:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:26:18] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:23] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:29] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:33] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=swtltusu).
+[2026-07-14 18:26:33] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🚀 Llibreviu Sync: Sincronització de fons gestionada per l'extensió (background.js).
+[2026-07-14 18:26:33] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-14 18:26:33] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:33] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:0 -> scanning:1). Descarregant detalls...
+[2026-07-14 18:26:34] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:26:34] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:26:38] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🟢 Llibreviu Sync Connector activa i escoltant en aquesta pàgina de la intranet (URL: https://www.llibreviu.org/admin/registre/?sid=swtltusu).
+[2026-07-14 18:26:38] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:39] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-14 18:26:39] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-14 18:26:39] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:26:39] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:26:39] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:1 -> scanning:3). Descarregant detalls...
+[2026-07-14 18:26:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 👁️ Pàgina visible: registrant com a pàgina activa...
+[2026-07-14 18:26:41] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🎯 Finestra enfocada: registrant com a pàgina activa...
+[2026-07-14 18:26:41] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:3 -> scanning:5). Descarregant detalls...
+[2026-07-14 18:26:43] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:48] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:52] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:5 -> scanning:0). Descarregant detalls...
+[2026-07-14 18:26:53] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🚀 Llibreviu Sync: Sincronització de fons gestionada per l'extensió (background.js).
+[2026-07-14 18:26:53] [Session: swtltusu] connection: connected
+[2026-07-14 18:26:53] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:0 -> scanning:1). Descarregant detalls...
+[2026-07-14 18:26:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:26:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:26:58] [Session: swtltusu] connection: connected
+[2026-07-14 18:27:05] [Session: swtltusu] log: [log] [Session] Active Session ID: swtltusu
+[2026-07-14 18:27:09] [Session: swtltusu] log: [log] startIsbnScanner: Iniciant...
+[2026-07-14 18:27:09] [Session: swtltusu] connection: connected
+[2026-07-14 18:27:10] [Session: swtltusu] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-14 18:27:10] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:27:10] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:27:10] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:2). Descarregant detalls...
+[2026-07-14 18:27:11] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:27:11] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:27:12] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:13] [Session: swtltusu] log: [log] OCR Text read: |
+[2026-07-14 18:27:13] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:13] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:27:14] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:14] [Session: swtltusu] isbn: 9788476027172
+[2026-07-14 18:27:14] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:2 -> searching:3). Descarregant detalls...
+[2026-07-14 18:27:14] [Session: swtltusu] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-14 18:27:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-14 18:27:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:27:14] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+dinador.
+[2026-07-14 18:27:15] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:3 -> scanning:4). Descarregant detalls...
+[2026-07-14 18:27:15] [Session: swtltusu] log: [log] Estat de la sessió: searching -> scanning
+[2026-07-14 18:27:15] [Session: swtltusu] reset: 
+[2026-07-14 18:27:15] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:27:16] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:27:16] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:27:16] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:4 -> scanning:5). Descarregant detalls...
+[2026-07-14 18:27:16] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:27:17] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:17] [Session: swtltusu] log: [log] OCR Text read: “-
+[2026-07-14 18:27:18] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:18] [Session: swtltusu] log: [log] OCR Text read: -
+[2026-07-14 18:27:18] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:19] [Session: swtltusu] log: [log] OCR Text read: -
+[2026-07-14 18:27:19] [Session: swtltusu] connection: connected
+[2026-07-14 18:27:19] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:19] [Session: swtltusu] log: [log] OCR Text read: vv
+[2026-07-14 18:27:20] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:20] [Session: swtltusu] log: [log] OCR Text read: 
+[2026-07-14 18:27:21] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:22] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:22] [Session: swtltusu] log: [log] OCR Text read: -,
+— Yd
+[2026-07-14 18:27:23] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:27:23] [Session: swtltusu] log: [log] OCR Text read: ,
+[2026-07-14 18:27:25] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-14 18:29:37] [Session: swtltusu] log: [log] [Session] Active Session ID: swtltusu
+[2026-07-14 18:29:38] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🚀 Llibreviu Sync: Sincronització de fons gestionada per l'extensió (background.js).
+[2026-07-14 18:29:39] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:29:39] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:29:41] [Session: swtltusu] log: [log] startIsbnScanner: Iniciant...
+[2026-07-14 18:29:41] [Session: swtltusu] reset: 
+[2026-07-14 18:29:41] [Session: swtltusu] connection: connected
+[2026-07-14 18:29:41] [Session: swtltusu] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-14 18:29:42] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:29:42] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:29:42] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:2). Descarregant detalls...
+[2026-07-14 18:29:42] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:29:43] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:29:43] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:29:44] [Session: swtltusu] log: [log] OCR Text read: we ;
+= Ng Ls
+[2026-07-14 18:29:45] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:29:46] [Session: swtltusu] connection: connected
+[2026-07-14 18:29:46] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:29:46] [Session: swtltusu] log: [log] Barcode detectat: 9788476027172
+[2026-07-14 18:29:46] [Session: swtltusu] isbn: 9788476027172
+[2026-07-14 18:29:46] [Session: swtltusu] log: [log] OCR Text read: HI |
+\
+[2026-07-14 18:29:46] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:29:46] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-14 18:29:47] [Session: swtltusu] log: [log] runOcrTick: isActive=false, mode=isbn, isOcrProcessing=false, isProcessing=true, video=false
+[2026-07-14 18:29:47] [Session: swtltusu] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-14 18:29:49] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: selection (v4)
+[2026-07-14 18:29:49] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:29:49] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: selection
+[2026-07-14 18:29:50] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:3 -> selection:4). Descarregant detalls...
+[2026-07-14 18:29:50] [Session: swtltusu] log: [log] Estat de la sessió: searching -> selection
+[2026-07-14 18:29:51] [Session: swtltusu] connection: connected
+[2026-07-14 18:29:54] [Session: swtltusu] log: [log] Llibre seleccionat al mòbil: Esglèsia, territori i sociabilitat als segles XVII-XIX
+[2026-07-14 18:29:55] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (selection:4 -> filling:5). Descarregant detalls...
+[2026-07-14 18:29:55] [Session: swtltusu] log: [log] Estat de la sessió: selection -> filling
+[2026-07-14 18:29:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: filling (v5)
+[2026-07-14 18:29:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [WARN] ⚠️ No es pot classificar el tema: Clau de l'API de Gemini no configurada. Prem la rodeta ⚙️ per configurar-la.
+[2026-07-14 18:29:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 📥 Injectant dades: {"key":"/isbn/9788476027172","title":"Esglèsia, territori i sociabilitat als segles XVII-XIX","author_name":["Joaquim M. Puigvert i Solà"],"author":"Joaquim M. Puigvert i Solà","authors":"Joaquim M. Puigvert i Solà","publisher":["Eumo Editorial, Universitat de Vic"],"editorial":"Eumo Editorial, Universitat de Vic","year":"2001","any":"2001","publishYear":"2001","first_publish_year":"2001","isbn":"9788476027172","cover":"https://covers.openlibrary.org/b/id/15094382-M.jpg","matchScore":1,"isISBNMode":true,"source":"Open Library","isBNE":false,"subjects":"Catholic Church, Church history, History, Parishes"}
+[2026-07-14 18:29:55] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-14 18:29:56] [Session: swtltusu] connection: connected
+[2026-07-14 18:29:56] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (filling:5 -> editing:6). Descarregant detalls...
+[2026-07-14 18:29:57] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: editing (v6)
+[2026-07-14 18:29:57] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-14 18:29:57] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-14 18:30:01] [Session: swtltusu] connection: connected
+[2026-07-14 18:30:03] [Session: swtltusu] log: [log] [History] Ignorat popstate programàtic
+[2026-07-14 18:30:04] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (editing:6 -> scanning:7). Descarregant detalls...
+[2026-07-14 18:30:04] [Session: swtltusu] reset: 
+[2026-07-14 18:30:04] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:30:04] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:30:05] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:7 -> scanning:8). Descarregant detalls...
+[2026-07-14 18:30:05] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:30:06] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:30:06] [Session: swtltusu] connection: connected
+[2026-07-14 18:30:06] [Session: swtltusu] log: [log] OCR Text read: 2
+[2026-07-14 18:30:06] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:30:47] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔊 Llibreviu Sync: S'ha iniciat l'àudio de fons silenciós per mantenir activa la pestanya en segon pla.
+[2026-07-14 18:30:49] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Sync Widget] Desant configuració localment: clau="AQ.Ab8RN6I...", motor="gemini-api"
+[2026-07-14 18:30:57] [Session: swtltusu] log: [log] [Session] Active Session ID: swtltusu
+[2026-07-14 18:30:58] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:30:58] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:31:01] [Session: swtltusu] log: [log] [Camera] ocr-video plays successfully
+[2026-07-14 18:31:03] [Session: swtltusu] log: [log] startIsbnScanner: Iniciant...
+[2026-07-14 18:31:04] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:31:04] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:31:04] [Session: swtltusu] log: [log] Tesseract Worker (eng) inicialitzat correctament per a ISBN.
+[2026-07-14 18:31:04] [Session: swtltusu] log: [log] [Camera] Seleccionada càmera posterior: camera 0, facing back (eeb7df39041ffd9352a1c4a30a9a85a52766f8a81ffa79de24d61cc0c015ac4e)
+[2026-07-14 18:31:04] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:-1 -> scanning:10). Descarregant detalls...
+[2026-07-14 18:31:05] [Session: swtltusu] log: [log] startIsbnScanner: html5QrCode.start iniciat amb èxit. Cridant runOcrTick...
+[2026-07-14 18:31:06] [Session: swtltusu] log: [log] runOcrTick: isActive=true, mode=isbn, isOcrProcessing=false, isProcessing=false, video=true
+[2026-07-14 18:31:06] [Session: swtltusu] log: [log] OCR Text read: en 7”
+(Ff
+[2026-07-14 18:31:07] [Session: swtltusu] log: [log] [Camera] ocr-video plays successfully
+[2026-07-14 18:31:08] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:13] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:14] [Session: swtltusu] portada-captured: 
+[2026-07-14 18:31:14] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (scanning:10 -> searching:11). Descarregant detalls...
+[2026-07-14 18:31:14] [Session: swtltusu] log: [log] Estat de la sessió: scanning -> searching
+[2026-07-14 18:31:15] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (searching). Alliberant el formulari.
+[2026-07-14 18:31:15] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:31:17] [Session: swtltusu] log: [log] startPortadaCamera: Ignorat perquè l'estat és searching
+[2026-07-14 18:31:18] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:20] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (searching:11 -> selection:12). Descarregant detalls...
+[2026-07-14 18:31:20] [Session: swtltusu] log: [log] Estat de la sessió: searching -> selection
+[2026-07-14 18:31:21] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: selection (v12)
+[2026-07-14 18:31:21] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:31:21] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: selection
+[2026-07-14 18:31:23] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:26] [Session: swtltusu] log: [log] Llibre seleccionat al mòbil: Església, territori i sociabilitat als segles XVII-XIX
+[2026-07-14 18:31:28] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: filling (v13)
+[2026-07-14 18:31:28] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: filling
+[2026-07-14 18:31:28] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...
+[2026-07-14 18:31:28] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:28] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (selection:12 -> filling:13). Descarregant detalls...
+[2026-07-14 18:31:28] [Session: swtltusu] log: [log] Estat de la sessió: selection -> filling
+[2026-07-14 18:31:29] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Tema seleccionat per Gemini des de l'extensió: "Historia de Catalunya" (valor: 2)
+[2026-07-14 18:31:29] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🤖 Traduint els temes al català amb Gemini...
+[2026-07-14 18:31:30] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-14 18:31:30] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (filling:13 -> editing:14). Descarregant detalls...
+[2026-07-14 18:31:30] [Session: swtltusu] log: [log] Estat de la sessió: filling -> editing
+[2026-07-14 18:31:31] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Processant estat: editing (v14)
+[2026-07-14 18:31:31] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...
+[2026-07-14 18:31:31] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.
+[2026-07-14 18:31:31] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] ✅ Portada inserida a l'input de fitxers: pic
+[2026-07-14 18:31:31] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] Estat de la sincronització: editing
+[2026-07-14 18:31:33] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:38] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:42] [Session: swtltusu] log: [log] [History] Ignorat popstate programàtic
+[2026-07-14 18:31:42] [Session: swtltusu] log: [log] [Sync] Canvi d'estat/versió detectat (editing:14 -> scanning:15). Descarregant detalls...
+[2026-07-14 18:31:43] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] [Message-Sync] Estat de cerca o escaneig detectat (scanning). Alliberant el formulari.
+[2026-07-14 18:31:43] [Session: swtltusu] desktop-log: [https://www.llibreviu.org/admin/registre/?sid=swtltusu] [LOG] 🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.
+[2026-07-14 18:31:43] [Session: swtltusu] connection: connected
+[2026-07-14 18:31:44] [Session: swtltusu] log: [log] [Camera] ocr-video plays successfully
