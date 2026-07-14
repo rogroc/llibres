@@ -1143,25 +1143,36 @@ async function extractTextWithGemini(fileOrBlob, apiKey, themeOptions = []) {
     }
   };
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  let text = "";
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Error de l'API de Gemini (${response.status}): ${errText}`);
-  }
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
 
-  const result = await response.json();
-  const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
-    throw new Error("No s'ha pogut extreure text de la resposta de Gemini.");
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Error de l'API de Gemini (${response.status}): ${errText}`);
+    }
+
+    const result = await response.json();
+    text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) {
+      throw new Error("No s'ha pogut extreure text de la resposta de Gemini.");
+    }
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
   }
-  
+  clearTimeout(timeoutId);
   let textClean = text.trim();
   
   // Robust JSON extraction and normalization
@@ -1285,8 +1296,8 @@ async function processPortada() {
       return;
     }
 
-    const selectedEngine = localStorage.getItem('ocr-engine') || 'gemini-api';
-    const apiKey = localStorage.getItem('gemini-api-key') || '';
+    const selectedEngine = latestOcrEngine;
+    const apiKey = latestGeminiApiKey;
 
     if (selectedEngine === 'gemini-api') {
       statusMsg.innerText = '🤖 Extraient text i classificant tema amb Gemini...';
@@ -2134,6 +2145,8 @@ let activeVersion = -1;
 let historyDepth = 0;
 let isProgrammaticBack = false;
 let pcLocked = true;
+let latestOcrEngine = 'gemini-api';
+let latestGeminiApiKey = '';
 
 function startStateSync() {
   const baseUrl = resolveBaseUrl();
@@ -2145,6 +2158,9 @@ function startStateSync() {
       const res = await fetch(buildApiUrl(`/api/session-state?state_only=true&t=${Date.now()}`), { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
+        if (data.ocr_engine) latestOcrEngine = data.ocr_engine;
+        if (data.gemini_api_key) latestGeminiApiKey = data.gemini_api_key;
+        
         if (data.state !== activeState || data.version !== activeVersion) {
           console.log(`[Sync] Canvi d'estat/versió detectat (${activeState}:${activeVersion} -> ${data.state}:${data.version}). Descarregant detalls...`);
           // Obtenim l'estat complet per al canvi de vista (només es crida un cop per canvi d'estat o versió)
@@ -2156,6 +2172,8 @@ function startStateSync() {
               pcLocked = detailData.pc_locked;
               updatePcLockUI();
             }
+            if (detailData.ocr_engine) latestOcrEngine = detailData.ocr_engine;
+            if (detailData.gemini_api_key) latestGeminiApiKey = detailData.gemini_api_key;
             handleStateTransition(detailData);
           }
         }
@@ -2168,6 +2186,8 @@ function startStateSync() {
 
 async function handleStateTransition(data) {
   if (!data || !data.state) return;
+  if (data.ocr_engine) latestOcrEngine = data.ocr_engine;
+  if (data.gemini_api_key) latestGeminiApiKey = data.gemini_api_key;
   if (data.state === activeState) return;
   
   const previousState = activeState;
@@ -2620,12 +2640,12 @@ function renderOutcome(outcome) {
   if (outcome && outcome.success) {
     iconEl.innerText = '✅';
     iconEl.style.color = '#27ae60';
-    titleEl.innerText = 'Llibre desat!';
-    messageEl.innerText = 'La fitxa s\'ha registrat correctament a la base de dades. Preparant per escanejar el següent...';
+    titleEl.innerText = outcome.title || 'Llibre desat!';
+    messageEl.innerText = outcome.message || (outcome && outcome.error) || 'La fitxa s\'ha registrat correctament.';
   } else {
     iconEl.innerText = '❌';
     iconEl.style.color = '#e74c3c';
-    titleEl.innerText = 'Error al desar';
+    titleEl.innerText = outcome.title || 'Error al desar';
     messageEl.innerText = (outcome && outcome.error) ? outcome.error : 'Hi ha hagut un problema en desar la fitxa a la base de dades.';
   }
 }

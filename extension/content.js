@@ -1,12 +1,14 @@
-(function() {
+(function () {
+    let latestGeminiApiKey = '-';
+    let latestOcrEngine = 'gemini-api';
     const hostname = window.location.hostname.toLowerCase();
     const path = window.location.pathname.toLowerCase();
-    let isTargetPage = path.includes('/admin/registre') || 
-                       path.includes('/admin/registres') || 
-                       (hostname === 'www.llibreviu.org' && path.startsWith('/admin/registre'));
+    let isTargetPage = path.includes('/admin/registre') ||
+        path.includes('/admin/registres') ||
+        (hostname === 'www.llibreviu.org' && path.startsWith('/admin/registre'));
 
-    const isDesktopPage = (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) && 
-                          path.startsWith('/desktop/');
+    const isDesktopPage = (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) &&
+        path.startsWith('/desktop/');
 
     const urlParams = new URLSearchParams(window.location.search);
     let sid = urlParams.get('sid') || sessionStorage.getItem('llibreviu_sid');
@@ -84,15 +86,15 @@
     const originalWarn = console.warn;
     const originalError = console.error;
 
-    console.log = function(...args) {
+    console.log = function (...args) {
         originalLog.apply(console, args);
         logToServer('log', args);
     };
-    console.warn = function(...args) {
+    console.warn = function (...args) {
         originalWarn.apply(console, args);
         logToServer('warn', args);
     };
-    console.error = function(...args) {
+    console.error = function (...args) {
         originalError.apply(console, args);
         logToServer('error', args);
     };
@@ -154,16 +156,16 @@
     const processBlob = async (blob) => {
         try {
             const file = new File([blob], 'portada.jpg', { type: blob.type || 'image/jpeg' });
-            
+
             // Trobem tots els inputs de fitxer rellevants (pic, imatge, portada, cover)
             const fileInputs = Array.from(document.querySelectorAll('input[type="file"]')).filter(input => {
                 const name = input.getAttribute('name') || '';
                 return name === 'pic' || name === 'imatge' || name === 'portada' || name === 'cover';
             });
-            
+
             // Si no en trobem cap de filtrat, usem tots els de tipus file de la pàgina
             const targets = fileInputs.length > 0 ? fileInputs : Array.from(document.querySelectorAll('input[type="file"]'));
-            
+
             if (targets.length > 0) {
                 targets.forEach(fileInput => {
                     const dataTransfer = new DataTransfer();
@@ -171,13 +173,13 @@
                     fileInput.files = dataTransfer.files;
                     fileInput.dispatchEvent(new Event('change', { bubbles: true }));
                     console.log(`✅ Portada inserida a l'input de fitxers: ${fileInput.name || 'sense nom'}`);
-                    
+
                     const previewDiv = fileInput.parentElement?.previousElementSibling || fileInput.closest('td')?.querySelector('img') || fileInput.closest('div')?.querySelector('img');
                     let previewImg = null;
                     if (previewDiv) {
                         previewImg = previewDiv.tagName === 'IMG' ? previewDiv : previewDiv.querySelector('img');
                     }
-                    
+
                     if (previewImg) {
                         const reader = new FileReader();
                         reader.onloadend = () => {
@@ -187,7 +189,7 @@
                         reader.readAsDataURL(blob);
                     }
                 });
-                
+
                 // També actualitzem imgAntigua/filaImg generals per coherència si existeixen
                 const imgAntigua = document.getElementById('imgAntigua');
                 if (imgAntigua) {
@@ -211,17 +213,17 @@
         try {
             const imgAntigua = document.getElementById('imgAntigua');
             const tempPreview = document.getElementById('temp-cover-preview');
-            const fileInput = document.querySelector('input[type="file"][name="pic"]') || 
-                              document.querySelector('input[type="file"][name="imatge"]') || 
-                              document.querySelector('input[type="file"][name="portada"]') || 
-                              document.querySelector('input[type="file"][name="cover"]') || 
-                              document.querySelector('input[type="file"]');
-            
+            const fileInput = document.querySelector('input[type="file"][name="pic"]') ||
+                document.querySelector('input[type="file"][name="imatge"]') ||
+                document.querySelector('input[type="file"][name="portada"]') ||
+                document.querySelector('input[type="file"][name="cover"]') ||
+                document.querySelector('input[type="file"]');
+
             let imgEl = null;
             if (tempPreview && tempPreview.src && tempPreview.src.startsWith('data:')) {
                 return tempPreview.src;
             }
-            
+
             if (imgAntigua && imgAntigua.src && !imgAntigua.src.includes('blank.gif') && !imgAntigua.src.includes('no_image') && !imgAntigua.src.includes('no-image')) {
                 imgEl = imgAntigua;
             } else if (fileInput) {
@@ -230,7 +232,7 @@
                     imgEl = parentImg;
                 }
             }
-            
+
             if (imgEl && imgEl.src) {
                 return imgEl.src;
             }
@@ -295,16 +297,16 @@
         const wasSaving = sessionStorage.getItem('llibreviu_sync_saving') === 'true';
         if (wasSaving) {
             sessionStorage.removeItem('llibreviu_sync_saving');
-            
+
             // Comprovem si el Django admin o la intranet mostren missatge d'èxit
-            const isSuccess = document.querySelector('.messagelist .success') || 
-                              document.querySelector('.alert-success') || 
-                              document.body.innerText.includes('correctament') || 
-                              document.body.innerText.includes('correctamente') ||
-                              document.body.innerText.includes('èxit') || 
-                              document.body.innerText.includes('éxito') ||
-                              document.body.innerText.includes('guardado');
-                              
+            const isSuccess = document.querySelector('.messagelist .success') ||
+                document.querySelector('.alert-success') ||
+                document.body.innerText.includes('correctament') ||
+                document.body.innerText.includes('correctamente') ||
+                document.body.innerText.includes('èxit') ||
+                document.body.innerText.includes('éxito') ||
+                document.body.innerText.includes('guardado');
+
             if (isSuccess) {
                 showNotification("✅ Fitxa de llibre desada amb èxit!");
                 safeSendMessage({
@@ -318,10 +320,10 @@
                 });
             } else {
                 // Busquem qualsevol error mostrat al formulari
-                const errorEl = document.querySelector('.messagelist .error') || 
-                                document.querySelector('.alert-danger') || 
-                                document.querySelector('.errornote') ||
-                                document.querySelector('.errorlist');
+                const errorEl = document.querySelector('.messagelist .error') ||
+                    document.querySelector('.alert-danger') ||
+                    document.querySelector('.errornote') ||
+                    document.querySelector('.errorlist');
                 const errMsg = errorEl ? errorEl.innerText.trim() : 'Error en desar el registre al formulari de producció.';
                 showNotification("❌ Error en desar la fitxa!");
                 safeSendMessage({
@@ -340,9 +342,9 @@
     async function classifyThemeWithGemini(book, options, apiKey) {
         const modelName = "gemini-3.1-flash-lite";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-        
+
         const optionsStr = options.map(opt => `- "${opt.text}" (valor: "${opt.value}")`).join('\n');
-        
+
         const prompt = `Classifica el següent llibre en UN dels temes de la llista de classificació de Llibreviu.
 CRÍTIC: Per determinar el tema correcte, analitza detingudament no només els temes originals del catàleg, sinó també el títol del llibre i el nom de l'autor. Has de deduir de forma holística el camp acadèmic o professió de l'autor i la intenció real del títol. Per exemple, si l'autor és un reconegut historiador, el llibre s'ha de classificar com a "Història" (i no com a "Economia"), encara que tracti temes d'història econòmica o social.
 
@@ -445,19 +447,19 @@ Temes a traduir: ${subjects}`;
 
     async function injectBookFields(book) {
         console.log("📥 Injectant dades:", book);
-        
+
         const isbnEl = fieldMap['id_isbn'].el();
         if (isbnEl && book.isbn) {
             isbnEl.value = book.isbn;
             isbnEl.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        
+
         const titolEl = fieldMap['id_titol'].el();
         if (titolEl && book.title) {
             titolEl.value = book.title;
             titolEl.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        
+
         const autorEl = fieldMap['id_autor'].el();
         if (autorEl && (book.authors || book.author)) {
             autorEl.value = book.authors || book.author;
@@ -475,7 +477,7 @@ Temes a traduir: ${subjects}`;
             illustradorEl.value = book.illustrador;
             illustradorEl.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        
+
         const editorialEl = fieldMap['id_editorial'].el();
         if (editorialEl && (book.publisher || book.editorial)) {
             editorialEl.value = book.publisher || book.editorial;
@@ -487,7 +489,7 @@ Temes a traduir: ${subjects}`;
             llocEl.value = book.place || book.lloc_edicio;
             llocEl.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        
+
         const anyEl = fieldMap['id_any'].el();
         if (anyEl && (book.year || book.any || book.publishYear)) {
             anyEl.value = book.year || book.any || book.publishYear;
@@ -505,15 +507,28 @@ Temes a traduir: ${subjects}`;
                     const options = Array.from(temaEl.options)
                         .map(opt => ({ value: opt.value, text: opt.text }))
                         .filter(opt => opt.value !== ""); // Ignore empty option
-                    
+
                     if (options.length > 0) {
-                        console.log("🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...");
-                        const apiKey = '';
-                        const classification = await classifyThemeWithGemini(book, options, apiKey);
-                        if (classification && classification.value !== undefined) {
-                            temaEl.value = classification.value;
-                            temaEl.dispatchEvent(new Event('change', { bubbles: true }));
-                            console.log(`✅ Tema seleccionat per Gemini des de l'extensió: "${classification.text}" (valor: ${classification.value})`);
+                        const apiKey = (latestGeminiApiKey && latestGeminiApiKey !== '-') ? latestGeminiApiKey : '';
+                        if (!apiKey) {
+                            console.warn("⚠️ No es pot classificar el tema: Clau de l'API de Gemini no configurada. Prem la rodeta ⚙️ per configurar-la.");
+                        } else {
+                            console.log("🤖 Classificant el tema amb Gemini des de l'extensió (fallback)...");
+                            try {
+                                const classification = await classifyThemeWithGemini(book, options, apiKey);
+                                if (classification && classification.value !== undefined) {
+                                    temaEl.value = classification.value;
+                                    temaEl.dispatchEvent(new Event('change', { bubbles: true }));
+                                    console.log(`✅ Tema seleccionat per Gemini des de l'extensió: "${classification.text}" (valor: ${classification.value})`);
+                                }
+                            } catch (classErr) {
+                                const errMsg = classErr.message || '';
+                                if (errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("limit")) {
+                                    console.error("⚠️ Error de quota a Gemini: S'han superat els límits de peticions de la clau.");
+                                } else {
+                                    console.error("⚠️ Error en classificar el tema amb Gemini:", classErr);
+                                }
+                            }
                         }
                     }
                 } catch (geminiErr) {
@@ -521,14 +536,24 @@ Temes a traduir: ${subjects}`;
                 }
             }
         }
-                const notesEl = fieldMap['id_notes'].el();
+        const notesEl = fieldMap['id_notes'].el();
         if (notesEl) {
             let obsValue = '';
             if (book.subjects && book.subjects !== 'No categoritzat') {
-                const apiKey = '';
-                console.log("🤖 Traduint els temes al català amb Gemini...");
-                const translatedSubjects = await translateSubjectsToCatalan(book.subjects, apiKey);
-                obsValue += 'Temes: ' + translatedSubjects;
+                const apiKey = (latestGeminiApiKey && latestGeminiApiKey !== '-') ? latestGeminiApiKey : '';
+                if (!apiKey) {
+                    console.warn("⚠️ No es poden traduir els temes: Clau de l'API de Gemini no configurada.");
+                    obsValue += 'Temes: ' + book.subjects;
+                } else {
+                    try {
+                        console.log("🤖 Traduint els temes al català amb Gemini...");
+                        const translatedSubjects = await translateSubjectsToCatalan(book.subjects, apiKey);
+                        obsValue += 'Temes: ' + translatedSubjects;
+                    } catch (transErr) {
+                        console.error("⚠️ Error traduint temes amb Gemini:", transErr);
+                        obsValue += 'Temes: ' + book.subjects;
+                    }
+                }
             }
             notesEl.value = obsValue;
             notesEl.dispatchEvent(new Event('input', { bubbles: true }));
@@ -541,7 +566,7 @@ Temes a traduir: ${subjects}`;
         } else {
             clearCoverInput();
         }
-        
+
         showNotification(`Llibre "${book.title}" carregat al formulari.`);
     }
 
@@ -585,8 +610,8 @@ Temes a traduir: ${subjects}`;
             try {
                 fileInput.value = '';
                 fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-            } catch (e) {}
-            
+            } catch (e) { }
+
             const previewDiv = fileInput.parentElement?.previousElementSibling || fileInput.closest('td')?.querySelector('img') || fileInput.closest('div')?.querySelector('img');
             let previewImg = null;
             if (previewDiv) {
@@ -597,7 +622,7 @@ Temes a traduir: ${subjects}`;
                 previewImg.style.display = 'none';
             }
         });
-        
+
         const imgAntigua = document.getElementById('imgAntigua');
         if (imgAntigua) {
             imgAntigua.src = '';
@@ -606,7 +631,7 @@ Temes a traduir: ${subjects}`;
                 filaImg.classList.add('esconderImg');
             }
         }
-        
+
         const tempPreview = document.getElementById('temp-cover-preview');
         if (tempPreview) {
             tempPreview.src = '';
@@ -616,7 +641,7 @@ Temes a traduir: ${subjects}`;
 
     async function injectCoverImage(urlOrBase64) {
         if (!urlOrBase64) return;
-        
+
         // 1. Si és una data URL (base64)
         if (urlOrBase64.startsWith('data:')) {
             try {
@@ -630,10 +655,10 @@ Temes a traduir: ${subjects}`;
             }
             return;
         }
-        
+
         // 2. Si és una URL HTTP/HTTPS de catàleg
         const secureUrl = urlOrBase64.replace(/^http:\/\//i, 'https://');
-        
+
         // Previsualització inicial de la URL
         const imgAntigua = document.getElementById('imgAntigua');
         if (imgAntigua) {
@@ -643,7 +668,7 @@ Temes a traduir: ${subjects}`;
                 filaImg.classList.remove('esconderImg');
             }
         }
-        
+
         const tryFetchDirect = async (url) => {
             try {
                 const res = await fetch(url);
@@ -659,7 +684,7 @@ Temes a traduir: ${subjects}`;
 
         const successDirect = await tryFetchDirect(secureUrl);
         if (successDirect) return;
-        
+
         safeSendMessage({ action: 'fetch_image_base64', url: secureUrl }, (response) => {
             if (response && response.success && response.dataUrl) {
                 try {
@@ -681,7 +706,7 @@ Temes a traduir: ${subjects}`;
 
     function lockForm() {
         console.log("🔒 LockForm: Sincronització activa amb el mòbil. Bloquejant entrada de dades a l'ordinador.");
-        
+
         for (const [key, config] of Object.entries(fieldMap)) {
             const el = config.el();
             if (el) {
@@ -694,7 +719,7 @@ Temes a traduir: ${subjects}`;
                 el.style.cursor = 'not-allowed';
             }
         }
-        
+
         const fileInputs = document.querySelectorAll('input[type="file"]');
         fileInputs.forEach(el => {
             el.disabled = true;
@@ -715,7 +740,7 @@ Temes a traduir: ${subjects}`;
 
     function unlockForm() {
         console.log("🔓 UnlockForm: Sincronització inactiva. Re-activant entrada de dades a l'ordinador.");
-        
+
         for (const [key, config] of Object.entries(fieldMap)) {
             const el = config.el();
             if (el) {
@@ -728,7 +753,7 @@ Temes a traduir: ${subjects}`;
                 el.style.cursor = '';
             }
         }
-        
+
         const fileInputs = document.querySelectorAll('input[type="file"]');
         fileInputs.forEach(el => {
             el.disabled = false;
@@ -776,7 +801,7 @@ Temes a traduir: ${subjects}`;
 
     function registerActivePage() {
         if (!isTargetPage || !pageId || !hasEnoughFields()) return;
-        
+
         const scraped = {};
         const selectOptions = {};
         const requiredFields = [];
@@ -803,7 +828,7 @@ Temes a traduir: ${subjects}`;
         }
         scraped._selectOptions = selectOptions;
         scraped._requiredFields = requiredFields;
-        
+
         try {
             scraped._cover_image = getExistingCoverAsBase64();
         } catch (coverErr) {
@@ -822,8 +847,14 @@ Temes a traduir: ${subjects}`;
     }
 
     async function handleExtensionState(sessionData) {
-        const { state, formData, pc_locked } = sessionData;
-        
+        const { state, formData, pc_locked, gemini_api_key, ocr_engine } = sessionData;
+        if (gemini_api_key) {
+            latestGeminiApiKey = gemini_api_key;
+        }
+        if (ocr_engine) {
+            latestOcrEngine = ocr_engine;
+        }
+
         const statusEl = document.getElementById('widget-status-val');
         if (statusEl) {
             const stateLabels = {
@@ -847,7 +878,7 @@ Temes a traduir: ${subjects}`;
         } else {
             unlockForm();
         }
-        
+
         if (formData && formData._cover_image && formData._cover_image !== lastInjectedCover) {
             lastInjectedCover = formData._cover_image;
             console.log("📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...");
@@ -861,7 +892,7 @@ Temes a traduir: ${subjects}`;
         if (state === lastState) {
             return;
         }
-        
+
         lastState = state;
         console.log(`Estat de la sincronització: ${state}`);
 
@@ -875,7 +906,7 @@ Temes a traduir: ${subjects}`;
             } catch (err) {
                 console.error("❌ Error injectant dades del llibre:", err);
             }
-            
+
             try {
                 // Llegim l'estat final de tots els inputs del formulari
                 // (incloent text de notes modificat o possibles ID per defecte de Django).
@@ -886,7 +917,7 @@ Temes a traduir: ${subjects}`;
                     const el = config.el();
                     if (el) {
                         scraped[key] = el.value;
-                        
+
                         // Determinem si el camp és obligatori a la intranet o Django admin
                         let isRequired = el.hasAttribute('required') || el.required;
                         const rowEl = el.closest('.form-row') || el.closest('tr') || el.closest('.form-group');
@@ -911,13 +942,13 @@ Temes a traduir: ${subjects}`;
                 }
                 scraped._selectOptions = selectOptions;
                 scraped._requiredFields = requiredFields;
-                
+
                 try {
                     scraped._cover_image = getExistingCoverAsBase64();
                 } catch (coverErr) {
                     console.warn("⚠️ Error obtenint la portada existent:", coverErr);
                 }
-                
+
                 // Informem al servidor local que el formulari està preparat per a ser editat des del mòbil
                 safeSendMessage({
                     action: 'proxy_fetch',
@@ -969,20 +1000,20 @@ Temes a traduir: ${subjects}`;
             } catch (saveErr) {
                 console.error("❌ Error injectant dades final del llibre:", saveErr);
             }
-            
+
             // Marquem que estem desant a sessionStorage per verificar el resultat després del submit / reload
             sessionStorage.setItem('llibreviu_sync_saving', 'true');
-            
+
             // Re-activem temporals per permetre que es basin correctament els valors al POST del formulari
             unlockForm();
-            
+
             console.log("💾 Clicant botó de desar formulari...");
-            const submitBtn = document.querySelector('button[type="submit"]') || 
-                              document.querySelector('input[type="submit"]') || 
-                              document.querySelector('input[name="_save"]') ||
-                              document.querySelector('form[method="post"] button') ||
-                              document.querySelector('._cta'); // Intranet class
-                              
+            const submitBtn = document.querySelector('button[type="submit"]') ||
+                document.querySelector('input[type="submit"]') ||
+                document.querySelector('input[name="_save"]') ||
+                document.querySelector('form[method="post"] button') ||
+                document.querySelector('._cta'); // Intranet class
+
             if (submitBtn) {
                 submitBtn.click();
             } else {
@@ -1002,7 +1033,7 @@ Temes a traduir: ${subjects}`;
             stopPolling();
             return;
         }
-        
+
         const success = safeSendMessage({
             action: 'proxy_fetch',
             url: buildContentApiUrl('/api/session-state?state_only=true&t=' + Date.now()),
@@ -1011,9 +1042,16 @@ Temes a traduir: ${subjects}`;
             if (response && response.success && response.data) {
                 try {
                     const stateData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
-                    
+
+                    if (stateData.gemini_api_key) {
+                        latestGeminiApiKey = stateData.gemini_api_key;
+                    }
+                    if (stateData.ocr_engine !== undefined) {
+                        latestOcrEngine = stateData.ocr_engine;
+                    }
+
                     const eligible = hasEnoughFields();
-                    
+
                     // Registrem aquesta pestanya de destinació com activa si té inputs (eligible) i:
                     // - O bé no hi ha cap pàgina activa registrada al servidor (e.g. reinici o reset).
                     // - O bé aquesta pestanya és la visible i no coincideix amb la registrada (e.g. l'usuari ha canviat de pestanya).
@@ -1021,7 +1059,7 @@ Temes a traduir: ${subjects}`;
                     const isNotActiveOnServer = stateData.active_page_id !== pageId;
                     const isVisible = document.visibilityState === 'visible';
                     const shouldRegister = isTargetPage && eligible && (
-                        (!stateData.active_page_id) || 
+                        (!stateData.active_page_id) ||
                         (isVisible && isNotActiveOnServer)
                     );
 
@@ -1029,7 +1067,7 @@ Temes a traduir: ${subjects}`;
                         console.log("[Sync] Registrant aquesta pestanya com activa al servidor (motiu: visible o buida al servidor).");
                         registerActivePage();
                     }
-                    
+
                     if (stateData.state !== lastState || stateData.version !== lastVersion) {
                         // Si som a la pàgina de l'ordinador (desktop page) i l'estat passa a ser actiu per catalogar ('filling', 'editing', 'saving'),
                         // demanem al background worker que obri o enfoqui la pestanya de la intranet de Llibreviu.
@@ -1037,7 +1075,7 @@ Temes a traduir: ${subjects}`;
                             console.log(`[Sync] Estat active detectat (${stateData.state}). Demanant obertura de pestanya de la intranet.`);
                             safeSendMessage({ action: 'open_intranet_tab', sid: sid });
                         }
- 
+
                         // Si som a la pàgina de la intranet (isTargetPage) i l'estat passa a ser 'searching' o 'scanning',
                         // netegem la pestanya de sincronització activa i alliberem el formulari.
                         if (isTargetPage && (stateData.state === 'searching' || stateData.state === 'scanning')) {
@@ -1049,10 +1087,10 @@ Temes a traduir: ${subjects}`;
                             isFirstStateCheck = true;
                             lastInjectedCover = null;
                         }
- 
+
                         if (isTargetPage) {
                             const isActivePage = stateData.active_page_id === pageId;
-                            
+
                             // Si hi ha una sessió activa a una altra pestanya, ignorem l'estat i assegurem que estem desbloquejats
                             if (stateData.active_page_id && !isActivePage) {
                                 unlockForm();
@@ -1067,7 +1105,7 @@ Temes a traduir: ${subjects}`;
                                     if (detailResp && detailResp.success && detailResp.data) {
                                         try {
                                             const fullData = typeof detailResp.data === 'string' ? JSON.parse(detailResp.data) : detailResp.data;
-                                            
+
                                             // Si cap pestanya no ha reclamat la sessió i estem en 'filling':
                                             if (!fullData.active_page_id && fullData.state === 'filling') {
                                                 if (eligible) {
@@ -1086,7 +1124,7 @@ Temes a traduir: ${subjects}`;
                                                     });
                                                 }
                                             }
-                                            
+
                                             // Només processem l'estat si som la pestanya activa registrada pel servidor
                                             if (fullData.active_page_id === pageId) {
                                                 lastVersion = fullData.version;
@@ -1108,11 +1146,11 @@ Temes a traduir: ${subjects}`;
                     // ignore
                 }
             }
-            
+
             // Programem el següent poll dins de la resposta per evitar col·lisions
             pollingInterval = setTimeout(pollSessionState, 1000);
         });
-        
+
         if (!success) {
             if (chrome.runtime && chrome.runtime.id) {
                 pollingInterval = setTimeout(pollSessionState, 3000);
@@ -1121,17 +1159,15 @@ Temes a traduir: ${subjects}`;
     }
 
     function startPolling() {
-        if (pollingInterval) return;
-        pollingInterval = setTimeout(pollSessionState, 1000);
-        console.log("🚀 Llibreviu Sync: Polling d'estat iniciat directament al Content Script.");
+        console.log("🚀 Llibreviu Sync: Sincronització de fons gestionada per l'extensió (background.js).");
     }
 
     function injectFloatingWidget() {
         if (!isTargetPage || isDesktopPage) return;
-        
+
         // Evitem duplicar-lo
         if (document.getElementById('llibreviu-sync-widget')) return;
-        
+
         const widget = document.createElement('div');
         widget.id = 'llibreviu-sync-widget';
         widget.style.position = 'fixed';
@@ -1141,7 +1177,7 @@ Temes a traduir: ${subjects}`;
         widget.style.fontFamily = 'system-ui, -apple-system, sans-serif';
         widget.style.fontSize = '0.9rem';
         widget.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        
+
         // Estils de la icona minimitzada (petit botó rodó flotant)
         const minIcon = document.createElement('button');
         minIcon.innerText = '📱';
@@ -1159,10 +1195,10 @@ Temes a traduir: ${subjects}`;
         minIcon.style.alignItems = 'center';
         minIcon.style.justifyContent = 'center';
         minIcon.style.transition = 'transform 0.2s';
-        
+
         minIcon.onmouseover = () => minIcon.style.transform = 'scale(1.1)';
         minIcon.onmouseout = () => minIcon.style.transform = 'scale(1)';
-        
+
         // Estils del panell flotant (obert per defecte)
         const panel = document.createElement('div');
         panel.style.display = 'flex';
@@ -1175,11 +1211,25 @@ Temes a traduir: ${subjects}`;
         panel.style.padding = '15px';
         panel.style.width = '200px';
         panel.style.boxShadow = '0 8px 30px rgba(0,0,0,0.25)';
-        
+
         panel.innerHTML = `
             <div style="font-weight: bold; margin-bottom: 8px; color: #2c3e50; font-size: 0.95rem; display: flex; justify-content: space-between; width:100%; align-items:center;">
                 <span>Vinculació Mòbil</span>
-                <span id="widget-minimize-btn" style="cursor:pointer; font-size:1.3rem; color:#888; line-height: 0.5; padding: 5px; user-select: none;" title="Minimitzar">−</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <span id="widget-settings-btn" style="cursor:pointer; font-size:1.1rem; color:#888; padding: 2px;" title="Configuració">⚙️</span>
+                    <span id="widget-minimize-btn" style="cursor:pointer; font-size:1.3rem; color:#888; line-height: 0.5; padding: 5px; user-select: none;" title="Minimitzar">−</span>
+                </div>
+            </div>
+            <div id="widget-settings-container" style="display:none; width:100%; padding:8px 0; border-top:1px solid #eee; border-bottom:1px solid #eee; margin-bottom:8px; font-size:0.8rem;">
+                <div style="font-weight:bold; margin-bottom:4px; color:#555;">Motor de reconeixement:</div>
+                <select id="widget-ocr-engine-select" style="width:100%; padding:4px; border:1px solid #ccc; border-radius:4px; font-size:0.75rem; box-sizing:border-box; margin-bottom:8px; background:white; color:black;">
+                    <option value="gemini-api">Gemini 3.1 Flash Lite (Online)</option>
+                    <option value="local-hybrid">PaddleOCR + Tesseract (Híbrid local)</option>
+                    <option value="local-tesseract">Tesseract local (Offline)</option>
+                </select>
+                <div style="font-weight:bold; margin-bottom:4px; color:#555;">Clau de l'API de Gemini:</div>
+                <textarea id="widget-gemini-key-input" placeholder="AIzaSy..." autocomplete="off" style="width:100%; padding:4px; border:1px solid #ccc; border-radius:4px; font-size:0.75rem; box-sizing:border-box; margin-bottom:8px; height:36px; resize:none; overflow:hidden;"></textarea>
+                <button id="widget-save-settings-btn" style="background:#2980b9; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold; font-size:0.75rem;">Desa</button>
             </div>
             <div id="widget-qr-container" style="background:#f9f9f9; padding:8px; border-radius:8px; border:1px solid #eee; display:flex; justify-content:center; align-items:center; min-height:150px; min-width:150px; margin-bottom: 10px;">
                 <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 25px; height: 25px; animation: spin 2s linear infinite;"></div>
@@ -1198,12 +1248,12 @@ Temes a traduir: ${subjects}`;
                 <div><strong>Estat:</strong> <span id="widget-status-val" style="color:#e67e22; font-weight:bold;">Inactiu</span></div>
             </div>
         `;
-        
+
         widget.appendChild(panel);
         widget.appendChild(minIcon);
         document.body.appendChild(widget);
-        
-        // Accions de minimitzar/restaurar
+
+        // Accions de minimitzar/restaurar i configuració
         const minimizeBtn = panel.querySelector('#widget-minimize-btn');
         if (minimizeBtn) {
             minimizeBtn.onclick = (e) => {
@@ -1212,22 +1262,95 @@ Temes a traduir: ${subjects}`;
                 minIcon.style.display = 'flex';
             };
         }
-        
+
+        const settingsBtn = panel.querySelector('#widget-settings-btn');
+        const settingsContainer = panel.querySelector('#widget-settings-container');
+        const keyInput = panel.querySelector('#widget-gemini-key-input');
+        const engineSelect = panel.querySelector('#widget-ocr-engine-select');
+        const saveSettingsBtn = panel.querySelector('#widget-save-settings-btn');
+
+
+
+        if (settingsBtn && settingsContainer && keyInput && engineSelect) {
+            settingsBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (settingsContainer.style.display === 'none') {
+                    // Carreguem de nou per assegurar que està sincronitzat amb la darrera recàrrega
+                    safeSendMessage({ action: 'get_api_key' }, (response) => {
+                        if (response) {
+                            latestGeminiApiKey = response.key || '';
+                            latestOcrEngine = response.engine || 'gemini-api';
+                        }
+                        keyInput.value = latestGeminiApiKey || '';
+                        engineSelect.value = latestOcrEngine || 'gemini-api';
+                        settingsContainer.style.display = 'block';
+                    });
+                } else {
+                    settingsContainer.style.display = 'none';
+                }
+            };
+        }
+
+        if (saveSettingsBtn && keyInput && engineSelect && settingsContainer) {
+            saveSettingsBtn.onclick = (e) => {
+                e.stopPropagation();
+                const newKey = (keyInput.value || '').trim();
+                const newEngine = engineSelect.value;
+                console.log(`[Sync Widget] Desant configuració localment: clau="${newKey.substring(0, 10)}...", motor="${newEngine}"`);
+
+                // Guardem a chrome.storage.local a través de background.js
+                safeSendMessage({
+                    action: 'save_api_key',
+                    key: newKey,
+                    engine: newEngine
+                }, (response) => {
+                    if (response && response.success) {
+                        console.log("[Sync Widget] ✅ Configuració desada correctament a chrome.storage.local");
+                        latestGeminiApiKey = newKey;
+                        latestOcrEngine = newEngine;
+                        settingsContainer.style.display = 'none';
+
+                        // Notifiquem al servidor sobre el canvi de motor (sense enviar la clau!)
+                        const currentSid = sid || 'default';
+                        safeSendMessage({
+                            action: 'proxy_fetch',
+                            url: `http://localhost:8080/api/session-state?sid=${currentSid}`,
+                            options: {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ sid: currentSid, ocr_engine: newEngine })
+                            }
+                        });
+                    } else {
+                        console.error("[Sync Widget] ❌ Error desant la configuració");
+                    }
+                });
+            };
+        }
+
         minIcon.onclick = () => {
             panel.style.display = 'flex';
             minIcon.style.display = 'none';
         };
-        
+
+        // Demanem la configuració desada a chrome.storage.local immediatament en arrencar
+        safeSendMessage({ action: 'get_api_key' }, (response) => {
+            if (response) {
+                if (response.key) latestGeminiApiKey = response.key;
+                if (response.engine) latestOcrEngine = response.engine;
+            }
+        });
+
         // Demanem la IP local al servidor a través del background script
         safeSendMessage({ action: 'proxy_fetch', url: 'http://localhost:8080/api/ip' }, (response) => {
             if (response && response.success) {
                 try {
                     const ipData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
                     const localIp = ipData.ip || 'localhost';
-                    
+
                     const mobileUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443`;
                     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(mobileUrl)}`;
-                    
+
                     const qrContainer = panel.querySelector('#widget-qr-container');
                     if (qrContainer) {
                         qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR" style="width:150px; height:150px; display:block;" />`;
@@ -1258,7 +1381,7 @@ Temes a traduir: ${subjects}`;
             }
             return;
         }
-        
+
         safeSendMessage({
             action: 'proxy_fetch',
             url: 'http://localhost:8080/api/active-sessions?t=' + Date.now(),
@@ -1292,14 +1415,15 @@ Temes a traduir: ${subjects}`;
                         console.log(`[Pairing] S'ha trobat una sessió de mòbil lliure: ${checkSid}. Vinculant...`);
                         sid = checkSid;
                         sessionStorage.setItem('llibreviu_sid', sid);
-                        
+                        safeSendMessage({ action: 'open_desktop_minimized', sid: sid });
+
                         const urlParams = new URLSearchParams(window.location.search);
                         urlParams.set('sid', sid);
                         window.history.replaceState({ ...history.state }, '', `${window.location.pathname}?${urlParams.toString()}`);
-                        
+
                         const sidValEl = document.getElementById('widget-sid-val');
                         if (sidValEl) sidValEl.innerText = sid;
-                        
+
                         registerActivePage();
                         startPolling();
                         return;
@@ -1355,10 +1479,10 @@ Temes a traduir: ${subjects}`;
             if (request.action === 'state_update') {
                 const fullData = request.data;
                 if (!fullData || fullData.sid !== sid) return;
-                
+
                 if (isTargetPage) {
                     const eligible = hasEnoughFields();
-                    
+
                     // Si l'estat passa a ser 'searching' o 'scanning', alliberem el formulari i netegem estats de cobertura
                     if (fullData.state === 'searching' || fullData.state === 'scanning') {
                         if (fullData.state !== lastState || fullData.version !== lastVersion) {
@@ -1368,17 +1492,27 @@ Temes a traduir: ${subjects}`;
                             lastVersion = fullData.version;
                             isFirstStateCheck = true;
                             lastInjectedCover = null;
+
+                            // Actualitzem també l'estat del widget visualment
+                            const statusEl = document.getElementById('widget-status-val');
+                            if (statusEl) {
+                                const stateLabels = {
+                                    'scanning': 'Llest per escanejar 📷',
+                                    'searching': 'Cercant dades... 🔍'
+                                };
+                                statusEl.innerText = stateLabels[fullData.state] || 'Inactiu 💤';
+                            }
                         }
                         return;
                     }
-                    
+
                     // Registrem aquesta pestanya de destinació com activa si té inputs (eligible) i:
                     // - O bé no hi ha cap pàgina activa registrada al servidor (e.g. reinici o reset).
                     // - O bé aquesta pestanya és la visible i no coincideix amb la registrada.
                     const isNotActiveOnServer = fullData.active_page_id !== pageId;
                     const isVisible = document.visibilityState === 'visible';
                     const shouldRegister = isTargetPage && eligible && (
-                        (!fullData.active_page_id) || 
+                        (!fullData.active_page_id) ||
                         (isVisible && isNotActiveOnServer)
                     );
 
@@ -1386,20 +1520,20 @@ Temes a traduir: ${subjects}`;
                         console.log("[Message-Sync] Registrant aquesta pestanya com activa al servidor (motiu: visible o buida al servidor).");
                         registerActivePage();
                     }
-                    
+
                     const isActivePage = fullData.active_page_id === pageId;
-                    
+
                     // Si hi ha una sessió activa a una altra pestanya, ignorem completament l'estat i assegurem que estem desbloquejats
                     if (fullData.active_page_id && !isActivePage) {
                         unlockForm();
                         return;
                     }
-                    
+
                     // Si no hi ha cap pestanya activa encara i l'estat és diferent de 'filling' (per exemple, s'ha quedat en estat actiu orfe), ignorem
                     if (!fullData.active_page_id && fullData.state !== 'filling') {
                         return;
                     }
-                    
+
                     // Si cap pestanya no ha reclamat la sessió i estem en 'filling':
                     if (!fullData.active_page_id && fullData.state === 'filling') {
                         if (eligible) {
@@ -1418,7 +1552,7 @@ Temes a traduir: ${subjects}`;
                             });
                         }
                     }
-                    
+
                     // Només processem l'estat si som la pestanya activa registrada pel servidor
                     if (fullData.active_page_id === pageId) {
                         if (fullData.state !== lastState || fullData.version !== lastVersion) {
