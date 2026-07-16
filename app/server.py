@@ -7,6 +7,7 @@ import json
 import threading
 import time
 import queue
+import re
 
 PORT = 8080        # Desktop HTTP
 PORT_HTTPS = 8443  # Mobile HTTPS
@@ -83,6 +84,79 @@ session_id = None
 active_page_id = None
 pc_locked = True
 state_version = 0
+
+# Pinggy Tunnel configuration and state
+global_tunnel_url = None
+global_tunnel_process = None
+tunnel_lock = threading.Lock()
+
+def start_tunnel():
+    global global_tunnel_url, global_tunnel_process
+    with tunnel_lock:
+        if global_tunnel_process is not None:
+            return global_tunnel_url
+        try:
+            print("🚀 [Túnel] S'està iniciant el túnel Pinggy (ssh)...")
+            cmd = [
+                "ssh", 
+                "-o", "StrictHostKeyChecking=no", 
+                "-o", "UserKnownHostsFile=NUL", 
+                "-p", "443", 
+                "-R", "0:localhost:8080", 
+                "ap.pinggy.io"
+            ]
+            global_tunnel_process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.PIPE,
+                text=True,
+                bufsize=1
+            )
+            
+            def read_output():
+                global global_tunnel_url
+                url_pattern = re.compile(r'https://[a-zA-Z0-9.-]+\.pinggy\.(?:link|io|online|me)')
+                for line in iter(global_tunnel_process.stdout.readline, ''):
+                    match = url_pattern.search(line)
+                    if match:
+                        global_tunnel_url = match.group(0)
+                        print(f"🚀 [Túnel] Túnel obert amb èxit! Adreça pública: {global_tunnel_url}")
+                        publish_event('global', 'tunnel_status', {"tunnel_url": global_tunnel_url})
+                        break
+            
+            t = threading.Thread(target=read_output, daemon=True)
+            t.start()
+            
+            # Wait up to 5 seconds for the URL to be established
+            for _ in range(25):
+                if global_tunnel_url:
+                    break
+                time.sleep(0.2)
+                
+            return global_tunnel_url
+        except Exception as e:
+            print(f"⚠️ Error al obrir el túnel: {e}")
+            global_tunnel_process = None
+            return None
+
+def stop_tunnel():
+    global global_tunnel_url, global_tunnel_process
+    with tunnel_lock:
+        if global_tunnel_process:
+            print("🛑 [Túnel] Tancant túnel de xarxa...")
+            try:
+                global_tunnel_process.terminate()
+                global_tunnel_process.wait(timeout=2)
+            except Exception:
+                try:
+                    global_tunnel_process.kill()
+                except Exception:
+                    pass
+            global_tunnel_process = None
+            global_tunnel_url = None
+            publish_event('global', 'tunnel_status', {"tunnel_url": None})
+
 
 # SSE client queues and lock for real-time background synchronization
 sse_clients = [] # holds (queue, sid)
@@ -238,6 +312,8 @@ def run_server():
             except BrokenPipeError:
                 pass  # Client ha tancat la connexió abans de rebre la resposta
             except ConnectionResetError:
+                pass
+            except ConnectionAbortedError:
                 pass
 
         def finish(self):
@@ -718,6 +794,37 @@ def run_server():
                 self.wfile.write(b'{"ok": true}')
                 return
             
+            if clean_path == '/api/log':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(b'{"status": "success"}')
+                return
+
+            if clean_path == '/api/tunnel':
+                content_length = int(self.headers.get('Content-Length', 0))
+                post_data = self.rfile.read(content_length)
+                try:
+                    data = json.loads(post_data.decode('utf-8'))
+                    enable = data.get('enabled', False)
+                    if enable:
+                        url = start_tunnel()
+                        status = "success" if url else "error"
+                    else:
+                        stop_tunnel()
+                        url = None
+                        status = "success"
+                    
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": status, "tunnel_url": url}).encode('utf-8'))
+                except Exception as e:
+                    self.send_response(400)
+                    self.end_headers()
+                    self.wfile.write(str(e).encode('utf-8'))
+                return
+
             self.send_response(404)
             self.end_headers()
 
@@ -876,12 +983,25 @@ def run_server():
                 self.wfile.write(json.dumps(to_send).encode('utf-8'))
                 return
 
+            if clean_path == '/api/tunnel':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "enabled": global_tunnel_process is not None,
+                    "tunnel_url": global_tunnel_url
+                }).encode('utf-8'))
+                return
+
             if clean_path == '/api/ip':
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
                 self.end_headers()
-                self.wfile.write(json.dumps({"ip": get_local_ip()}).encode('utf-8'))
+                self.wfile.write(json.dumps({
+                    "ip": get_local_ip(),
+                    "tunnel_url": global_tunnel_url
+                }).encode('utf-8'))
                 return
 
             if clean_path.startswith('/api/bne'):
@@ -1000,6 +1120,7 @@ def run_server():
     except KeyboardInterrupt:
         pass
     finally:
+        stop_tunnel()
         if httpd_https:
             httpd_https.shutdown()
 
