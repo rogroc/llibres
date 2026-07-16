@@ -1407,7 +1407,15 @@ Temes a traduir: ${subjects}`;
 
                         let mobileUrl;
                         if (tunnelUrl) {
-                            mobileUrl = `${tunnelUrl}/mobile/?api=${tunnelUrl}&sid=${sid}`;
+                            let formattedTunnelUrl = tunnelUrl;
+                            try {
+                                const urlObj = new URL(tunnelUrl);
+                                urlObj.hostname = urlObj.hostname.toUpperCase();
+                                formattedTunnelUrl = urlObj.toString().replace(/\/$/, "");
+                            } catch (e) {
+                                formattedTunnelUrl = tunnelUrl;
+                            }
+                            mobileUrl = `${formattedTunnelUrl}/mobile/?api=${formattedTunnelUrl}&sid=${sid}`;
                         } else {
                             mobileUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sid}`;
                         }
