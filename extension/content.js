@@ -1249,6 +1249,10 @@ Temes a traduir: ${subjects}`;
                 </select>
                 <div style="font-weight:bold; margin-bottom:4px; color:#555;">Clau de l'API de Gemini:</div>
                 <textarea id="widget-gemini-key-input" placeholder="AIzaSy..." autocomplete="off" style="width:100%; padding:4px; border:1px solid #ccc; border-radius:4px; font-size:0.75rem; box-sizing:border-box; margin-bottom:8px; height:36px; resize:none; overflow:hidden;"></textarea>
+                <div style="font-weight:bold; margin-bottom:8px; color:#555; display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+                    <input type="checkbox" id="widget-use-tunnel-checkbox" style="margin:0; cursor:pointer;" />
+                    <span>Activar túnel de xarxa (Pinggy)</span>
+                </div>
                 <button id="widget-save-settings-btn" style="background:#2980b9; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; width:100%; font-weight:bold; font-size:0.75rem;">Desa</button>
             </div>
             <div id="widget-qr-container" style="background:#f9f9f9; padding:8px; border-radius:8px; border:1px solid #eee; display:flex; justify-content:center; align-items:center; min-height:150px; min-width:150px; margin-bottom: 10px;">
@@ -1289,8 +1293,6 @@ Temes a traduir: ${subjects}`;
         const engineSelect = panel.querySelector('#widget-ocr-engine-select');
         const saveSettingsBtn = panel.querySelector('#widget-save-settings-btn');
 
-
-
         if (settingsBtn && settingsContainer && keyInput && engineSelect) {
             settingsBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -1301,9 +1303,22 @@ Temes a traduir: ${subjects}`;
                             latestGeminiApiKey = response.key || '';
                             latestOcrEngine = response.engine || 'gemini-api';
                         }
-                        keyInput.value = latestGeminiApiKey || '';
-                        engineSelect.value = latestOcrEngine || 'gemini-api';
-                        settingsContainer.style.display = 'block';
+                        // Demanem l'estat del túnel al servidor
+                        safeSendMessage({
+                            action: 'proxy_fetch',
+                            url: 'http://localhost:8080/api/tunnel'
+                        }, (tunnelResp) => {
+                            if (tunnelResp && tunnelResp.success) {
+                                const tunnelData = typeof tunnelResp.data === 'string' ? JSON.parse(tunnelResp.data) : tunnelResp.data;
+                                const tunnelCheckbox = panel.querySelector('#widget-use-tunnel-checkbox');
+                                if (tunnelCheckbox) {
+                                    tunnelCheckbox.checked = !!tunnelData.enabled;
+                                }
+                            }
+                            keyInput.value = latestGeminiApiKey || '';
+                            engineSelect.value = latestOcrEngine || 'gemini-api';
+                            settingsContainer.style.display = 'block';
+                        });
                     });
                 } else {
                     settingsContainer.style.display = 'none';
@@ -1316,7 +1331,8 @@ Temes a traduir: ${subjects}`;
                 e.stopPropagation();
                 const newKey = (keyInput.value || '').trim();
                 const newEngine = engineSelect.value;
-                console.log(`[Sync Widget] Desant configuració localment: clau="${newKey.substring(0, 10)}...", motor="${newEngine}"`);
+                const useTunnel = panel.querySelector('#widget-use-tunnel-checkbox')?.checked || false;
+                console.log(`[Sync Widget] Desant configuració localment: clau="${newKey.substring(0, 10)}...", motor="${newEngine}", tunnel=${useTunnel}`);
 
                 // Guardem a chrome.storage.local a través de background.js
                 safeSendMessage({
@@ -1341,6 +1357,21 @@ Temes a traduir: ${subjects}`;
                                 body: JSON.stringify({ sid: currentSid, ocr_engine: newEngine })
                             }
                         });
+
+                        // Cridem al servidor per activar/desactivar el túnel segons la selecció
+                        safeSendMessage({
+                            action: 'proxy_fetch',
+                            url: 'http://localhost:8080/api/tunnel',
+                            options: {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ enabled: useTunnel })
+                            }
+                        }, () => {
+                            // Actualitzem el codi QR
+                            refreshWidgetQr();
+                        });
+
                     } else {
                         console.error("[Sync Widget] ❌ Error desant la configuració");
                     }
@@ -1361,25 +1392,39 @@ Temes a traduir: ${subjects}`;
             }
         });
 
-        // Demanem la IP local al servidor a través del background script
-        safeSendMessage({ action: 'proxy_fetch', url: 'http://localhost:8080/api/ip' }, (response) => {
-            if (response && response.success) {
-                try {
-                    const ipData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
-                    const localIp = ipData.ip || 'localhost';
-
-                    const mobileUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sid}`;
-                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(mobileUrl)}`;
-
-                    const qrContainer = panel.querySelector('#widget-qr-container');
-                    if (qrContainer) {
-                        qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR" style="width:150px; height:150px; display:block;" />`;
-                    }
-                } catch (err) {
-                    console.error("Error carregant IP per al widget QR:", err);
-                }
+        // Funció per demanar la IP o URL del túnel i pintar el QR
+        function refreshWidgetQr() {
+            const qrContainer = panel.querySelector('#widget-qr-container');
+            if (qrContainer) {
+                qrContainer.innerHTML = `<div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 25px; height: 25px; animation: spin 2s linear infinite;"></div>`;
             }
-        });
+            safeSendMessage({ action: 'proxy_fetch', url: 'http://localhost:8080/api/ip' }, (response) => {
+                if (response && response.success) {
+                    try {
+                        const ipData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+                        const localIp = ipData.ip || 'localhost';
+                        const tunnelUrl = ipData.tunnel_url;
+
+                        let mobileUrl;
+                        if (tunnelUrl) {
+                            mobileUrl = `${tunnelUrl}/mobile/?api=${tunnelUrl}&sid=${sid}`;
+                        } else {
+                            mobileUrl = `https://${localIp}:8443/mobile/?api=https://${localIp}:8443&sid=${sid}`;
+                        }
+                        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(mobileUrl)}`;
+
+                        if (qrContainer) {
+                            qrContainer.innerHTML = `<img src="${qrUrl}" alt="QR" style="width:150px; height:150px; display:block;" />`;
+                        }
+                    } catch (err) {
+                        console.error("Error carregant IP per al widget QR:", err);
+                    }
+                }
+            });
+        }
+
+        // Cridem la funció per primera vegada per pintar el QR en arrencar
+        refreshWidgetQr();
     }
 
     if (isDesktopPage) {
