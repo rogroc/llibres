@@ -97,13 +97,14 @@ def start_tunnel():
             return global_tunnel_url
         try:
             print("🚀 [Túnel] S'està iniciant el túnel Pinggy (ssh)...")
+            null_device = "NUL" if os.name == 'nt' else "/dev/null"
             cmd = [
                 "ssh", 
                 "-o", "StrictHostKeyChecking=no", 
-                "-o", "UserKnownHostsFile=NUL", 
+                "-o", f"UserKnownHostsFile={null_device}", 
                 "-p", "443", 
                 "-R", "0:localhost:8080", 
-                "ap.pinggy.io"
+                "a.pinggy.io"
             ]
             global_tunnel_process = subprocess.Popen(
                 cmd,
@@ -116,11 +117,14 @@ def start_tunnel():
             
             def read_output():
                 global global_tunnel_url
-                url_pattern = re.compile(r'https://[a-zA-Z0-9.-]+\.pinggy\.(?:link|io|online|me)')
+                url_pattern = re.compile(r'https://[a-zA-Z0-9.-]+\.pinggy(?:-free)?\.(?:link|io|online|me|net)')
                 for line in iter(global_tunnel_process.stdout.readline, ''):
                     match = url_pattern.search(line)
                     if match:
-                        global_tunnel_url = match.group(0)
+                        url = match.group(0)
+                        if "dashboard.pinggy.io" in url:
+                            continue
+                        global_tunnel_url = url
                         print(f"🚀 [Túnel] Túnel obert amb èxit! Adreça pública: {global_tunnel_url}")
                         publish_event('global', 'tunnel_status', {"tunnel_url": global_tunnel_url})
                         break
