@@ -1,11 +1,14 @@
 (function () {
     let latestGeminiApiKey = '-';
     let latestOcrEngine = 'gemini-api';
+    let currentPcLocked = true;
+
     const hostname = window.location.hostname.toLowerCase();
     const path = window.location.pathname.toLowerCase();
     let isTargetPage = path.includes('/admin/registre') ||
         path.includes('/admin/registres') ||
-        (hostname === 'www.llibreviu.org' && path.startsWith('/admin/registre'));
+        path.includes('/admin/buscador') ||
+        (hostname === 'www.llibreviu.org' && (path.startsWith('/admin/registre') || path.startsWith('/admin/buscador')));
 
     const isDesktopPage = (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) &&
         path.startsWith('/desktop/');
@@ -109,6 +112,9 @@
     };
 
     function hasEnoughFields() {
+        if (window.location.pathname.toLowerCase().includes('/admin/buscador')) {
+            return true;
+        }
         let foundFieldsCount = 0;
         for (const config of Object.values(fieldMap)) {
             try {
@@ -309,6 +315,12 @@
                         body: JSON.stringify({ success: true, sid: sid })
                     }
                 });
+
+                if (!window.location.pathname.toLowerCase().includes('/admin/buscador')) {
+                    setTimeout(() => {
+                        window.location.href = `https://www.llibreviu.org/admin/registre/?sid=${sid}`;
+                    }, 500);
+                }
             } else {
                 // Busquem qualsevol error mostrat al formulari
                 const errorEl = document.querySelector('.messagelist .error') ||
@@ -444,7 +456,7 @@ Temes a traduir: ${subjects}`;
         // Esperem fins que el formulari i els camps crítics estiguin renderitzats al DOM
         const maxRetries = 20;
         const checkInterval = 250;
-        
+
         for (let i = 0; i < maxRetries; i++) {
             const isbnEl = fieldMap['id_isbn'].el();
             const titolEl = fieldMap['id_titol'].el();
@@ -571,10 +583,10 @@ Temes a traduir: ${subjects}`;
             notesEl.dispatchEvent(new Event('input', { bubbles: true }));
         }
         // Previsualització i pujada de fitxer de portada
-        if (book._cover_image) {
-            await injectCoverImage(book._cover_image);
-        } else if (book.cover) {
-            await injectCoverImage(book.cover);
+        // Previsualització i pujada de fitxer de portada millorada
+        const bestCover = await resolveBestCover(book);
+        if (bestCover) {
+            await injectCoverImage(bestCover);
         } else {
             clearCoverInput();
         }
@@ -649,6 +661,64 @@ Temes a traduir: ${subjects}`;
             tempPreview.src = '';
             tempPreview.style.display = 'none';
         }
+    }
+
+    async function resolveBestCover(book) {
+        if (!book) return null;
+
+        // 1. Si tenim portada de catàleg (no buida, no syndetics ni altres genèrics buits)
+        if (book.cover && !book.cover.includes('blank.gif') && !book.cover.includes('no-image') && !book.cover.includes('no_image') && !book.cover.includes('syndetics.com')) {
+            return book.cover;
+        }
+
+        // 2. Si tenim ISBN, provem de buscar portada oficial a AbeBooks/BookFinder des de l'extensió (evitant WAF bloquejos de Python)
+        if (book.isbn) {
+            const cleanIsbn = book.isbn.replace(/\D/g, '');
+            if (cleanIsbn) {
+                console.log(`🔍 [Extension Cover Resolver] Cercant portada oficial per ISBN: ${cleanIsbn}...`);
+
+                // AbeBooks directe (molt ràpid)
+                const abUrl = `https://pictures.abebooks.com/isbn/${cleanIsbn}-us.jpg`;
+                try {
+                    const res = await fetch(abUrl, { method: 'HEAD' });
+                    if (res.ok) {
+                        console.log("✅ [Extension Cover Resolver] Portada oficial trobada a AbeBooks:", abUrl);
+                        return abUrl;
+                    }
+                } catch (e) {
+                    console.warn("[Extension Cover Resolver] Error provant AbeBooks:", e);
+                }
+
+                // BookFinder scrape (des de Chrome té cookies/headers nets)
+                const bfUrl = `https://www.bookfinder.com/isbn/${cleanIsbn}`;
+                try {
+                    const res = await fetch(bfUrl);
+                    if (res.ok) {
+                        const html = await res.text();
+                        let match = html.match(/itemprop="image"\s+src="([^"]+)"/);
+                        if (match) {
+                            console.log("✅ [Extension Cover Resolver] Portada oficial trobada a BookFinder:", match[1]);
+                            return match[1];
+                        }
+                        match = html.match(/id="coverImage"\s+src="([^"]+)"/);
+                        if (match) {
+                            console.log("✅ [Extension Cover Resolver] Portada oficial trobada a BookFinder:", match[1]);
+                            return match[1];
+                        }
+                    }
+                } catch (e) {
+                    console.warn("[Extension Cover Resolver] Error raspant BookFinder:", e);
+                }
+            }
+        }
+
+        // 3. Fallback final: la foto de la portada capturada des del mòbil si existeix
+        if (book._cover_image) {
+            console.log("📸 [Extension Cover Resolver] Fent servir la foto de la portada capturada pel mòbil.");
+            return book._cover_image;
+        }
+
+        return null;
     }
 
     async function injectCoverImage(urlOrBase64) {
@@ -858,7 +928,176 @@ Temes a traduir: ${subjects}`;
         });
     }
 
+    async function handleDecommissionState(sessionData) {
+        const status = sessionData.decommission_status || "idle";
+        const code = sessionData.decommission_code || "";
+        const selectedId = sessionData.decommission_selected_id || "";
+
+        console.log(`[Decommission Content] Status: ${status}, code: ${code}, selectedId: ${selectedId}`);
+
+        if (status === 'searching' || status === 'decommissioning') {
+            safeSendMessage({ action: 'focus_tab' });
+        }
+
+        const statusEl = document.getElementById('widget-status-val');
+        if (statusEl) {
+            const decomLabels = {
+                'idle': 'Llest per donar de baixa 📷',
+                'searching': 'Cercant llibre per a baixa... 🔍',
+                'found': 'Triant llibre al mòbil 📱',
+                'decommissioning': 'Executant baixa... ⏳',
+                'done': 'Baixa completada! ✅'
+            };
+            statusEl.innerText = decomLabels[status] || 'Actiu (Baixa) 📱';
+        }
+
+        if (status === 'idle' || status === 'done') {
+            sessionStorage.removeItem('llibreviu_last_searched_decommission_code');
+        }
+
+        // 1. If status is 'searching', redirect to search results page using the q parameter
+        if (status === 'searching' && code) {
+            const currentQ = urlParams.get('q');
+            if (currentQ !== code) {
+                console.log(`[Decommission Content] Redirecting to search URL for code: ${code}`);
+                window.location.href = `https://www.llibreviu.org/admin/buscador?q=${code}&type=0&sid=${sid}`;
+                return;
+            }
+        }
+
+        // 2. If results are loaded on the page, extract candidates and send them to the server.
+        if (status === 'searching') {
+            const candidates = extractDecommissionCandidates();
+            console.log(`[Decommission Content] Found ${candidates.length} candidates.`);
+
+            safeSendMessage({
+                action: 'proxy_fetch',
+                url: `http://localhost:8080/api/decommission/candidates`,
+                options: {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sid: sid, candidates: candidates })
+                }
+            });
+            return;
+        }
+
+        // 3. If status is 'decommissioning' and we have a selected ID:
+        if (status === 'decommissioning' && selectedId) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+            let targetCb = null;
+            for (const cb of checkboxes) {
+                if (cb.value === selectedId) {
+                    targetCb = cb;
+                    break;
+                }
+            }
+
+            if (targetCb) {
+                console.log(`[Decommission Content] Checking item checkbox with ID: ${selectedId}`);
+                targetCb.checked = true;
+                targetCb.dispatchEvent(new Event('change', { bubbles: true }));
+
+                const buttons = document.querySelectorAll('button, input[type="button"], input[type="submit"], a, div, span');
+                let deleteBtn = null;
+                for (const btn of buttons) {
+                    const txt = (btn.value || btn.innerText || '').toLowerCase();
+                    if (txt.includes('baixa') || txt.includes('eliminar') || txt.includes('borrar') || txt.includes('decommission')) {
+                        deleteBtn = btn;
+                        break;
+                    }
+                }
+
+                if (deleteBtn) {
+                    console.log("[Decommission Content] Clicking decommission button...");
+                    deleteBtn.click();
+
+                    // Wait for the confirmation modal to appear and click "Eliminar"
+                    let attempts = 0;
+                    const confirmInterval = setInterval(() => {
+                        attempts++;
+                        if (attempts > 40) { // Timeout after 4 seconds
+                            clearInterval(confirmInterval);
+                            console.warn("[Decommission Content] Timeout waiting for confirmation modal.");
+                            return;
+                        }
+
+                        const buttons = Array.from(document.querySelectorAll('button, input[type="button"], input[type="submit"], a'));
+                        // Find the confirm button in the modal (usually has text 'Eliminar' or is styled red/danger)
+                        const eliminarBtn = buttons.find(btn => {
+                            const txt = (btn.value || btn.innerText || '').toLowerCase().trim();
+
+                            // Check for exact "eliminar" or key confirmation strings (avoiding wrapper divs/spans)
+                            return txt === 'eliminar' ||
+                                txt === 'confirmar' ||
+                                txt === 'sí, eliminar' ||
+                                txt === 'sí, estic segur' ||
+                                txt === 'estic segur';
+                        });
+
+                        if (eliminarBtn) {
+                            clearInterval(confirmInterval);
+                            console.log("[Decommission Content] Found modal confirm button. Clicking 'Eliminar'...");
+                            eliminarBtn.click();
+
+                            // Send completion update to the server only after confirming deletion
+                            safeSendMessage({
+                                action: 'proxy_fetch',
+                                url: `http://localhost:8080/api/decommission/done`,
+                                options: {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ sid: sid })
+                                }
+                            });
+                        }
+                    }, 100);
+                } else {
+                    console.error("[Decommission Content] Decommission button not found!");
+                }
+            } else {
+                console.error(`[Decommission Content] Checkbox with ID ${selectedId} not found!`);
+            }
+        }
+    }
+
+    function extractDecommissionCandidates() {
+        const candidates = [];
+        const rows = document.querySelectorAll('table tbody tr') || document.querySelectorAll('tr');
+        rows.forEach((row, idx) => {
+            if (row.querySelector('th')) return;
+            const checkbox = row.querySelector('input[type="checkbox"]') || row.querySelector('input[type="radio"]');
+            if (!checkbox) return;
+
+            let title = row.innerText.trim().replace(/\s+/g, ' ');
+            candidates.push({
+                id: checkbox.value || idx.toString(),
+                title: title,
+                index: idx
+            });
+        });
+
+        if (candidates.length === 0) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((cb, idx) => {
+                if (cb.id === 'widget-use-tunnel-checkbox') return;
+                const label = cb.closest('label')?.innerText.trim() || cb.nextSibling?.textContent?.trim() || `Element ${idx}`;
+                candidates.push({
+                    id: cb.value || idx.toString(),
+                    title: label,
+                    index: idx
+                });
+            });
+        }
+        return candidates;
+    }
+
     async function handleExtensionState(sessionData) {
+        if (window.location.pathname.toLowerCase().includes('/admin/buscador')) {
+            await handleDecommissionState(sessionData);
+            return;
+        }
+
         const { state, formData, pc_locked, gemini_api_key, ocr_engine } = sessionData;
         if (gemini_api_key) {
             latestGeminiApiKey = gemini_api_key;
@@ -866,6 +1105,8 @@ Temes a traduir: ${subjects}`;
         if (ocr_engine) {
             latestOcrEngine = ocr_engine;
         }
+        currentPcLocked = (pc_locked !== false);
+        updateWidgetPcLockUI();
 
         const statusEl = document.getElementById('widget-status-val');
         if (statusEl) {
@@ -891,12 +1132,13 @@ Temes a traduir: ${subjects}`;
             unlockForm();
         }
 
-        if (formData && formData._cover_image && formData._cover_image !== lastInjectedCover) {
-            lastInjectedCover = formData._cover_image;
-            console.log("📸 Nova portada rebuda des del mòbil. Injectant al formulari immediatament...");
-            await injectCoverImage(formData._cover_image);
+        const coverToInject = await resolveBestCover(formData);
+        if (coverToInject && coverToInject !== lastInjectedCover) {
+            lastInjectedCover = coverToInject;
+            console.log("📸 Nova portada rebuda des del mòbil/catàleg/BookFinder. Injectant al formulari immediatament...");
+            await injectCoverImage(coverToInject);
             if (!isFirstStateCheck) {
-                showNotification("📸 Portada actualitzada des del mòbil!");
+                showNotification("📸 Portada actualitzada!");
             }
         }
         isFirstStateCheck = false;
@@ -1003,10 +1245,11 @@ Temes a traduir: ${subjects}`;
                             console.warn(`⚠️ Error injecting field ${key}:`, fieldErr);
                         }
                     }
-                    // Si tenim una imatge de portada capturada des del mòbil, la injectem al formulari real
-                    if (formData._cover_image) {
-                        lastInjectedCover = formData._cover_image;
-                        await injectCoverImage(formData._cover_image);
+                    // Si tenim imatge de portada resolta (preferint catàleg/AbeBooks/BookFinder), la injectem
+                    const bestCover = await resolveBestCover(formData);
+                    if (bestCover) {
+                        lastInjectedCover = bestCover;
+                        await injectCoverImage(bestCover);
                     }
                 }
             } catch (saveErr) {
@@ -1020,7 +1263,10 @@ Temes a traduir: ${subjects}`;
             unlockForm();
 
             console.log("💾 Clicant botó de desar formulari...");
-            const submitBtn = document.querySelector('button[type="submit"]') ||
+            const addAnotherBtn = document.querySelector('input[name="_addanother"]') ||
+                document.querySelector('button[name="_addanother"]');
+            const submitBtn = addAnotherBtn ||
+                document.querySelector('button[type="submit"]') ||
                 document.querySelector('input[type="submit"]') ||
                 document.querySelector('input[name="_save"]') ||
                 document.querySelector('form[method="post"] button') ||
@@ -1041,7 +1287,7 @@ Temes a traduir: ${subjects}`;
 
     async function handleSseStateUpdate(stateData) {
         if (!stateData) return;
-        
+
         if (stateData.gemini_api_key) {
             latestGeminiApiKey = stateData.gemini_api_key;
         }
@@ -1083,26 +1329,31 @@ Temes a traduir: ${subjects}`;
             }
 
             if (isTargetPage) {
-                const isActivePage = stateData.active_page_id === pageId;
-
-                // Si hi ha una sessió activa a una altra pestanya, ignorem l'estat i assegurem que estem desbloquejats
-                if (stateData.active_page_id && !isActivePage) {
-                    unlockForm();
-                } else if (!stateData.active_page_id && stateData.state !== 'filling') {
-                    // Si no hi ha cap pestanya activa i no estem en filling, ignorem per evitar errors orfes
+                if (window.location.pathname.toLowerCase().includes('/admin/buscador')) {
+                    lastVersion = stateData.version;
+                    await handleExtensionState(stateData);
                 } else {
-                    // Si no som la pestanya activa encara i l'estat és 'filling', registrem-nos!
-                    if (!stateData.active_page_id && stateData.state === 'filling') {
-                        if (eligible) {
-                            console.log(`[Sync] Aquesta pestanya reclama la sincronització per al llibre.`);
-                            registerActivePage();
-                        }
-                    }
+                    const isActivePage = stateData.active_page_id === pageId;
 
-                    // Només processem l'estat si som la pestanya activa registrada pel servidor
-                    if (stateData.active_page_id === pageId) {
-                        lastVersion = stateData.version;
-                        await handleExtensionState(stateData);
+                    // Si hi ha una sessió activa a una altra pestanya, ignorem l'estat i assegurem que estem desbloquejats
+                    if (stateData.active_page_id && !isActivePage) {
+                        unlockForm();
+                    } else if (!stateData.active_page_id && stateData.state !== 'filling') {
+                        // Si no hi ha cap pestanya activa i no estem en filling, ignorem per evitar errors orfes
+                    } else {
+                        // Si no som la pestanya activa encara i l'estat és 'filling', registrem-nos!
+                        if (!stateData.active_page_id && stateData.state === 'filling') {
+                            if (eligible) {
+                                console.log(`[Sync] Aquesta pestanya reclama la sincronització per al llibre.`);
+                                registerActivePage();
+                            }
+                        }
+
+                        // Només processem l'estat si som la pestanya activa registrada pel servidor
+                        if (stateData.active_page_id === pageId) {
+                            lastVersion = stateData.version;
+                            await handleExtensionState(stateData);
+                        }
                     }
                 }
             } else if (isDesktopPage) {
@@ -1124,7 +1375,7 @@ Temes a traduir: ${subjects}`;
         try {
             bgPort = chrome.runtime.connect({ name: 'llibreviu-sync' });
             console.log("🔌 [Port] Connectat amb el background script de l'extensió.");
-            
+
             // Rebre actualitzacions d'estat a través del Port (delegat al background)
             bgPort.onMessage.addListener((msg) => {
                 if (msg.action === 'state_update') {
@@ -1144,15 +1395,15 @@ Temes a traduir: ${subjects}`;
 
     function startSseAndPort() {
         if (!sid || sid === 'default') return;
-        
+
         // 1. Connectar Port
         connectToBackgroundPort();
-        
+
         // 2. Notificar inicialització de sessió al background per obrir SSE
         if (bgPort) {
             bgPort.postMessage({ action: 'init', sid: sid });
         }
-        
+
         // 3. Heartbeat per mantenir el worker actiu (ping cada 20 segons)
         if (keepAliveInterval) clearInterval(keepAliveInterval);
         keepAliveInterval = setInterval(() => {
@@ -1270,12 +1521,24 @@ Temes a traduir: ${subjects}`;
             <div style="width: 100%; border-top: 1px solid #eee; padding-top: 8px; font-size: 0.8rem; display: flex; flex-direction: column; gap: 4px;">
                 <div><strong>Sessió:</strong> <span id="widget-sid-val" style="font-family:monospace; color:#2980b9;">${sid || 'Cap (Esperant mòbil)'}</span></div>
                 <div><strong>Estat:</strong> <span id="widget-status-val" style="color:#e67e22; font-weight:bold;">Inactiu</span></div>
+                <button id="widget-toggle-lock-btn" style="width: 100%; padding: 6px; font-weight: bold; border-radius: 6px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.75rem; margin-top: 6px; transition: all 0.2s ease; box-sizing: border-box;">
+                    🔓 Desbloquejar ordinador
+                </button>
             </div>
         `;
 
         widget.appendChild(panel);
         widget.appendChild(minIcon);
         document.body.appendChild(widget);
+
+        const toggleLockBtn = panel.querySelector('#widget-toggle-lock-btn');
+        if (toggleLockBtn) {
+            toggleLockBtn.onclick = (e) => {
+                e.stopPropagation();
+                togglePcLockDesktop();
+            };
+        }
+        updateWidgetPcLockUI();
 
         // Accions de minimitzar/restaurar i configuració
         const minimizeBtn = panel.querySelector('#widget-minimize-btn');
@@ -1346,7 +1609,7 @@ Temes a traduir: ${subjects}`;
                         latestOcrEngine = newEngine;
                         settingsContainer.style.display = 'none';
 
-                        // Notifiquem al servidor sobre el canvi de motor (sense enviar la clau!)
+                        // Notifiquem al servidor sobre el canvi de motor i la clau d'API
                         const currentSid = sid || 'default';
                         safeSendMessage({
                             action: 'proxy_fetch',
@@ -1354,7 +1617,7 @@ Temes a traduir: ${subjects}`;
                             options: {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ sid: currentSid, ocr_engine: newEngine })
+                                body: JSON.stringify({ sid: currentSid, ocr_engine: newEngine, gemini_api_key: newKey })
                             }
                         });
 
@@ -1433,6 +1696,41 @@ Temes a traduir: ${subjects}`;
 
         // Cridem la funció per primera vegada per pintar el QR en arrencar
         refreshWidgetQr();
+    }
+
+    function updateWidgetPcLockUI() {
+        const btn = document.getElementById('widget-toggle-lock-btn');
+        if (!btn) return;
+        if (currentPcLocked) {
+            btn.style.border = '1px solid #d35400';
+            btn.style.background = 'rgba(211, 84, 0, 0.1)';
+            btn.style.color = '#e67e22';
+            btn.innerHTML = '🔓 Desbloquejar ordinador';
+        } else {
+            btn.style.border = '1px solid #27ae60';
+            btn.style.background = 'rgba(39, 174, 96, 0.1)';
+            btn.style.color = '#2ecc71';
+            btn.innerHTML = '🔒 Bloquejar ordinador';
+        }
+    }
+
+    function togglePcLockDesktop() {
+        if (!sid) {
+            console.warn("[Desktop Widget] No active session (sid is missing)");
+            return;
+        }
+        const newLockState = !currentPcLocked;
+        console.log(`[Desktop Widget] Toggling PC Lock from ${currentPcLocked} to ${newLockState}`);
+
+        safeSendMessage({
+            action: 'proxy_fetch',
+            url: buildContentApiUrl('/api/set-pc-lock'),
+            options: {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ locked: newLockState, sid: sid })
+            }
+        });
     }
 
     if (isDesktopPage) {
